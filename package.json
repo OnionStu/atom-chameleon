@@ -3,6 +3,7 @@
   "main": "./lib/chameleon",
   "version": "0.0.0",
   "author": "OnionStu",
+  "private": true,
   "description": "Atom package for Chameleon Quick Development Tool",
   "keywords": [],
   "activationCommands": {
