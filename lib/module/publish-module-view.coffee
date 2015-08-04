@@ -57,7 +57,9 @@ class PublishModuleInfoView extends View
 		appPath = PathM.join appPath,'modules'
 		directory = new Directory(appPath)
 		_moduleList = @moduleList
-		printName = (file) ->
+		length = 0
+		_parentView = @parentView
+		printName = (file) =>
 			console.log file
 			if file.isDirectory()
 				path =PathM.join file.getPath(),"package.json"
@@ -65,6 +67,7 @@ class PublishModuleInfoView extends View
 				file2.exists().then (resolve,reject) =>
 					if resolve
 						file2.read(false).then (content) =>
+							length = length + 1
 							contetnList = JSON.parse(content)
 							_moduleList.append('<div class="col-md-3"><input value="'+file2.getPath()+'" type="checkbox"><label>'+contetnList['name']+'</label></div>')
 		directory.exists().then (resolve, reject) =>
@@ -72,6 +75,11 @@ class PublishModuleInfoView extends View
 				list = directory.getEntriesSync()
 				_moduleList.empty()
 				printName file for file in list
+				console.log length
+				if length == 0
+					_parentView.enable = false
+					alert "没有任何模块"
+					return
 				@third.addClass('hide')
 				@first.removeClass('hide')
 			else
