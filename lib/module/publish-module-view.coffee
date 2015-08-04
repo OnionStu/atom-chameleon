@@ -224,14 +224,14 @@ class PublishModuleInfoView extends View
 				fileLength = 0
 				printName = (filePath) ->
 					# console.log fileLength
-					fileLength = fileLength + 1
 					stats = fs.statSync(filePath)
 					if stats.isDirectory()
 						packageFilePath = PathM.join filePath,"package.json"
 						if fs.existsSync(packageFilePath)
 							packageFileStats = fs.statSync(packageFilePath)
 							if packageFileStats.isFile()
-								getMessage = (err, data) ->
+								fileLength = fileLength + 1
+								getMessage = (err, data) =>
 									if err
 										console.log "error"
 									else
@@ -243,6 +243,10 @@ class PublishModuleInfoView extends View
 								fs.readFile(packageFilePath,options,getMessage)
 				_moduleList.empty()
 				printName PathM.join project_path,fileName for fileName in list
+				if fileLength == 0
+					_parentView.enable = false
+					alert "没有任何模块"
+					return
 			#回调函数 的结束
 			# fs.exists(project_path,callbackDirectory)
 
