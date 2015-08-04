@@ -269,7 +269,6 @@ class BuildProjectInfoView extends View
 			modules = jsonContent['modules']
 			@buildTips.html("正在检测模块信息......")
 			projectPath = pathM.join this.find('select').val(), 'modules'
-			# @checkModuleNeedUpload identifier, version, projectPath for identifier, version of modules
 			moduleList = []
 			@buildTips.html("构建准备......")
 			getModuleMessage = (identifier,version) =>
@@ -278,68 +277,7 @@ class BuildProjectInfoView extends View
 					version: version
 				moduleList.push module
 			getModuleMessage identifier,version for identifier, version of modules
-			# console.log moduleList
 			@checkModuleNeedUpload projectPath, moduleList, 0
-			# @buildTips.html("正在上传应用信息......")
-			# 上传应用信息 获取上传的平台信息
-			# checkboxList = this.find('input[type=checkbox]:checked')
-			# platformInfo = []
-			# iosObj = null
-			# androidObj = null
-			# postAppBuildMessage = (checkbox) =>
-			# 	if $(checkbox).attr('value') is 'iOS'
-			# 		iosObj =
-			# 			logoFileId: ""
-			# 			platform: "IOS"
-			# 			pkgName: @iosName.getText()
-			# 	else
-			# 		androidObj =
-			# 			logoFileId: ""
-			# 			platform: "ANDROID"
-			# 			pkgName: @androidName.getText()
-			# postAppBuildMessage checkbox for checkbox in checkboxList
-			# if iosObj
-			# 	platformInfo.push(iosObj)
-			# if androidObj
-			# 	platformInfo.push(androidObj)
-			# configPath = pathM.join this.find('select').val(),desc.ProjectConfigFileName
-			# console.log configPath
-			# options =
-			# 	encoding: "utf-8"
-			# contentList = JSON.parse(fs.readFileSync(configPath,options))
-			# userMail = Util.store('chameleon').mail
-			# bodyJSON =
-			# 	identifier: @identifier.attr("value"),
-			# 	platformInfo: platformInfo,
-			# 	account: userMail
-			# 	mainModule: contentList["mainModule"]
-			# 	classify: "",
-			# 	version: contentList["version"],
-			# 	describe: contentList["description"],
-			# 	modules: contentList["modules"]
-			# 	releaseNote: contentList["releaseNote"]
-			# bodyStr = JSON.stringify(bodyJSON)
-			# params =
-			# 	body: bodyStr
-			# 	sendCookie: true
-			# 	success: (data) =>
-			# 		# console.log "success "+ JSON.stringify(data)
-			# 		if data["status"] is "success"
-			# 			@buildTips.html("正在排队构建请耐心等待......")
-			# 			# if data["IOS"]
-			# 			#在这里需要不断的查构建结果
-			# 			showObject = (obj) =>
-			# 				if obj.status != 'success'
-			# 					console.error "上传#{obj.platform}不成功！"
-			# 				else
-			# 					console.log "上传#{obj.platform}成功！"
-			# 					@checkBuildResult obj.id,obj.platform,0
-			# 			if data['data'].length > 0
-			# 				showObject obj for obj in data['data']
-			# 	error: =>
-			# 		console.log "error"
-			# client.buildApp(params)
-			# console.log params
 
 	checkModuleNeedUpload: (modulePath, modules, index) ->
 		if modules.length == 0
@@ -493,24 +431,48 @@ class BuildProjectInfoView extends View
 
 	checkBuildResult: (id,platform,time) ->
 		# console.log id,platform,time
+		ticket = (timeTips,loopTime,waitTime) =>
+			# console.log timeTips,loopTime
+			if loopTime <= 1
+				return
+			loopTime = loopTime - 1
+			num = waitTime - 1
+			@.find(timeTips).html(num)
+			# console.log timeTips,num,@.find(timeTips).html(num),waitTime
+			setTimeout =>
+				ticket timeTips,loopTime,num
+			,1000
+			# @.find(timeTips).html(num-1)
 		params =
 			sendCookie: true
 			success: (data) =>
 				# data['status'] = "SUCCESS"
 				# data['url'] = "http://baidu.com"
-				console.log data
+				# console.log data
 				if data['code'] == -1
 					alert "#{platform}构建不存在！"
 					return
 				if data['status'] == "WAITING"
 					# setTimeout("checkBuildResult(#{id},#{platform})", 1000*60)
 					if platform == "IOS"
-						@.find(".iosTips").html("构建 IOS 还需等待#{data['waitingTime']}秒")
+						timeTips = ".iosWaitTime"
+						@.find(".iosTips").html("构建 IOS 还需等待<span class='iosWaitTime'>#{data['waitingTime']}</span>秒")
 					else
-						@.find(".androidTips").html("构建 ANDOIRD 还需等待#{data['waitingTime']}秒")
+						timeTips = ".androidWaitTime"
+						@.find(".androidTips").html("构建 ANDOIRD 还需等待<span class='androidWaitTime'>#{data['waitingTime']}</span>秒")
+					loopTime = 30
+					loopTime2 = 30
+					if data['waitingTime'] < 30
+						loopTime = data['waitingTime']
+						if data['waitingTime'] == 0
+							loopTime = loopTime + 2
+							loopTime2 = data['waitingTime']
 					setTimeout =>
 						@checkBuildResult id,platform,time+1
-					,1000*30
+					,1000*loopTime
+					setTimeout =>
+						ticket timeTips,loopTime2,data['waitingTime']
+					,1000
 				else if data['status'] == "SUCCESS"
 					if !@urlCodeList.is(':visible')
 						@buildingTips.addClass('hide')
@@ -526,98 +488,26 @@ class BuildProjectInfoView extends View
 				else if data['status'] == "BUILDING"
 					@buildTips.html("正在构建请耐心等待......")
 					if platform == "IOS"
-						@.find(".iosTips").html("正在构建 IOS 还需#{data['remainTime']}秒")
+						timeTips = ".iosWaitTime"
+						@.find(".iosTips").html("构建 IOS 还需等待<span class='iosWaitTime'>#{data['remainTime']}</span>秒")
 					else
-						@.find(".androidTips").html("正在构建 ANDOIRD 还需#{data['remainTime']}秒")
+						timeTips = ".androidWaitTime"
+						@.find(".androidTips").html("构建 ANDOIRD 还需等待<span class='androidWaitTime'>#{data['remainTime']}</span>秒")
+					loopTime = 30
+					if data['remainTime'] < 30
+						loopTime = data['remainTime']
 					setTimeout =>
 						@checkBuildResult id,platform,time+1
-					,1000*30
+					,1000*loopTime
+					setTimeout =>
+						ticket timeTips,loopTime2,data['remainTime']
+					,1000
 				else
 					alert "构建失败"
 					return
 			error: =>
 			 	console.log  "error"
 		client.getBuildUrl(params,id)
-
-
-			# @parentView.nextBtn.attr('disabled',false)
-
-	# checkModuleNeedUpload: ( moduleIdentifer, moduleVersion, modulePath) ->
-	# 	console.log moduleIdentifer, moduleVersion
-	# 	params =
-	# 		sendCookie: true
-	# 		success: (data) =>
-	# 			console.log "check version success"
-	# 			if data['version'] != ""
-	# 				uploadVersion = moduleVersion.split('.')
-	# 				version = data['version'].split('.')
-	# 				# 判断是否需要上传模块
-	# 				if uploadVersion[0] < version[0]
-	# 					console.log "无需更新#{moduleIdentifer} 本地版本为#{moduleVersion},服务器版本为：#{data['version']}"
-	# 					return
-	# 				else if uploadVersion[0] == version[0]
-	# 					if uploadVersion[1] < version[1]
-	# 						console.log "无需更新#{moduleIdentifer} 本地版本为#{moduleVersion},服务器版本为：#{data['version']}"
-	# 						return
-	# 					else if uploadVersion[1] == version[1]
-	# 						if uploadVersion[2] <= version[2]
-	# 							console.log "无需更新#{moduleIdentifer} 本地版本为#{moduleVersion},服务器版本为：#{data['version']}"
-	# 							return
-	# 			# 上传模块
-	# 			# 1、压缩模块
-	# 			# 2、上传
-	# 			console.log "modulePath"
-	# 			# modulePath = pathM.join this.find('select').val(), 'modules', moduleIdentifer
-	# 			if fs.existsSync(modulePath)
-	# 				Util.fileCompression(modulePath)
-	# 				zipPath = modulePath+'.zip'
-	# 				if fs.existsSync(zipPath)
-	# 					console.log zipPath
-	# 					fileParams =
-	# 						formData: {
-	# 							up_file: fs.createReadStream(zipPath)
-	# 						}
-	# 						sendCookie: true
-	# 						success: (data) =>
-	# 							# data = JSON.parse(body)
-	# 							console.log "上传文件成功"
-	# 							if fs.existsSync(pathM.join modulePath,'package.json')
-	# 								packagePath = pathM.join modulePath,'package.json'
-	# 								options =
-	# 									encoding: 'utf-8'
-	# 								contentList = JSON.parse(fs.readFileSync(packagePath,options))
-	# 								console.log contentList['version'],contentList['identifier']
-	# 								params =
-	# 									form:{
-	# 										module_tag: contentList['identifier'],
-	# 										module_name: contentList['name'],
-	# 										module_desc: contentList['description'],
-	# 										version: contentList['version'],
-	# 										url_id: data['url_id'],
-	# 										update_log: "构建应用时发现本地版本高于服务器版本，所以上传 #{contentList['identifier']} 模块"
-	# 									}
-	# 									sendCookie: true
-	# 									success: (data) =>
-	# 										# console.log data
-	# 										# alert "上传模块成功"
-	# 										console.log "upload success"
-	# 									error: =>
-	# 									  alert "error"
-	# 								client.postModuleMessage(params)
-	# 							else
-	# 								console.log "文件不存在#{pathM.join modulePath,'package.json'}"
-	# 						error: =>
-	# 							alert "上传文件失败"
-	# 					client.uploadFile(fileParams,"module","")
-	# 				else
-	# 					alert "打包#{modulePath}失败"
-	# 			else
-	# 				alert "不存在#{modulePath}"
-	# 			# else
-	# 			# 	console.log "需要上传#{moduleIdentifer}模块,服务器版本为空，本地版本为#{moduleVersion}"
-	# 		error : =>
-	# 			console.log "获取模板最新版本 的url 调不通"
-	# 	client.getModuleLastVersion(params,moduleIdentifer)
 
 	prevBtnClick: ->
 		if @main.is(':visible')
