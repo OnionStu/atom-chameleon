@@ -9,6 +9,10 @@ Settings = require '../settings/settings'
 # UtilExtend = require './../utils/util-extend'
 
 class BuildProjectInfoView extends View
+	checkBuildResultTimer: {}
+	ticketTimer:{}
+	buildPlatformId:{}
+
 	@content: ->
 		@div class: 'build_project_vew', =>
 			@div outlet: 'main', =>
@@ -99,6 +103,7 @@ class BuildProjectInfoView extends View
 						@label "Andoird",class:'androidTips'
 
 	attached: ->
+		@initializeInput()
 		@settings = Settings
 		if !Util.isLogin()
 			@settings.activate()
@@ -106,6 +111,16 @@ class BuildProjectInfoView extends View
 			alert '请先登录'
 			return
 		else
+			#检测是否需要 清空  timeout
+			if @checkBuildResultTimer["IOS"]
+				window.clearTimeout(@checkBuildResultTimer["IOS"])
+			if @checkBuildResultTimer["ANDROID"]
+				window.clearTimeout(@checkBuildResultTimer["ANDROID"])
+			if @ticketTimer["ANDROID"]
+				window.clearTimeout(@ticketTimer["ANDROID"])
+			if @ticketTimer["IOS"]
+				window.clearTimeout(@ticketTimer["IOS"])
+			#检测是否需要取消之前的构建
 			@main.addClass('hide')
 			@buildMessage.addClass('hide')
 			@selectApp.removeClass('hide')
@@ -126,6 +141,11 @@ class BuildProjectInfoView extends View
 			@selectProject.append optionStr
 			@selectProject.on 'change',(e) => @onSelectChange(e)
 			@.find('.formBtn').on 'click', (e) => @formBtnClick(e)
+
+	initializeInput: ->
+		@.find('input[type=checkbox]').attr('checked',false)
+		@iosName.setText("")
+		@androidName.setText("")
 
 	setSelectItem:(path) ->
 		filePath = pathM.join path,desc.ProjectConfigFileName
@@ -186,6 +206,10 @@ class BuildProjectInfoView extends View
 				configPath = pathM.join this.find('select').val(),desc.ProjectConfigFileName
 				options =
 					encoding: "UTF-8"
+				state = fs.statSync(configPath)
+				if !state.isFile()
+					alert "文件不存在"
+					return
 				strContent = fs.readFileSync(configPath,options)
 				# fs.closeSync(configPath)
 				jsonContent = JSON.parse(strContent)
@@ -330,6 +354,7 @@ class BuildProjectInfoView extends View
 								}
 								sendCookie: true
 								success: (data) =>
+									Util.removeFileDirectory(zipPath)
 									if fs.existsSync(pathM.join moduleRealPath,'package.json')
 										packagePath = pathM.join moduleRealPath,'package.json'
 										options =
@@ -356,6 +381,7 @@ class BuildProjectInfoView extends View
 									else
 										console.log "文件不存在#{pathM.join modulePath,'package.json'}"
 								error: =>
+									Util.removeFileDirectory(zipPath)
 									alert "上传文件失败"
 							client.uploadFile(fileParams,"module","")
 						else
@@ -420,6 +446,7 @@ class BuildProjectInfoView extends View
 							console.log "上传#{obj.platform}不成功！"
 						else
 							console.log "上传#{obj.platform}成功！"
+							@buildPlatformId[obj.platform] = obj.id
 							@checkBuildResult obj.id,obj.platform,0
 					if data['data'].length > 0
 						showObject obj for obj in data['data']
@@ -428,20 +455,19 @@ class BuildProjectInfoView extends View
 		client.buildApp(params)
 		# console.log params
 
-
 	checkBuildResult: (id,platform,time) ->
 		# console.log id,platform,time
-		ticket = (timeTips,loopTime,waitTime) =>
-			# console.log timeTips,loopTime
-			if loopTime <= 1
-				return
-			loopTime = loopTime - 1
-			num = waitTime - 1
-			@.find(timeTips).html(num)
-			# console.log timeTips,num,@.find(timeTips).html(num),waitTime
-			setTimeout =>
-				ticket timeTips,loopTime,num
-			,1000
+		# ticket = (timeTips,loopTime,waitTime) =>
+		# 	console.log timeTips,loopTime
+		# 	if loopTime <= 1
+		# 		return
+		# 	loopTime = loopTime - 1
+		# 	num = waitTime - 1
+		# 	@.find(timeTips).html(num)
+		# 	# console.log timeTips,num,@.find(timeTips).html(num),waitTime
+		# 	setTimeout =>
+		# 		ticket timeTips,loopTime,num
+		# 	,1000
 			# @.find(timeTips).html(num-1)
 		params =
 			sendCookie: true
@@ -467,16 +493,18 @@ class BuildProjectInfoView extends View
 						if data['waitingTime'] == 0
 							loopTime = loopTime + 2
 							loopTime2 = data['waitingTime']
-					setTimeout =>
+					@checkBuildResultTimer[platform] = setTimeout =>
 						@checkBuildResult id,platform,time+1
 					,1000*loopTime
-					setTimeout =>
-						ticket timeTips,loopTime2,data['waitingTime']
+					@ticketTimer[platform] = setTimeout =>
+						@ticket timeTips,loopTime2,data['waitingTime'],platform
 					,1000
 				else if data['status'] == "SUCCESS"
 					if !@urlCodeList.is(':visible')
 						@buildingTips.addClass('hide')
 						@urlCodeList.removeClass('hide')
+						@parents.nextBtn.hide()
+						@parents.prevBtn.hide()
 					if platform == 'IOS'
 						@IOSCODE.removeClass('hide')
 						@.find(".iosTips").html("iOS")
@@ -496,18 +524,30 @@ class BuildProjectInfoView extends View
 					loopTime = 30
 					if data['remainTime'] < 30
 						loopTime = data['remainTime']
-					setTimeout =>
+					@checkBuildResultTimer[platform] = setTimeout =>
 						@checkBuildResult id,platform,time+1
 					,1000*loopTime
-					setTimeout =>
-						ticket timeTips,loopTime2,data['remainTime']
+					@ticketTimer[platform] = setTimeout =>
+						@ticket timeTips,loopTime2,data['remainTime'],platform
 					,1000
 				else
-					alert "构建失败"
+					alert "#{platform}构建失败"
 					return
 			error: =>
 			 	console.log  "error"
 		client.getBuildUrl(params,id)
+
+	ticket: (timeTips,loopTime,waitTime,platform) ->
+		# console.log timeTips,loopTime
+		if loopTime <= 1
+			return
+		loopTime = loopTime - 1
+		num = waitTime - 1
+		@.find(timeTips).html(num)
+		# console.log timeTips,num,@.find(timeTips).html(num),waitTime
+		@ticketTimer[platform] = setTimeout =>
+			@ticket timeTips,loopTime,num,platform
+		,1000
 
 	prevBtnClick: ->
 		if @main.is(':visible')
@@ -517,6 +557,18 @@ class BuildProjectInfoView extends View
 		else if @buildMessage.is(':visible')
 			@buildMessage.addClass('hide')
 			@main.removeClass('hide')
+		else if @buildingTips.is(':visible')
+			@buildingTips.addClass('hide')
+			@buildMessage.removeClass('hide')
+			if @checkBuildResultTimer["IOS"]
+				window.clearTimeout(@checkBuildResultTimer["IOS"])
+			if @checkBuildResultTimer["ANDROID"]
+				window.clearTimeout(@checkBuildResultTimer["ANDROID"])
+			if @ticketTimer["ANDROID"]
+				window.clearTimeout(@ticketTimer["ANDROID"])
+			if @ticketTimer["IOS"]
+				window.clearTimeout(@ticketTimer["IOS"])
+			#检测是否需要取消之前的构建
 
 module.exports =
 	class BuildProjectView extends ChameleonBox
