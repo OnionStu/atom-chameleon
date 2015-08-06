@@ -32,12 +32,12 @@ module.exports = TextDescription =
   registerUrl : 'http://www.baidu.com'
 
   chameleonHome: atom.packages.getLoadedPackage('chameleon').path
-  getChameleonHomePath: ->
-    @chameleonHome
   getFrameworkPath: ->
     Path.join @chameleonHome,'src','frameworks'
   newProjectDefaultPath: atom.config.get('core').projectHome
-  iconPath:'atom://chameleon-qdt-atom/images/icon.png'
+  # iconPath:'atom://chameleon-qdt-atom/images/icon.png'
+  getImgPath:(imgName) ->
+    Path.join @chameleonHome,'images',imgName
   mainEntryFileName: 'index.html'
 
 

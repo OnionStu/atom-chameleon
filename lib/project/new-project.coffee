@@ -17,13 +17,13 @@ class NewProjectView extends View
             @span class: 'icon icon-chevron-left'
           @div class: 'frameList', outlet:'frameList', =>
             @div class: 'new-item text-center', 'data-type': 'empty',  =>
-              @img class: 'pic', src:desc.iconPath
+              @img class: 'pic', src: desc.getImgPath 'icon.png'
               @h3 '空白项目',class: 'project-name'
             @div class: 'new-item text-center', 'data-type': 'frame', =>
-              @img class: 'pic', src: desc.iconPath
+              @img class: 'pic', src: desc.getImgPath 'icon.png'
               @h3 '自带框架项目',class: 'project-name'
             @div class: 'new-item text-center', 'data-type': 'template',  =>
-              @img class: 'pic', src: desc.iconPath
+              @img class: 'pic', src: desc.getImgPath 'icon.png'
               @h3 '业务模板',class: 'project-name'
             @div outlet:'divider'
           @button class:'btn btn-lg btn-action',outlet: 'nextPage', =>
@@ -73,7 +73,7 @@ class NewProjectView extends View
     @frameList.append html
 
   renderListItem: (type,dataName,displayName,icon) ->
-    icon?=desc.iconPath
+    icon?=desc.getImgPath 'icon.png'
     """
     <div class="new-item text-center" data-type="#{type}" data-name="#{dataName}">
       <img class="pic" src="#{icon}">
