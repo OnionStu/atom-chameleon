@@ -152,6 +152,7 @@ class UploadProjectInfoView extends View
 								}
 								sendCookie: true
 								success: (data) =>
+									Util.removeFileDirectory(zipPath)
 									if fs.existsSync(pathM.join moduleRealPath,'package.json')
 										packagePath = pathM.join moduleRealPath,'package.json'
 										options =
@@ -178,6 +179,7 @@ class UploadProjectInfoView extends View
 									else
 										console.log "文件不存在#{pathM.join modulePath,'package.json'}"
 								error: =>
+									Util.removeFileDirectory(zipPath)
 									alert "上传文件失败"
 							client.uploadFile(fileParams,"module","")
 						else

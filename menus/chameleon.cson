@@ -22,6 +22,7 @@
     }
     {
       'label':'构建应用'
+      'command':'chameleon:bulid-project'
     }
     {'type': 'separator'}
   ]

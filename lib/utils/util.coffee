@@ -262,6 +262,21 @@ module.exports = Util =
       cb: cb
     # client.uploadFile(fileParams,type,userAccount)
 
+  removeFileDirectory:(filePath) ->
+    if !fs.existsSync(filePath)
+      console.log "UNEXISTS"
+      return "UNEXISTS"
+    stats = fs.statSync(filePath)
+    if stats.isFile()
+      printResult= (err) =>
+        if err
+          console.log err
+        else
+          console.log "success"
+      fs.unlink(filePath,printResult)
+    # else
+    #   fs.rmdir(filePath)
+
   addModule: (appConfigPath, moduleIdentifer, version) ->
     if fs.existsSync(appConfigPath)
       stats = fs.statSync(appConfigPath)

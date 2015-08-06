@@ -73,6 +73,7 @@ module.exports = ModuleManager =
           @addProjectModule info
           atom.project.addPath(filePath)
           Util.rumAtomCommand 'tree-view:toggle' if ChameleonBox.$('.tree-view-resizer').length is 0
+          alert "新建模块成功！"
           @chameleonBox.closeView()
       # .finally =>
         # console.log 'CreateModule Success',@

@@ -41,7 +41,7 @@ module.exports = TextDescription =
   mainEntryFileName: 'index.html'
 
 
-  publishModule: "发布模块"
+  publishModule: "上传模块"
   publishModulePageOneTitle: '请选择需要发布的模块：'
   publishModulePageTwoTitle: '确认发布模块信息'
 

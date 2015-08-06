@@ -282,7 +282,7 @@ class ModuleMessageItem extends View
 
 			@div class : 'col-sm-12 col-md-12', =>
 				@div class : 'col-sm-2 col-md-2', =>
-					@label '跟新日志:'
+					@label '更新日志:'
 				@div class : 'col-sm-6 col-md-6', =>
 					@subview 'updateLog', new TextEditorView(mini: true,placeholderText: 'update log...')
 				@div class : 'col-sm-4 col-md-4', =>
@@ -326,7 +326,7 @@ class ModuleMessageItem extends View
 			success: (data) =>
 				# data = JSON.parse(body)
 				console.log "上传文件成功"
-				configFilePathCallBack = (exists) ->
+				configFilePathCallBack = (exists) =>
 					if exists
 						file = new File($(btn2).val())
 						file.read(false).then (content) =>
@@ -339,7 +339,7 @@ class ModuleMessageItem extends View
 									module_desc: contentList['description'],
 									version: contentList['version'],
 									url_id: data['url_id'],
-									update_log: '还没调上传文件的接口'
+									update_log: @updateLog.getText()
 								}
 								sendCookie: true
 								success: (data) =>
@@ -349,9 +349,11 @@ class ModuleMessageItem extends View
 									alert "上传模块成功"
 									console.log "upload success"
 								error: =>
-								  alert "error"
+									alert "error"
 							client.postModuleMessage(params)
+							util.removeFileDirectory(PathM.join zipPath,zipName)
 					else
+						util.removeFileDirectory(PathM.join zipPath,zipName)
 						console.log "文件不存在#{$(btn2).val()}"
 				fs.exists($(btn2).val(),configFilePathCallBack)
 			error: =>
