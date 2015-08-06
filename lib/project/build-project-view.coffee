@@ -20,13 +20,13 @@ class BuildProjectInfoView extends View
 					@h2 "请选择需要构建的应用平台："
 				@div class: 'col-xs-6', =>
 					@div class: 'col-xs-12', =>
-						@img src: 'atom://chameleon-qdt-atom/images/iphone.png'
+						@img src: desc.getImgPath 'iphone.png'
 					@div class: 'col-xs-12 label_pad', =>
 						@input type: 'checkbox', value: 'iOS'
 						@label "iOS"
 				@div class: 'col-xs-6', =>
 					@div class: 'col-xs-12', =>
-						@img src: 'atom://chameleon-qdt-atom/images/android.png'
+						@img src: desc.getImgPath 'android.png'
 					@div class: 'col-xs-12 label_pad', =>
 						@input type: 'checkbox', value: 'Android'
 						@label "Android"
@@ -93,12 +93,12 @@ class BuildProjectInfoView extends View
 					@h2 "构建成功返回的二维码："
 				@div class: 'col-xs-6', outlet: 'IOSCODE' ,=>
 					@div class: 'col-xs-12', =>
-						@img class:'codeImg', outlet: 'iOSCode',src: 'atom://chameleon-qdt-atom/images/iphone.png'
+						@img class:'codeImg', outlet: 'iOSCode',src: desc.getImgPath 'iphone.png'
 					@div class: 'col-xs-12 label_pad', =>
 						@label "iOS",class:'iosTips'
 				@div class: 'col-xs-6', outlet: 'ANDROIDCODE', =>
 					@div class: 'col-xs-12', =>
-						@img class:'codeImg',outlet: 'androidCode', src: 'atom://chameleon-qdt-atom/images/android.png'
+						@img class:'codeImg',outlet: 'androidCode', src: desc.getImgPath 'android.png'
 					@div class: 'col-xs-12 label_pad', =>
 						@label "Andoird",class:'androidTips'
 
