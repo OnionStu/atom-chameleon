@@ -60,7 +60,7 @@ class BuildProjectInfoView extends View
 						@label '应用名称：' , class: 'col-sm-3 control-label'
 						@div class: 'col-sm-9', =>
 							@subview 'iosName', new TextEditorView(mini: true)
-					@div class: 'form-group', =>
+					@div class: 'form-group', outlet:'iOSPluginsFormgroup', =>
 						@label '所选插件：' , class: 'col-sm-3 control-label'
 						@div class: 'col-sm-9', =>
 							@label outlet: 'iOSPlugins'
@@ -74,7 +74,7 @@ class BuildProjectInfoView extends View
 						@label '应用名称：' , class: 'col-sm-3 control-label'
 						@div class: 'col-sm-9', =>
 							@subview 'androidName', new TextEditorView(mini: true)
-					@div class: 'form-group', =>
+					@div class: 'form-group', outlet:'androidPluginsFormgroup', =>
 						@label '所选插件：' , class: 'col-sm-3 control-label'
 						@div class: 'col-sm-9', =>
 							@label outlet: 'androidPlugins'
@@ -228,6 +228,10 @@ class BuildProjectInfoView extends View
 								showPlaugins = (obj) ->
 									strContent = strContent+" | "+ "#{obj['identifier']} : #{obj['version']}(#{obj['type']})"
 								showPlaugins obj for obj in data
+								if strContent == ""
+									@iOSPluginsFormgroup.hide()
+								else
+									@iOSPluginsFormgroup.show()
 								@iOSPlugins.html(strContent)
 							error: =>
 								# console.log "console.error"
@@ -241,6 +245,10 @@ class BuildProjectInfoView extends View
 								showPlaugins = (obj) ->
 									strContent = strContent+" | "+ "#{obj['identifier']} : #{obj['version']}(#{obj['type']})"
 								showPlaugins obj for obj in data
+								if strContent == ""
+									@androidPluginsFormgroup.hide()
+								else
+									@androidPluginsFormgroup.show()
 								@androidPlugins.html(strContent)
 							error: =>
 								# console.log "console.error"
@@ -278,8 +286,9 @@ class BuildProjectInfoView extends View
 					return
 			@buildingTips.removeClass('hide')
 			@buildMessage.addClass('hide')
-			@parentView.nextBtn.text('完成')
-			@parentView.nextBtn.attr('disabled',true)
+			@parentView.prevBtn.text('取消')
+			@parentView.nextBtn.hide()
+			# @parentView.nextBtn.attr('disabled',true)
 			# 开始构建
 			# 1、检查本地模块信息在服务器是否已经存在
 			# 	如果存在则不需上传模块；
@@ -560,6 +569,8 @@ class BuildProjectInfoView extends View
 		else if @buildingTips.is(':visible')
 			@buildingTips.addClass('hide')
 			@buildMessage.removeClass('hide')
+			@parentView.prevBtn.text('上一步')
+			@parentView.nextBtn.show()
 			if @checkBuildResultTimer["IOS"]
 				window.clearTimeout(@checkBuildResultTimer["IOS"])
 			if @checkBuildResultTimer["ANDROID"]

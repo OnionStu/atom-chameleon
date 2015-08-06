@@ -285,9 +285,11 @@ class ModuleMessageItem extends View
 					@label '更新日志:'
 				@div class : 'col-sm-6 col-md-6', =>
 					@subview 'updateLog', new TextEditorView(mini: true,placeholderText: 'update log...')
-				@div class : 'col-sm-4 col-md-4', =>
+				@div class : 'col-sm-4 col-md-4 publishModulecheckbox', =>
 					@button '上传',value:obj.modulePath,class:'btn upload_module_btn',click: 'postModuleMessage'
-					@button '上传并应用',value:obj.modulePath,class:'btn'
+					@input type:'checkbox'
+					@label '应用'
+					# @button '上传并应用',value:obj.modulePath,class:'btn'
 			@div class : 'col-sm-12 col-md-12 ', =>
 				@label "正在打包文件......",class:"#{obj.identifier}"
 
