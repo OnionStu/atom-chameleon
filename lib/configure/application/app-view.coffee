@@ -14,7 +14,7 @@ class AppView extends View
       @div class: "col-xs-12", =>
         @label class: 'col-sm-3 col-md-3', "应用标识"
         @div class: 'col-sm-9 col-md-9', =>
-          @subview 'appId', new TextEditorView(mini: true,placeholderText: 'appId...')
+          @div outlet: 'appId', class: 'textEditStyle'
       @div class: "col-xs-12 ", =>
         @label class: 'col-sm-3 col-md-3', "应用名称"
         @div class: 'col-sm-9 col-md-9', =>
@@ -52,7 +52,7 @@ class AppView extends View
   saveInput: ->
     project_path = if @configPath? then @configPath else PathM.join $('.entry.selected span').attr('data-path'),'appConfig.json'
     mod =
-      identifier: @appId.getText().trim()
+      identifier: @appId.html().trim()
       name: @appName.getText().trim()
       version: @appVersion.getText().trim()
       mainModule: @appStartModule.getText().trim()
@@ -98,7 +98,7 @@ class AppView extends View
       console.log '读取文件失败'
 
   setConfig:(config) ->
-    @appId.setText(config['identifier'])
+    @appId.html(config['identifier'])
     @appName.setText(config['name'])
     @appVersion.setText(config['version'])
     @appStartModule.setText(config['mainModule'])
