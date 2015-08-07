@@ -57,7 +57,7 @@ class AppView extends View
       version: @appVersion.getText().trim()
       mainModule: @appStartModule.getText().trim()
     config = _.extend(@config,mod)
-    callback= (err) ->
+    callback= (err) =>
       unless err?
         alert "应用信息保存成功！"
         @parentView.closeView()
