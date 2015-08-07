@@ -3,6 +3,7 @@ util = require '../utils/util'
 {$,TextEditorView,View} = require 'atom-space-pen-views'
 {File,Directory} = require 'atom'
 PathM = require 'path'
+UtilExtend = require './../utils/util-extend'
 ChameleonBox = require '../utils/chameleon-box-view'
 Settings = require '../settings/settings'
 fs = require 'fs-extra'
@@ -190,73 +191,98 @@ class PublishModuleInfoView extends View
 				@second.addClass('hide')
 			#这是一个回调函数 的开始
 			# console.log "hello"
+			projectPaths = atom.project.getPaths()
+			isRootNodeIsBSLProject = false
+			rootPath = null
+			checkContains = (path) =>
+				directory = new Directory(path)
+				if directory.contains(project_path)
+					if UtilExtend.checkIsBSLProject(path)
+						isRootNodeIsBSLProject = true
+						rootPath = path
+			checkContains path for path in projectPaths
+			console.log isRootNodeIsBSLProject
+			returnMessage = null
+			returnStatus = false
 			if fs.existsSync(project_path)
-			#
-			# callbackDirectory = (exists) ->
-				if true
-					projectStats = fs.statSync(project_path)
-					#判断是否目录
-					if projectStats.isDirectory()
-						configFilePath = PathM.join project_path,"appConfig.json"
-						#判断  appConfig.json 是否存在
-						if fs.existsSync(configFilePath)
-							configFileStats = fs.statSync(configFilePath)
-							file = new File(configFilePath)
-							file.read(false).then (content) =>
-								contentList = JSON.parse(content)
-								$('#projectIdentifier').attr('value',contentList['identifier'])
-							project_path = PathM.join project_path,"modules"
-							if !fs.existsSync(project_path)
-								_parentView.enable = false
-								alert "请选择变色龙项目（不存在modules文件）"
-								return
-							modulesStats = fs.statSync(project_path)
-							if modulesStats.isFile()
-								_parentView.enable = false
-								alert "请选择变色龙项目（不存在modules文件）"
-								return
-						else
-							_parentView.enable = false
-							alert "请选择变色龙项目(不存在 appConfig.json)"
-							return
+				projectStats = fs.statSync(project_path)
+				#判断是否目录
+				if projectStats.isDirectory()
+					configFilePath = PathM.join project_path,"appConfig.json"
+					#判断  appConfig.json 是否存在
+					if fs.existsSync(configFilePath)
+						configFileStats = fs.statSync(configFilePath)
+						file = new File(configFilePath)
+						file.read(false).then (content) =>
+							contentList = JSON.parse(content)
+							$('#projectIdentifier').attr('value',contentList['identifier'])
+						project_path = PathM.join project_path,"modules"
+						if !fs.existsSync(project_path)
+							# _parentView.enable = false
+							returnMessage = "请选择变色龙项目（不存在modules文件）"
+							returnStatus = true
+						modulesStats = fs.statSync(project_path)
+						if modulesStats.isFile()
+							# _parentView.enable = false
+							returnMessage = "请选择变色龙项目（不存在modules文件）"
+							returnStatus = true
 					else
+						# _parentView.enable = false
+						returnMessage = "请选择变色龙项目(不存在 appConfig.json)"
+						returnStatus = true
+				else
+					# _parentView.enable = false
+					returnMessage = "请选择变色龙项目"
+					returnStatus = true
+			else
+				_parentView.enable = false
+				alert "文件不存在"
+				return
+			if returnStatus
+				if isRootNodeIsBSLProject
+					project_path = rootPath
+					project_path = PathM.join project_path,"modules"
+					if !fs.existsSync(project_path)
 						_parentView.enable = false
-						alert "请选择变色龙项目"
+						alert returnMessage
+						return
+					modulesStats = fs.statSync(project_path)
+					if modulesStats.isFile()
+						_parentView.enable = false
+						alert returnMessage
 						return
 				else
 					_parentView.enable = false
-					alert "文件不存在"
+					alert returnMessage
 					return
-				modulesCount = 0
-				list = fs.readdirSync(project_path)
-				fileLength = 0
-				printName = (filePath) ->
-					# console.log fileLength
-					stats = fs.statSync(filePath)
-					if stats.isDirectory()
-						packageFilePath = PathM.join filePath,"package.json"
-						if fs.existsSync(packageFilePath)
-							packageFileStats = fs.statSync(packageFilePath)
-							if packageFileStats.isFile()
-								fileLength = fileLength + 1
-								getMessage = (err, data) =>
-									if err
-										console.log "error"
-									else
-									  contentList = JSON.parse(data)
-										_moduleList.append('<div class="col-md-3"><input value="'+packageFilePath+'" type="checkbox"><label>'+contentList['name']+'</label></div>')
-										# console.log data
-								options =
-									encoding: "UTF-8"
-								fs.readFile(packageFilePath,options,getMessage)
-				_moduleList.empty()
-				printName PathM.join project_path,fileName for fileName in list
-				if fileLength == 0
-					_parentView.enable = false
-					alert "没有任何模块"
-					return
-			#回调函数 的结束
-			# fs.exists(project_path,callbackDirectory)
+			modulesCount = 0
+			list = fs.readdirSync(project_path)
+			fileLength = 0
+			printName = (filePath) ->
+				console.log fileLength
+				stats = fs.statSync(filePath)
+				if stats.isDirectory()
+					packageFilePath = PathM.join filePath,"package.json"
+					if fs.existsSync(packageFilePath)
+						packageFileStats = fs.statSync(packageFilePath)
+						if packageFileStats.isFile()
+							fileLength = fileLength + 1
+							getMessage = (err, data) =>
+								if err
+									console.log "error"
+								else
+								  contentList = JSON.parse(data)
+									_moduleList.append('<div class="col-md-3"><input value="'+packageFilePath+'" type="checkbox"><label>'+contentList['name']+'</label></div>')
+									# console.log data
+							options =
+								encoding: "UTF-8"
+							fs.readFile(packageFilePath,options,getMessage)
+			_moduleList.empty()
+			printName PathM.join project_path,fileName for fileName in list
+			if fileLength == 0
+				_parentView.enable = false
+				alert "没有任何模块"
+				return
 
 	getElement: ->
 		@element

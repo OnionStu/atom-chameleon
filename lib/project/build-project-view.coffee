@@ -22,14 +22,14 @@ class BuildProjectInfoView extends View
 					@div class: 'col-xs-12', =>
 						@img src: desc.getImgPath 'iphone.png'
 					@div class: 'col-xs-12 label_pad', =>
-						@input type: 'checkbox', value: 'iOS'
-						@label "iOS"
+						@input type: 'checkbox', value: 'iOS',id:'ios'
+						@label "iOS",for: "ios"
 				@div class: 'col-xs-6', =>
 					@div class: 'col-xs-12', =>
 						@img src: desc.getImgPath 'android.png'
 					@div class: 'col-xs-12 label_pad', =>
-						@input type: 'checkbox', value: 'Android'
-						@label "Android"
+						@input type: 'checkbox', value: 'Android', id:'android'
+						@label "Android", for: "android"
 			@div outlet: 'selectApp', class:'form-horizontal form_width',=>
 				@div class: 'form-group', =>
 					@label '选择构建的应用：', class: 'col-sm-3 control-label'
@@ -94,11 +94,15 @@ class BuildProjectInfoView extends View
 				@div class: 'col-xs-6', outlet: 'IOSCODE' ,=>
 					@div class: 'col-xs-12', =>
 						@img class:'codeImg', outlet: 'iOSCode',src: desc.getImgPath 'iphone.png'
+					@div class: 'col-xs-12', =>
+						@a outlet:'iosUrl'
 					@div class: 'col-xs-12 label_pad', =>
 						@label "iOS",class:'iosTips'
 				@div class: 'col-xs-6', outlet: 'ANDROIDCODE', =>
 					@div class: 'col-xs-12', =>
 						@img class:'codeImg',outlet: 'androidCode', src: desc.getImgPath 'android.png'
+					@div class: 'col-xs-12', =>
+						@a outlet:'androidUrl'
 					@div class: 'col-xs-12 label_pad', =>
 						@label "Andoird",class:'androidTips'
 
@@ -518,10 +522,14 @@ class BuildProjectInfoView extends View
 						@IOSCODE.removeClass('hide')
 						@.find(".iosTips").html("iOS")
 						@iOSCode.attr('src',"http://qr.liantu.com/api.php?text=#{data['url']}")
+						@iosUrl.attr('href',data['url'])
+						@iosUrl.html(data['url'])
 					else
 						@ANDROIDCODE.removeClass('hide')
 						@.find(".androidTips").html("Android")
 						@androidCode.attr('src',"http://qr.liantu.com/api.php?text=#{data['url']}")
+						@androidUrl.attr('href',data['url'])
+						@androidUrl.html(data['url'])
 				else if data['status'] == "BUILDING"
 					@buildTips.html("正在构建请耐心等待......")
 					if platform == "IOS"
