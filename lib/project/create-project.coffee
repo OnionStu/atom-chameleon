@@ -7,6 +7,7 @@ $ = CreateProjectView.$
 loadingMask = require '../utils/loadingMask'
 client = require '../utils/client'
 config = require '../../config/config'
+fs = require 'fs-extra'
 
 module.exports = CreateProject =
   chameleonBox: null
@@ -93,18 +94,33 @@ module.exports = CreateProject =
           Util.copy @repoDir, targetPath, (err) => # 复制成功后，将框架复制到项目的 modules 下
             throw err if err
             alert '项目创建成功'
+            packageJson = pathM.join targetPath,'package.json'
+            appConfigPath = pathM.join info.appPath,desc.ProjectConfigFileName
             gfp = pathM.join targetPath,'.git'
             delSuccess = (err) ->
               throw err if err
               console.log 'deleted!'
+              if fs.existsSync(packageJson)
+                stats = fs.statSync(packageJson)
+                if stats.isFile()
+                  contentJson = JSON.parse(fs.readFileSync(packageJson))
+                  if fs.existsSync(appConfigPath)
+                    stats = fs.statSync(appConfigPath)
+                    if stats.isFile()
+                      contentList = JSON.parse(fs.readFileSync(appConfigPath))
+                      contentList['modules'][contentJson['name']] = contentJson['version']
+                      if contentList['mainModule'] == ""
+                        contentList['mainModule'] = contentJson['name']
+                      fs.writeJson appConfigPath,contentList,null
             Util.delete gfp,delSuccess
 
-            appConfigPath = pathM.join info.appPath,desc.ProjectConfigFileName
+            # appConfigPath = pathM.join info.appPath,desc.ProjectConfigFileName
             writeCB = (err) =>
               throw err if err
               atom.workspace.open appConfigPath
               aft = =>
                 Util.rumAtomCommand('tree-view:reveal-active-file')
+                console.log "aft"
               _.debounce(aft,300)
             Util.writeJson appConfigPath, Util.formatAppConfigToObj(info), writeCB
 

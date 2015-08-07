@@ -10,7 +10,7 @@ _ = ChameleonBox._
 # module.exports =
 class AppView extends View
   @content: ->
-    @div class: 'container', =>
+    @div class: 'build_project_vew', =>
       @div class: "col-xs-12", =>
         @label class: 'col-sm-3 col-md-3', "应用标识"
         @div class: 'col-sm-9 col-md-9', =>
@@ -25,8 +25,8 @@ class AppView extends View
           @subview 'appVersion', new TextEditorView(mini: true,placeholderText: 'appVersion...')
       @div class: "col-xs-12 ", =>
         @label class: 'col-sm-3 col-md-3', "启动模块"
-        @div class: 'col-sm-9 col-md-9', =>
-          @subview 'appStartModule', new TextEditorView(mini: true,placeholderText: 'mainModule...')
+        @div class: 'col-sm-9 ', =>
+          @select class: 'form-control', outlet: 'selectModule'
 
   serialize: ->
 
@@ -37,12 +37,9 @@ class AppView extends View
     # 删除已保存的配置和路径
     delete @config
     delete @configPath
-
-    console.log result,@config
     unless result.isExist
       alert '没有找到应用的配置文件'
       @parentView.enable = false
-    # ==================
     else
       @readConfig result.path
       @parentView.setNextBtn('finish',desc.save)
@@ -55,9 +52,9 @@ class AppView extends View
       identifier: @appId.html().trim()
       name: @appName.getText().trim()
       version: @appVersion.getText().trim()
-      mainModule: @appStartModule.getText().trim()
+      mainModule: @selectModule.val()
     config = _.extend(@config,mod)
-    callback= (err) ->
+    callback= (err) =>
       unless err?
         alert "应用信息保存成功！"
         @parentView.closeView()
@@ -96,12 +93,17 @@ class AppView extends View
       @setConfig config
     else
       console.log '读取文件失败'
-
   setConfig:(config) ->
     @appId.html(config['identifier'])
     @appName.setText(config['name'])
     @appVersion.setText(config['version'])
-    @appStartModule.setText(config['mainModule'])
+    # @appStartModule.setText(config['mainModule'])
+    optionStr = ""
+    setItem = (moduleIdentifer) =>
+      optionStr = optionStr + "<option value='#{moduleIdentifer}'>#{moduleIdentifer}</option>"
+    setItem key for key,value of config['modules']
+    @selectModule.append optionStr
+    @selectModule.val(config['mainModule'])
 
   getElement: ->
     @element
