@@ -47,6 +47,9 @@ class AppView extends View
       @parentView.prevBtn.addClass('other')
 
   saveInput: ->
+    if @checkInput() is no
+      alert '所填内容不能未空!'
+      return
     project_path = if @configPath? then @configPath else PathM.join $('.entry.selected span').attr('data-path'),'appConfig.json'
     mod =
       identifier: @appId.html().trim()
@@ -116,6 +119,11 @@ class AppView extends View
   prevStep: (box) ->
     @resetConfig()
 
+  checkInput: ->
+    flag1 = @appName.getText().trim() is ""
+    flag2 = @appVersion.getText().trim() is ""
+    flag3 = @appStartModule.getText().trim() is ""
+    !(flag3 or flag2 or flag1)
 
 module.exports =
 class appConfigView extends ChameleonBox
