@@ -29,10 +29,10 @@ class ModuleInfoView extends View
 					@label class: 'col-sm-3 col-md-3', "模块描述"
 					@div class: 'col-sm-9 col-md-9', =>
 			      @subview 'moduleDescription', new TextEditorView(mini: true,placeholderText: 'moduleDescription...')
-				@div class: "col-xs-12 ", =>
-					@label class: 'col-sm-3 col-md-3', "模块入口"
-					@div class: 'col-sm-9 col-md-9', =>
-			      @subview 'moduleInput', new TextEditorView(mini: true,placeholderText: 'moduleInput...')
+				# @div class: "col-xs-12 ", =>
+				# 	@label class: 'col-sm-3 col-md-3', "模块入口"
+				# 	@div class: 'col-sm-9 col-md-9', =>
+			  #     @subview 'moduleInput', new TextEditorView(mini: true,placeholderText: 'moduleInput...')
 
 
 	serialize: ->
@@ -92,13 +92,17 @@ class ModuleInfoView extends View
 				options =
 					encoding: 'utf-8'
 				contentList = JSON.parse(fs.readFileSync(real_path,options))
-				contentList['name'] = @moduleName.getText()
-				contentList['version'] = @moduleVersion.getText()
-				contentList['description'] = @moduleDescription.getText()
-				contentList['main'] = @moduleInput.getText()
+				contentList['name'] = @moduleName.getText().trim()
+				contentList['version'] = @moduleVersion.getText().trim()
+				contentList['description'] = @moduleDescription.getText().trim()
+				# contentList['main'] = @moduleInput.getText().trim()
+				if contentList['name'] is "" or contentList['version'] is ""
+					alert "模块名、版本、主入口不能为空"
+					return
+
 				configPath = pathM.join real_path, '..', '..', '..', 'appConfig.json'
-				console.log configPath
-				console.log contentList
+				# console.log configPath
+				# console.log contentList
 				cb = (err,written,string) =>
 					if err
 						alert '保存失败'
@@ -144,7 +148,7 @@ class ModuleInfoView extends View
 			@moduleName.setText(contentList['name'])
 			@moduleVersion.setText(contentList['version'])
 			@moduleDescription.setText(contentList['description'])
-			@moduleInput.setText(contentList['main'])
+			# @moduleInput.setText(contentList['main'])
 			# @version = contentList['version']
 			# console.log @version
 			# contentList = contents.split(',')

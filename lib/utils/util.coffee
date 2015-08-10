@@ -231,22 +231,22 @@ module.exports = Util =
 
   UnCompressFile: (zipPath, success) ->
     unzipPath = pathM.join zipPath,".."
-    cb = (err, data) ->
+    cb = (err, data) =>
       if err
         throw err
       object = new JSZip(data)
-      console.log object.files
+      # console.log object.files
       readAndwrite = (zipObject) ->
         # console.log zipObject.name
         savePath = pathM.join unzipPath,zipObject.name
         if zipObject.dir
-          console.log zipObject.name + " is dir"
+          # console.log zipObject.name + " is dir"
           if fs.existsSync(savePath)
-            alert "文件夹已存在,文件夹中的相同文件将被覆盖"
+            console.log "文件夹已存在,文件夹中的相同文件将被覆盖"
           else
             fs.mkdirSync(savePath)
         else
-          console.log zipObject.name + " is a file"
+          # console.log zipObject.name + " is a file"
           fs.writeFileSync(savePath,zipObject._data.getContent())
       readAndwrite zipObject for fileName , zipObject of object.files
       if typeof success isnt "undefined"

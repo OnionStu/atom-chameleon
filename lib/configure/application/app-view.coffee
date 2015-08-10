@@ -122,7 +122,7 @@ class AppView extends View
   checkInput: ->
     flag1 = @appName.getText().trim() is ""
     flag2 = @appVersion.getText().trim() is ""
-    flag3 = @appStartModule.getText().trim() is ""
+    flag3 = @selectModule.val().trim() is ""
     !(flag3 or flag2 or flag1)
 
 module.exports =

@@ -105,11 +105,11 @@ class PublishModuleInfoView extends View
 			_moduleMessageList = @moduleMessageList
 			_moduleMessageList.empty()
 			# 输出模块选项
-			printModuleMessage = (checkbox) ->
+			printModuleMessage = (checkbox) =>
 				if $(checkbox).is(':checked')
-					moduleFolderCallBack = (exists) ->
+					moduleFolderCallBack = (exists) =>
 						if exists
-							moduleConfigCallBack = (exists) ->
+							moduleConfigCallBack = (exists) =>
 								if exists
 									contentList = JSON.parse(fs.readFileSync($(checkbox).attr('value')))
 									obj =
@@ -118,6 +118,15 @@ class PublishModuleInfoView extends View
 										identifier: contentList['identifier']
 										version: contentList['serviceVersion']
 										modulePath: $(checkbox).attr('value')
+									console.log contentList['identifier']
+									if contentList['identifier'] isnt "undefined" || contentList['identifier'] isnt ""
+										alert "模块#{contentList['name']}的identifer不存在！"
+										@prevStep()
+										return
+									if contentList['version'] isnt "undefined" || contentList['version'] isnt ""
+										alert "模块#{contentList['name']}的version不存在！"
+										@prevStep()
+										return
 									params =
 										sendCookie: true
 										success: (data) =>
@@ -177,17 +186,20 @@ class PublishModuleInfoView extends View
 		_parentView = @parentView
 		_moduleList = @moduleList
 		if test.length == 0
+			console.log "#{test.length}"
 			@first.addClass('hide')
 			@third.removeClass('hide')
 			if @second.hasClass('hide')
 				return
 			else
 				@second.addClass('hide')
+				# @third.addClass('hide')
 			return
 		else
 		  project_path = PathM.join $('.entry.selected span').attr('data-path')
 			if @first.hasClass('hide')
 				@first.removeClass('hide')
+				@third.addClass('hide')
 				@second.addClass('hide')
 			#这是一个回调函数 的开始
 			# console.log "hello"
