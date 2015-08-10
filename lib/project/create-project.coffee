@@ -69,7 +69,7 @@ module.exports = CreateProject =
             _.debounce(aft,300)
           Util.writeJson appConfigPath, Util.formatAppConfigToObj(info), writeCB
           @modalPanel.item.children(".loading-mask").remove()
-          # alert '项目创建成功'
+          alert '项目创建成功'
           atom.project.addPath(info.appPath)
           Util.rumAtomCommand 'tree-view:toggle' if $('.tree-view-resizer').length is 0
           @chameleonBox.closeView()
