@@ -29,40 +29,16 @@ module.exports = Util =
     </html>
     """
 
-  formatModuleConfigToStr:(options) ->
-    """
-    {
-      "name": "#{options.moduleName}",
-      "identifier": "#{options.moduleId}",
-      "main":"#{options.mainEntry}",
-      "version": "0.0.1",
-      "description": "",
-      "dependencies": {},
-      "releaseNote": "module #{options.moduleName} init"
-    }
-    """
-
-  formatAppConfigToStr:(options) ->
-    """
-    {
-      "name": "#{options.appName}",
-      "identifier": "#{options.appId}",
-      "mainModule":"#{if options.mainModule? then options.mainModule else '' }",
-      "version": "0.0.1",
-      "description": "",
-      "dependencies": {},
-      "releaseNote": "app init"
-    }
-    """
-
   formatModuleConfigToObj: (options) ->
     name: options.moduleName
     identifier: options.moduleId
-    main: options.mainEntry
+    # main: options.mainEntry
     version: '0.0.1'
-    description: ''
+    build: 1
+    # description: ''
     dependencies: {}
     releaseNote: "module #{options.moduleName} init"
+    hidden: false
 
   formatAppConfigToObj:(options) ->
       name: options.appName
@@ -70,6 +46,7 @@ module.exports = Util =
       mainModule: ''
       modules: {}
       version: '0.0.1'
+      build: 1
       description: ''
       dependencies: {}
       releaseNote: "app #{options.appName} init"
