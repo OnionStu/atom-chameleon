@@ -17,7 +17,7 @@ module.exports =
 				@div class: 'col-sm-12 col-md-12 ', =>
 					@input type:'checkbox',style:'margin-right:2px;margin-left:18px;'
 					@label  "记住密码" ,class:'checkBox_label_view'
-				@div class: 'col-md-12 text-right', =>
+				@div class: 'col-sm-12 col-md-12 text-right', =>
 					@button  "登 录",name: 'loginBtn', class:'btn loginBtn'
 					@button  "取 消", outlet:'cancelBtn', click: 'onCancelClick',name: 'loginCancelBtn', class:'btn cancelBtn'
 
