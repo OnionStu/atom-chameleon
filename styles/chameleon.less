@@ -461,6 +461,11 @@ atom-panel.modal > .login-box{
   padding-top: 2px;
 }
 
+.errorMsg{
+  margin-top: -15px;
+  margin-bottom: 5px;
+}
+
 .textEditStyle{
   margin-bottom: 0.75em;
   font-size: 1.15em;
@@ -474,4 +479,7 @@ atom-panel.modal > .login-box{
   display: -webkit-flex;
   width: 100%;
   // cursor: text;
+  &::-webkit-input-placeholder {
+      color:rgba(157, 165, 180, 0.6);
+  }
 }

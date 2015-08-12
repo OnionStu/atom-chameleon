@@ -30,40 +30,16 @@ module.exports = Util =
     </html>
     """
 
-  formatModuleConfigToStr:(options) ->
-    """
-    {
-      "name": "#{options.moduleName}",
-      "identifier": "#{options.moduleId}",
-      "main":"#{options.mainEntry}",
-      "version": "0.0.1",
-      "description": "",
-      "dependencies": {},
-      "releaseNote": "module #{options.moduleName} init"
-    }
-    """
-
-  formatAppConfigToStr:(options) ->
-    """
-    {
-      "name": "#{options.appName}",
-      "identifier": "#{options.appId}",
-      "mainModule":"#{if options.mainModule? then options.mainModule else '' }",
-      "version": "0.0.1",
-      "description": "",
-      "dependencies": {},
-      "releaseNote": "app init"
-    }
-    """
-
   formatModuleConfigToObj: (options) ->
     name: options.moduleName
     identifier: options.moduleId
-    main: options.mainEntry
+    # main: options.mainEntry
     version: '0.0.1'
-    description: ''
+    build: 1
+    # description: ''
     dependencies: {}
     releaseNote: "module #{options.moduleName} init"
+    hidden: false
 
   formatAppConfigToObj:(options) ->
       name: options.appName
@@ -71,6 +47,7 @@ module.exports = Util =
       mainModule: ''
       modules: {}
       version: '0.0.1'
+      build: 1
       description: ''
       dependencies: {}
       releaseNote: "app #{options.appName} init"
@@ -78,13 +55,19 @@ module.exports = Util =
 
   # 将传递过来的 str 进行判断是否符合文件命名，如果不符合，将不符合的字符改为"-", 并进行去重
   checkProjectName: (str)->
-    regEx = /[\`\~\!\@\#\$\%\^\&\*\(\)\+\=\|\{\}\'\:\;\,\·\\\[\]\<\>\/\?\~\！\@\#\￥\%\…\…\&\*\（\）\—\—\+\|\{\}\【\】\‘\；\：\”\“\’\。\，\、\？]/g
-    strcheck = str.replace(/[^\x00-\xff]/g,"-")
-    strcheck = strcheck.replace(regEx,"-")
-    strcheck = strcheck.replace(/-+/g, '-')
+    # return false if str.trim() is ''
+    regEx1 = /[\`\~\!\@\#\$\%\^\&\*\(\)\+\=\|\{\}\'\:\;\,\·\\\[\]\<\>\/\?\~\！\@\#\￥\%\…\…\&\*\（\）\—\—\+\|\{\}\【\】\‘\；\：\”\“\’\。\，\、\？]/g
+    regEx2 = /[^\x00-\xff]/g
+    regEx3 = /\d/
+    flag1 = regEx1.test str
+    flag2 = regEx2.test str
+    flag3 = regEx3.test str[0]
+    # strcheck = str.replace(/[^\x00-\xff]/g,"")
+    # strcheck = strcheck.replace(regEx,"")
+    # strcheck = strcheck.replace(/-+/g, '-')
     # # 特殊处理
     # strcheck = '...' if strcheck is '.' or strcheck is '..'
-    return strcheck
+    return !(flag1 or flag2 or flag3)
 
   getRepo: (appPath,repoUri, cb) ->
     options =
