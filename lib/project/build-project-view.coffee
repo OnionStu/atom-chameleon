@@ -367,32 +367,61 @@ class BuildProjectInfoView extends View
 								}
 								sendCookie: true
 								success: (data) =>
+									data2 = {}
 									Util.removeFileDirectory(zipPath)
-									if fs.existsSync(pathM.join moduleRealPath,'package.json')
-										packagePath = pathM.join moduleRealPath,'package.json'
-										options =
-											encoding: 'utf-8'
-										contentList = JSON.parse(fs.readFileSync(packagePath,options))
-										params =
-											form:{
-												module_tag: contentList['identifier'],
-												module_name: contentList['name'],
-												module_desc: contentList['description'],
-												version: contentList['version'],
-												url_id: data['url_id'],
-												update_log: "构建应用时发现本地版本高于服务器版本，所以上传 #{contentList['identifier']} 模块"
+									methodUploadModule = =>
+										if fs.existsSync(pathM.join moduleRealPath,'package.json')
+											packagePath = pathM.join moduleRealPath,'package.json'
+											options =
+												encoding: 'utf-8'
+											contentList = JSON.parse(fs.readFileSync(packagePath,options))
+											# 当  配置信息中不存在build字段时，新建字段 初始化为 1
+											#否则  +1
+											if contentList['build'] == "undefined" || contentList['build'] == null
+												contentList['build'] = 1
+											else
+												contentList['build'] = contentList['build'] + 1
+											# alert contentList['build']+"  "+data2['url_id']
+											params =
+												form:{
+													module_tag: contentList['identifier'],
+													module_name: contentList['name'],
+													module_desc: contentList['description'],
+													version: contentList['version'],
+													url_id: data['url_id'],
+													build:contentList['build'],
+													logo_url_id: data2['url_id'],
+													update_log: "构建应用时发现本地版本高于服务器版本，所以上传 #{contentList['identifier']} 模块"
+												}
+												sendCookie: true
+												success: (data) =>
+													if modules.length == index+1
+														@sendBuildMessage()
+													else
+														@checkModuleNeedUpload(modulePath, modules, index+1)
+												error: =>
+												  alert "上传#{modulePath}失败"
+											client.postModuleMessage(params)
+										else
+											console.log "文件不存在#{pathM.join modulePath,'package.json'}"
+									if fs.existsSync(pathM.join moduleRealPath,'icon.png')
+										fileParams2 =
+											formData: {
+												up_file: fs.createReadStream(pathM.join moduleRealPath,'icon.png')
 											}
 											sendCookie: true
 											success: (data) =>
-												if modules.length == index+1
-													@sendBuildMessage()
-												else
-													@checkModuleNeedUpload(modulePath, modules, index+1)
+												#给 data2 初始化
+												data2 = data
+												# console.log data2
+												methodUploadModule()
 											error: =>
-											  alert "上传#{modulePath}失败"
-										client.postModuleMessage(params)
+												# console.log iconPath
+												console.log "上传icon失败"
+												alert "上传icon失败"
+										client.uploadFile(fileParams2,"module","")
 									else
-										console.log "文件不存在#{pathM.join modulePath,'package.json'}"
+										methodUploadModule()
 								error: =>
 									Util.removeFileDirectory(zipPath)
 									alert "上传文件失败"

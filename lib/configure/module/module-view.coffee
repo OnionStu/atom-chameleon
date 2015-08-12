@@ -5,6 +5,7 @@ desc = require './../../utils/text-description'
 pathM = require 'path'
 fs = require 'fs-extra'
 ChameleonBox = require '../../utils/chameleon-box-view'
+util = require '../../utils/util'
 
 class ModuleInfoView extends View
 
@@ -17,6 +18,10 @@ class ModuleInfoView extends View
 					@label '选择要配置的模块'
 				@div outlet : 'moduleList'
 			@div class: 'row hide',outlet: "second", =>
+				@div class: "col-xs-12", =>
+					@label class: 'col-sm-3 col-md-3', "logo"
+					@div class: 'col-sm-3 col-md-3', =>
+			      @img outlet:"logo",class:'pic', src: desc.getImgPath 'icon.png'
 				@div class: "col-xs-12", =>
 					@label class: 'col-sm-3 col-md-3', "模块名称"
 					@div class: 'col-sm-9 col-md-9', =>
@@ -37,7 +42,26 @@ class ModuleInfoView extends View
 
 	serialize: ->
 
+	selectIcon:(e) ->
+		real_path = $('.modulecheckbox:checked').attr('value')
+		img_path = pathM.join real_path,"..","icon.png"
+		options={}
+		cb = (selectPath) =>
+			# console.log selectPath[0]
+			# console.log selectPath[0].lastIndexOf('.')
+			if selectPath.length != 0
+				tmp = selectPath[0].substring(selectPath[0].lastIndexOf('.'))
+				console.log tmp
+				if tmp is ".jpeg" or tmp is ".png"
+					fs.writeFileSync(img_path,fs.readFileSync(selectPath[0]))
+					@logo.attr("src",img_path)
+				else
+					alert "请选择扩展名为 .jpeg 或者 .png"
+					return
+		util.openFile options,cb
+
 	attached: ->
+		@logo.on 'click', (e) => @selectIcon(e)
 		project_path = pathM.join $('.entry.selected span').attr('data-path'),'modules'
 		if !fs.existsSync(project_path)
 			alert "不存在 #{project_path} 文件夹"
@@ -134,6 +158,7 @@ class ModuleInfoView extends View
 		if this.find('input[type=checkbox]').is(':checked')
 			console.log $('.modulecheckbox:checked')
 			real_path = $('.modulecheckbox:checked').attr('value')
+			img_path = pathM.join real_path,"..","icon.png"
 			console.log real_path
 		else
 			alert('请选择模块')
@@ -142,6 +167,10 @@ class ModuleInfoView extends View
 		file = new File(real_path)
 		file.setEncoding('UTF-8')
 		#读取文件中的内容
+		if fs.existsSync(img_path)
+			@logo.attr("src",img_path)
+		else
+			@logo.attr("src",desc.getImgPath 'icon.png')
 		file.read(false).then (contents) =>
 			# console.log JSON.parse(contents)
 			contentList = JSON.parse(contents)

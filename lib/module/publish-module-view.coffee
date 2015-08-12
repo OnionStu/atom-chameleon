@@ -111,6 +111,7 @@ class PublishModuleInfoView extends View
 						if exists
 							moduleConfigCallBack = (exists) =>
 								if exists
+									console.log $(checkbox).attr('value')
 									contentList = JSON.parse(fs.readFileSync($(checkbox).attr('value')))
 									obj =
 										moduleName: contentList['name']
@@ -119,11 +120,12 @@ class PublishModuleInfoView extends View
 										version: contentList['serviceVersion']
 										modulePath: $(checkbox).attr('value')
 									console.log contentList['identifier']
-									if contentList['identifier'] isnt "undefined" || contentList['identifier'] isnt ""
+									if contentList['identifier'] is "undefined" || contentList['identifier'] is ""
+										console.log contentList['identifier']
 										alert "模块#{contentList['name']}的identifer不存在！"
 										@prevStep()
 										return
-									if contentList['version'] isnt "undefined" || contentList['version'] isnt ""
+									if contentList['version'] is "undefined" || contentList['version'] is ""
 										alert "模块#{contentList['name']}的version不存在！"
 										@prevStep()
 										return
@@ -364,14 +366,19 @@ class ModuleMessageItem extends View
 			}
 			sendCookie: true
 			success: (data) =>
-				# data = JSON.parse(body)
 				console.log "上传文件成功"
+				data2={}
 				configFilePathCallBack = (exists) =>
 					if exists
 						file = new File($(btn2).val())
 						file.read(false).then (content) =>
 							contentList = JSON.parse(content)
-							console.log contentList['version'],contentList['identifier']
+							# 当  配置信息中不存在build字段时，新建字段 初始化为 1
+							#否则  +1
+							if contentList['build'] == "undefined" || contentList['build'] == null
+								contentList['build'] = 1
+							else
+								contentList['build'] = contentList['build'] + 1
 							params =
 								form:{
 									module_tag: contentList['identifier'],
@@ -379,13 +386,16 @@ class ModuleMessageItem extends View
 									module_desc: contentList['description'],
 									version: contentList['version'],
 									url_id: data['url_id'],
-									update_log: @updateLog.getText()
+									logo_url_id: data2['url_id'],
+									update_log: @updateLog.getText(),
+									build:contentList['build']
 								}
 								sendCookie: true
 								success: (data) =>
 									console.log data
 									# data = JSON.parse(body)
 									_version.text(_uploadVersion.text())
+									fs.writeJson $(btn2).val(),contentList,null
 									alert "上传模块成功"
 									console.log "upload success"
 								error: =>
@@ -395,10 +405,30 @@ class ModuleMessageItem extends View
 					else
 						util.removeFileDirectory(PathM.join zipPath,zipName)
 						console.log "文件不存在#{$(btn2).val()}"
-				fs.exists($(btn2).val(),configFilePathCallBack)
+				iconPath = PathM.join $(btn2).val(),"..","icon.png"
+				#当存在 icon 时 上传Icon后再上传模块信息
+				#否则直接上床模块信息
+				if !fs.existsSync(iconPath)
+					fs.exists($(btn2).val(),configFilePathCallBack)
+				else
+					fileParams2 =
+						formData: {
+							up_file: fs.createReadStream(iconPath)
+						}
+						sendCookie: true
+						success: (data) =>
+							#给 data2 初始化
+							data2 = data
+							# console.log data2
+							fs.exists($(btn2).val(),configFilePathCallBack)
+						error: =>
+							# console.log iconPath
+							console.log "上传icon失败"
+							alert "上传icon失败"
+					client.uploadFile(fileParams2,"module","")
 			error: =>
 				alert "上传文件失败"
-		client.uploadFile(fileParams,"module","yuzhe@163.com")
+		client.uploadFile(fileParams,"module","")
 
 module.exports =
 class PublishModuleView extends ChameleonBox

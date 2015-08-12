@@ -3,6 +3,7 @@ JSZip = require 'jszip'
 zlib = require 'zlib'
 fs = require 'fs-extra'
 pathM = require 'path'
+_ = require 'underscore-plus'
 dialog = require('remote').require 'dialog'
 {File,Directory} = require 'atom'
 request = require 'request'
@@ -177,7 +178,7 @@ module.exports = Util =
       cb destPath
 
   # openDirectory title: 'Select Path', (path) ->
-  #   console.log path
+  #   console.log path openDirectory
   openDirectory : (options,cb) ->
 
     options : _.extend({
