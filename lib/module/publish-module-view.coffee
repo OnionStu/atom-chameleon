@@ -323,7 +323,7 @@ class ModuleMessageItem extends View
 					@subview 'updateLog', new TextEditorView(mini: true,placeholderText: 'update log...')
 				@div class : 'col-sm-4 col-md-4 publishModulecheckbox', =>
 					@button '上传',value:obj.modulePath,outlet:"uploadBtn",class:'btn upload_module_btn',click: 'postModuleMessage'
-					@button '应用',value:obj.identifier,class:'btn',click: 'showAppList'
+					@button '应用到',value:obj.identifier,class:'btn',click: 'showAppList'
 					# @button '上传并应用',value:obj.modulePath,class:'btn'
 			@div class : 'col-sm-12 col-md-12 ', =>
 				@label "正在打包文件......",class:"#{obj.identifier}"
@@ -348,7 +348,7 @@ class ModuleMessageItem extends View
 						return
 					options = options + "<input type='checkbox' value='#{object.id}' >#{object.name}"
 				printAppList object for object in data
-				options = options + "<button name='uploadMApp' class='btn'>上传</button>"
+				options = options + "<button name='uploadMApp' class='btn'>确认</button>"
 				console.log @.find("button[name=uploadMApp]")
 				@appListView.append(options)
 				@.find("button[name=uploadMApp]").on 'click',(e) => @actModuleToApp(e)
