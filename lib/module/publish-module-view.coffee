@@ -134,11 +134,12 @@ class PublishModuleInfoView extends View
 										success: (data) =>
 											if true
 												console.log "check version success"
+												console.log data
 												#获取版本 和 上传次数 ， 并判断和初始化  obj['build'] obj['version']
 												if data['build']? and data['build'] != ""
-													obj["build"] = 0
-												else
 													obj["build"] = parseInt(data['build'])
+												else
+													obj["build"] = 0
 
 												if data['version']? and data['version'] != ""
 													obj['version'] = data['version']
