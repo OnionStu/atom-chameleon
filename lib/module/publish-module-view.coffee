@@ -134,9 +134,13 @@ class PublishModuleInfoView extends View
 										success: (data) =>
 											if true
 												console.log "check version success"
-												# data = JSON.parse(body)
-												# console.log data["version"],obj.identifier,obj.uploadVersion
-												if data['version'] != ""
+												#获取版本 和 上传次数 ， 并判断和初始化  obj['build'] obj['version']
+												if data['build']? and data['build'] != ""
+													obj["build"] = 0
+												else
+													obj["build"] = parseInt(data['build'])
+
+												if data['version']? and data['version'] != ""
 													obj['version'] = data['version']
 												else
 													obj['version'] = "0.0.0"
@@ -151,13 +155,6 @@ class PublishModuleInfoView extends View
 										error : =>
 											console.log "获取模板最新版本 的url 调不通"
 									client.getModuleLastVersion(params,obj.identifier)
-									# item = new ModuleMessageItem(obj)
-									# item.find('button').attr('disabled',true)
-									# _moduleMessageList.append(item)
-									# util.fileCompression(PathM.join $(checkbox).attr('value'),'..')
-									# callbackOper = ->
-									# 	item.find('button').attr("disabled",false)
-									# $(".#{obj.identifier}").fadeOut(3000,callbackOper)
 							configFilePath = PathM.join $(checkbox).attr('value')
 							fs.exists(configFilePath,moduleConfigCallBack)
 					folderPath = PathM.join $(checkbox).attr('value'),'..'
@@ -318,26 +315,143 @@ class ModuleMessageItem extends View
 					@label obj.uploadVersion,outlet:"uploadVersion"
 				@div class : 'col-sm-6 col-md-6', =>
 					@label '服务器版本:'
-					@label obj.version,outlet:"version"
-
+					@label obj.version,outlet:"version",value:obj.build
 			@div class : 'col-sm-12 col-md-12', =>
 				@div class : 'col-sm-2 col-md-2', =>
 					@label '更新日志:'
 				@div class : 'col-sm-6 col-md-6', =>
 					@subview 'updateLog', new TextEditorView(mini: true,placeholderText: 'update log...')
 				@div class : 'col-sm-4 col-md-4 publishModulecheckbox', =>
-					@button '上传',value:obj.modulePath,class:'btn upload_module_btn',click: 'postModuleMessage'
-					@input type:'checkbox'
-					@label '应用'
+					@button '上传',value:obj.modulePath,outlet:"uploadBtn",class:'btn upload_module_btn',click: 'postModuleMessage'
+					@button '应用',value:obj.identifier,class:'btn',click: 'showAppList'
 					# @button '上传并应用',value:obj.modulePath,class:'btn'
 			@div class : 'col-sm-12 col-md-12 ', =>
 				@label "正在打包文件......",class:"#{obj.identifier}"
+			@div class : 'col-sm-12 col-md-12',outlet:"appListView"
+
 
 	fileChange: (param1,param2) ->
 		console.log $(param2).val()
 		console.log $(param2)
 		@zipPath.setText($(param2).val())
 
+	showAppList:(btn,btn2) ->
+		# console.log $(btn2).val()
+		params =
+			sendCookie: true
+			success: (data) =>
+				# console.log "success"
+				console.log data
+				options = ""
+				printAppList = (object) =>
+					if object is null
+						return
+					options = options + "<input type='checkbox' value='#{object.id}' >#{object.name}"
+				printAppList object for object in data
+				options = options + "<button name='uploadMApp' class='btn'>上传</button>"
+				console.log @.find("button[name=uploadMApp]")
+				@appListView.append(options)
+				@.find("button[name=uploadMApp]").on 'click',(e) => @actModuleToApp(e)
+			error:() =>
+				console.log "error"
+		client.getAppListByModule(params,$(btn2).val())
+
+	#  upload_module_use_to_application
+	actModuleToApp:(e) ->
+		# alert "ssss"
+		checkboxList = this.find('input[type=checkbox]')
+		app_ids = []
+		getAppId = (checkbox) =>
+			if $(checkbox).is(':checked')
+				app_ids.push($(checkbox).val())
+		# console.log checkboxList
+		getAppId checkbox for checkbox in checkboxList
+		zipPath = PathM.join @uploadBtn.val(),"..",".."
+		# console.log zipPath
+		zipName = PathM.basename(PathM.join @uploadBtn.val(),"..") + '.zip'
+		# console.log zipName
+
+		_version = @version
+		_uploadVersion = @uploadVersion
+		uploadVersion = @uploadVersion.text()
+		version = @version.text()
+		#校验版本信息
+		result = UtilExtend.checkUploadModuleVersion(uploadVersion,version)
+		if result["error"]
+			alert result["errorMessage"]
+			return
+
+		fileParams =
+			formData: {
+				up_file: fs.createReadStream(PathM.join zipPath,zipName)
+			}
+			sendCookie: true
+			success: (data) =>
+				console.log "上传文件成功"
+				data2={}
+				# console.log app_ids
+				configFilePathCallBack = (exists) =>
+					if exists
+						file = new File(@uploadBtn.val())
+						file.read(false).then (content) =>
+							contentList = JSON.parse(content)
+							# 当  配置信息中不存在build字段时，新建字段 初始化为 1
+							#否则  +1
+							contentList['build'] = parseInt(_version.attr('value'))
+							contentList['build'] = contentList['build'] + 1
+							params =
+								form:{
+									module_tag: contentList['identifier'],
+									module_name: contentList['name'],
+									module_desc: contentList['description'],
+									version: contentList['version'],
+									url_id: data['url_id'],
+									logo_url_id: data2['url_id'],
+									update_log: @updateLog.getText(),
+									build:contentList['build'].toString(),
+									app_ids:JSON.stringify(app_ids)
+								}
+								sendCookie: true
+								success: (data) =>
+									console.log data
+									# data = JSON.parse(body)
+									_version.text(_uploadVersion.text())
+									fs.writeJson @uploadBtn.val(),contentList,null
+									alert "上传模块成功"
+									console.log "upload success"
+								error: =>
+									alert "error"
+							client.uploadModuleAndAct(params)
+							util.removeFileDirectory(PathM.join zipPath,zipName)
+					else
+						util.removeFileDirectory(PathM.join zipPath,zipName)
+						console.log "文件不存在#{$(btn2).val()}"
+				iconPath = PathM.join @uploadBtn.val(),"..","icon.png"
+				#当存在 icon 时 上传Icon后再上传模块信息
+				#否则直接上床模块信息
+				if !fs.existsSync(iconPath)
+					fs.exists(@uploadBtn.val(),configFilePathCallBack)
+				else
+					fileParams2 =
+						formData: {
+							up_file: fs.createReadStream(iconPath)
+						}
+						sendCookie: true
+						success: (data) =>
+							#给 data2 初始化
+							data2 = data
+							# console.log data2
+							fs.exists(@uploadBtn.val(),configFilePathCallBack)
+						error: =>
+							# console.log iconPath
+							console.log "上传icon失败"
+							alert "上传icon失败"
+					client.uploadFile(fileParams2,"module","")
+			error: =>
+				alert "上传文件失败"
+		client.uploadFile(fileParams,"module","")
+
+	#	upload_module
 	postModuleMessage:(btn,btn2) ->
 		zipPath = PathM.join $(btn2).val(),"..",".."
 		console.log zipPath
@@ -345,21 +459,12 @@ class ModuleMessageItem extends View
 		console.log zipName
 		_version = @version
 		_uploadVersion = @uploadVersion
-		uploadVersion = @uploadVersion.text().split('.')
-		version = @version.text().split('.')
-		if uploadVersion[0] < version[0]
-			alert "上传版本不大于服务器版本"
+		uploadVersion = @uploadVersion.text()
+		version = @version.text()
+		result = UtilExtend.checkUploadModuleVersion(uploadVersion,version)
+		if result["error"]
+			alert result["errorMessage"]
 			return
-		else if uploadVersion[0] == version[0]
-			if uploadVersion[1] < version[1]
-				alert "上传版本不大于服务器版本"
-				return
-			else if uploadVersion[1] == version[1]
-				if uploadVersion[2] <= version[2]
-					alert "上传版本不大于服务器版本"
-					return
-			  # body...
-		# console.log "success"
 		fileParams =
 			formData: {
 				up_file: fs.createReadStream(PathM.join zipPath,zipName)
@@ -375,10 +480,9 @@ class ModuleMessageItem extends View
 							contentList = JSON.parse(content)
 							# 当  配置信息中不存在build字段时，新建字段 初始化为 1
 							#否则  +1
-							if contentList['build'] == "undefined" || contentList['build'] == null
-								contentList['build'] = 1
-							else
-								contentList['build'] = contentList['build'] + 1
+							contentList['build'] = parseInt(_version.attr('value'))
+							contentList['build'] = contentList['build'] + 1
+							console.log contentList['build']
 							params =
 								form:{
 									module_tag: contentList['identifier'],
@@ -388,7 +492,7 @@ class ModuleMessageItem extends View
 									url_id: data['url_id'],
 									logo_url_id: data2['url_id'],
 									update_log: @updateLog.getText(),
-									build:contentList['build']
+									build:contentList['build'].toString()
 								}
 								sendCookie: true
 								success: (data) =>

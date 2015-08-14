@@ -20,3 +20,24 @@ module.exports = UtilExtend =
 					return false
 		else
 			return false
+
+	checkUploadModuleVersion:(uploadVersionString,serviceVersionString) ->
+		uploadVersion = uploadVersionString.split('.')
+		version = serviceVersionString.split('.')
+		object = {}
+		error = false
+		if parseInt(uploadVersion[0]) < parseInt(version[0])
+			error = true
+		else if parseInt(uploadVersion[0]) == parseInt(version[0])
+			if parseInt(uploadVersion[1]) < parseInt(version[1])
+				error = true
+				object['errorMessage'] = "上传版本不大于服务器版本"
+			else if parseInt(uploadVersion[1]) == parseInt(version[1])
+				if parseInt(uploadVersion[2]) <= parseInt(version[2])
+					error = true
+		if error
+			object['error'] = true
+			object['errorMessage'] = "上传版本不大于服务器版本"
+		else
+			object['error'] = false
+		return object

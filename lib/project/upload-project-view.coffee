@@ -6,7 +6,7 @@ ChameleonBox = require '../utils/chameleon-box-view'
 fs = require 'fs-extra'
 client = require '../utils/client'
 Settings = require '../settings/settings'
-# UtilExtend = require './../utils/util-extend'
+UtilExtend = require './../utils/util-extend'
 
 class UploadProjectInfoView extends View
 	@content: ->
@@ -121,33 +121,19 @@ class UploadProjectInfoView extends View
 				sendCookie: true
 				success: (data) =>
 					# console.log "check version success"
+					build = data['build']
 					if data['version'] != ""
 						uploadVersion = moduleVersion.split('.')
 						version = data['version'].split('.')
 						# 判断是否需要上传模块
-						if uploadVersion[0] < version[0]
+						result = UtilExtend.checkUploadModuleVersion(uploadVersion,version)
+						if result['error']
 							console.log "无需更新#{moduleIdentifer} 本地版本为#{moduleVersion},服务器版本为：#{data['version']}"
 							if modules.length == index+1
 								@sendBuildMessage()
 							else
 								@checkModuleNeedUpload(modulePath, modules, index+1)
 							return
-						else if uploadVersion[0] == version[0]
-							if uploadVersion[1] < version[1]
-								console.log "无需更新#{moduleIdentifer} 本地版本为#{moduleVersion},服务器版本为：#{data['version']}"
-								if modules.length == index+1
-									@sendBuildMessage()
-								else
-									@checkModuleNeedUpload(modulePath, modules, index+1)
-								return
-							else if uploadVersion[1] == version[1]
-								if uploadVersion[2] <= version[2]
-									console.log "无需更新#{moduleIdentifer} 本地版本为#{moduleVersion},服务器版本为：#{data['version']}"
-									if modules.length == index+1
-										@sendBuildMessage()
-									else
-										@checkModuleNeedUpload(modulePath, modules, index+1)
-									return
 					if fs.existsSync(moduleRealPath)
 						Util.fileCompression(moduleRealPath)
 						zipPath = moduleRealPath+'.zip'
@@ -169,10 +155,10 @@ class UploadProjectInfoView extends View
 											contentList = JSON.parse(fs.readFileSync(packagePath,options))
 											# 当  配置信息中不存在build字段时，新建字段 初始化为 1
 											#否则  +1
-											if contentList['build'] == "undefined" || contentList['build'] == null
-												contentList['build'] = 1
+											if build? and build != ""
+												contentList['build'] = parseInt(build) + 1
 											else
-												contentList['build'] = contentList['build'] + 1
+												contentList['build'] = 1
 											# alert contentList['build']+"  "+data2['url_id']
 											params =
 												form:{
