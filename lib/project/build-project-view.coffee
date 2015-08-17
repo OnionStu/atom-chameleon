@@ -503,7 +503,7 @@ class BuildProjectInfoView extends View
 			success: (data) =>
 				# data['status'] = "SUCCESS"
 				# data['url'] = "http://baidu.com"
-				# console.log data
+				console.log data
 				if data['code'] == -1
 					alert "#{platform}构建不存在！"
 					return
@@ -515,13 +515,13 @@ class BuildProjectInfoView extends View
 					else
 						timeTips = ".androidWaitTime"
 						@.find(".androidTips").html("构建 ANDOIRD 还需等待<span class='androidWaitTime'>#{data['waitingTime']}</span>秒")
-					loopTime = 30
-					loopTime2 = 30
+					loopTime = 30	# 调服务器时间 的时间间隔
+					loopTime2 = 30	# 倒计时循环次数
 					if data['waitingTime'] < 30
 						loopTime = data['waitingTime']
+						loopTime2 = data['waitingTime']
 						if data['waitingTime'] == 0
 							loopTime = loopTime + 2
-							loopTime2 = data['waitingTime']
 					@checkBuildResultTimer[platform] = setTimeout =>
 						@checkBuildResult id,platform,time+1
 					,1000*loopTime
@@ -554,9 +554,11 @@ class BuildProjectInfoView extends View
 					else
 						timeTips = ".androidWaitTime"
 						@.find(".androidTips").html("构建 ANDOIRD 还需等待<span class='androidWaitTime'>#{data['remainTime']}</span>秒")
-					loopTime = 30
+					loopTime = 30	# 调服务器时间 的时间间隔
+					loopTime2 = 30	# 倒计时循环次数
 					if data['remainTime'] < 30
 						loopTime = data['remainTime']
+						loopTime2 = data['remainTime']
 					@checkBuildResultTimer[platform] = setTimeout =>
 						@checkBuildResult id,platform,time+1
 					,1000*loopTime
@@ -595,6 +597,7 @@ class BuildProjectInfoView extends View
 			@buildMessage.removeClass('hide')
 			@parentView.prevBtn.text('上一步')
 			@parentView.nextBtn.show()
+			console.log "kill timer"
 			if @checkBuildResultTimer["IOS"]
 				window.clearTimeout(@checkBuildResultTimer["IOS"])
 			if @checkBuildResultTimer["ANDROID"]
