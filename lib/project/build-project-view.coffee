@@ -17,39 +17,41 @@ class BuildProjectInfoView extends View
 		@div class: 'build_project_vew', =>
 			@div outlet: 'main', =>
 				@div class: 'col-xs-12', =>
-					@h2 "请选择需要构建的应用平台："
-				@div class: 'col-xs-6', =>
-					@div class: 'col-xs-12', =>
-						@img src: desc.getImgPath 'iphone.png'
-					@div class: 'col-xs-12 label_pad', =>
-						@input type: 'checkbox', value: 'iOS',id:'ios'
+					@label "选择需要构建的应用平台"
+				@div class: 'col-xs-6 text-center padding-top', =>
+					@div class: 'col-xs-12 text-center', =>
+						@div class: 'selectBuildTemplate',value:'ios', =>
+							@img outlet:'iosIcon',src: desc.getImgPath 'icon_apple.png'
+					@div class: 'col-xs-12 padding-top', =>
+						@input type: 'checkbox', value: 'iOS',id:'ios',class:'hide'
 						@label "iOS",for: "ios"
-				@div class: 'col-xs-6', =>
-					@div class: 'col-xs-12', =>
-						@img src: desc.getImgPath 'android.png'
-					@div class: 'col-xs-12 label_pad', =>
-						@input type: 'checkbox', value: 'Android', id:'android'
+				@div class: 'col-xs-6 text-center padding-top', =>
+					@div class: 'col-xs-12 text-center', =>
+						@div class: 'selectBuildTemplate',value:'android', =>
+							@img outlet:'androidIcon',src: desc.getImgPath 'icon_android.png'
+					@div class: 'col-xs-12 padding-top', =>
+						@input type: 'checkbox', value: 'Android', id:'android',class:'hide'
 						@label "Android", for: "android"
 			@div outlet: 'selectApp', class:'form-horizontal form_width',=>
-				@div class: 'form-group', =>
-					@label '选择构建的应用：', class: 'col-sm-3 control-label'
-					@div class: 'col-sm-9 ', =>
-						@select class: 'form-control', outlet: 'selectProject'
+				# @div class: 'form-group', =>
+				@label '选择构建的应用', class: 'col-sm-3 control-label'
+				@div class: 'col-sm-9', =>
+					@select class: '', outlet: 'selectProject'
 			@div outlet: 'buildMessage',  =>
 				@div class: 'form-horizontal', =>
 					@div class: 'form-group', =>
-						@label "应用信息：", class: 'col-sm-3 control-label'
+						@label "应用信息", class: 'col-sm-3 control-label'
 						@div class: 'col-sm-9', =>
 							@button 'iOS', class: 'btn formBtn', value: 'iOS', outlet: 'iosBtn'
 							@button 'Android',class: 'btn formBtn', value: 'Android', outlet: 'androidBtn'
 					@div class: 'form-group', =>
-						@label '应用标识：' , class: 'col-sm-3 control-label'
-						@div class: 'col-sm-9', =>
-							@label outlet:'identifier'
+						@label '应用标识' , class: 'col-sm-3 text-align-right'
+						# @div class: 'col-sm-9', =>
+						@label class: 'col-sm-9',outlet:'identifier'
 					@div class: 'form-group', =>
-						@label "构建平台：", class: 'col-sm-3 control-label'
-						@div class: 'col-sm-9', =>
-							@label outlet:'platform'
+						@label "构建平台", class: 'col-sm-3 text-align-right'
+						# @div class: 'col-sm-9', =>
+						@label class: 'col-sm-9',outlet:'platform'
 				@div class: 'form-horizontal', outlet: 'iosForm', =>
 					# @div class: 'form-group', =>
 					# 	@label '应用logo：' , class: 'col-sm-3 control-label'
@@ -57,13 +59,12 @@ class BuildProjectInfoView extends View
           #     @subview 'iOSLogo', new TextEditorView(mini: true)
           #     @span class: 'inline-block status-added icon icon-file-directory openFolder', click: 'openIOS'
 					@div class: 'form-group', =>
-						@label '应用名称：' , class: 'col-sm-3 control-label'
+						@label '应用名称' , class: 'col-sm-3 control-label'
 						@div class: 'col-sm-9', =>
 							@subview 'iosName', new TextEditorView(mini: true)
 					@div class: 'form-group', outlet:'iOSPluginsFormgroup', =>
-						@label '所选插件：' , class: 'col-sm-3 control-label'
-						@div class: 'col-sm-9', =>
-							@label outlet: 'iOSPlugins'
+						@label '所选插件' , class: 'col-sm-3 control-label'
+						@label class: 'col-sm-9 padding-left',outlet: 'iOSPlugins'
 				@div class: 'form-horizontal', outlet: 'androidForm', =>
 					# @div class: 'form-group', =>
 					# 	@label '应用logo：' , class: 'col-sm-3 control-label'
@@ -71,11 +72,11 @@ class BuildProjectInfoView extends View
 					# 		@subview 'androidLogo', new TextEditorView(mini: true)
 					# 		@span class: 'inline-block status-added icon icon-file-directory openFolder', click: 'openAndroid'
 					@div class: 'form-group', =>
-						@label '应用名称：' , class: 'col-sm-3 control-label'
+						@label '应用名称' , class: 'col-sm-3 control-label'
 						@div class: 'col-sm-9', =>
 							@subview 'androidName', new TextEditorView(mini: true)
 					@div class: 'form-group', outlet:'androidPluginsFormgroup', =>
-						@label '所选插件：' , class: 'col-sm-3 control-label'
+						@label '所选插件' , class: 'col-sm-3 control-label'
 						@div class: 'col-sm-9', =>
 							@label outlet: 'androidPlugins'
 			@div outlet: 'buildingTips', =>
@@ -84,29 +85,54 @@ class BuildProjectInfoView extends View
 						@span "" ,outlet: "buildTips"
 					@div class: "col-sm-12 text-center", =>
 						@progress class: 'inline-block'
-					@div class: "col-sm-12", =>
+					@div class: "col-sm-12 text-center", =>
 						@span "" ,class: "iosTips"
-					@div class: "col-sm-12", =>
+					@div class: "col-sm-12 text-center", =>
 						@span "" ,class: "androidTips"
 			@div outlet: 'urlCodeList', =>
 				@div class: 'col-xs-12', =>
-					@h2 "构建成功返回的二维码："
-				@div class: 'col-xs-6', outlet: 'IOSCODE' ,=>
-					@div class: 'col-xs-12', =>
-						@img class:'codeImg', outlet: 'iOSCode',src: desc.getImgPath 'iphone.png'
-					@div class: 'col-xs-12', =>
-						@a outlet:'iosUrl'
-					@div class: 'col-xs-12 label_pad', =>
-						@label "iOS",class:'iosTips'
-				@div class: 'col-xs-6', outlet: 'ANDROIDCODE', =>
-					@div class: 'col-xs-12', =>
-						@img class:'codeImg',outlet: 'androidCode', src: desc.getImgPath 'android.png'
-					@div class: 'col-xs-12', =>
-						@a outlet:'androidUrl'
-					@div class: 'col-xs-12 label_pad', =>
-						@label "Andoird",class:'androidTips'
+					@h2 "返回二维码"
+				@div class:'text-center',  =>
+					@div class: 'col-xs-6', outlet: 'IOSCODE' , class:'text-center',=>
+						@div class: 'col-xs-12', =>
+							@img class:'codeImg', outlet: 'iOSCode',src: desc.getImgPath 'iphone.png'
+						@div class: 'col-xs-12 label_pad', =>
+							@img src: desc.getImgPath 'icon_apple02.png'
+							@label "iOS",class:'iosTips'
+						@div class: 'col-xs-12', =>
+							@a outlet:'iosUrl'
+						@div class: 'col-xs-12', outlet: 'ios_build_result_tips'
+					@div class: 'col-xs-6', outlet: 'ANDROIDCODE', class:'text-center', =>
+						@div class: 'col-xs-12', =>
+							@img class:'codeImg',outlet: 'androidCode', src: desc.getImgPath 'android.png'
+						@div class: 'col-xs-12 label_pad', =>
+							@img src: desc.getImgPath 'icon_android02.png'
+							@label "Andoird",class:'androidTips'
+						@div class: 'col-xs-12', =>
+							@a outlet:'androidUrl'
+						@div class: 'col-xs-12', outlet: 'android_build_result_tips'
+
+	clickIcon:(e) ->
+		console.log "hinhs"
+		el = e.currentTarget
+		console.log $(el).attr('value')
+		if $(el).attr('value') is 'ios'
+			@.find("#ios").trigger('click')
+		else
+			@.find("#android").trigger('click')
+		# if @.find("#ios").is(":checked")
+		# 	console.log "checked"
+		# else
+		# 	console.log "unchecked"
+		if $(el).hasClass('active')
+			$(el).removeClass('active')
+		else
+			$(el).addClass('active')
 
 	attached: ->
+		if @.find("#ios").is(":checked")
+			console.log "no"
+		@.find('.selectBuildTemplate').on 'click',(e) => @clickIcon(e)
 		@initializeInput()
 		@settings = Settings
 		if !Util.isLogin()
@@ -148,6 +174,7 @@ class BuildProjectInfoView extends View
 
 	initializeInput: ->
 		@.find('input[type=checkbox]').attr('checked',false)
+		@.find('.selectBuildTemplate').removeClass('active')
 		@iosName.setText("")
 		@androidName.setText("")
 
@@ -204,6 +231,8 @@ class BuildProjectInfoView extends View
 		else if @main.is(':visible')
 			checkboxList = this.find('input[type=checkbox]:checked')
 			# console.log checkboxList
+			# console.log  @.find('#ios').is(':checked')
+			# console.log @.find('#android').is(':checked')
 			if checkboxList.length isnt 0
 				# console.log 'Build'
 				hasIos = false
@@ -511,13 +540,13 @@ class BuildProjectInfoView extends View
 					# setTimeout("checkBuildResult(#{id},#{platform})", 1000*60)
 					if platform == "IOS"
 						timeTips = ".iosWaitTime"
-						@.find(".iosTips").html("构建 IOS 还需等待<span class='iosWaitTime'>#{data['waitingTime']}</span>秒")
+						@.find(".iosTips").html("IOS 等待构建<span class='iosWaitTime'>#{data['waitingTime']}</span>秒")
 					else
 						timeTips = ".androidWaitTime"
-						@.find(".androidTips").html("构建 ANDOIRD 还需等待<span class='androidWaitTime'>#{data['waitingTime']}</span>秒")
-					loopTime = 30	# 调服务器时间 的时间间隔
-					loopTime2 = 30	# 倒计时循环次数
-					if data['waitingTime'] < 30
+						@.find(".androidTips").html("ANDOIRD 还需等待构建<span class='androidWaitTime'>#{data['waitingTime']}</span>秒")
+					loopTime = 25	# 调服务器时间 的时间间隔
+					loopTime2 = 25	# 倒计时循环次数
+					if data['waitingTime'] < 25
 						loopTime = data['waitingTime']
 						loopTime2 = data['waitingTime']
 						if data['waitingTime'] == 0
@@ -534,29 +563,40 @@ class BuildProjectInfoView extends View
 						@urlCodeList.removeClass('hide')
 						@parentView.nextBtn.hide()
 						@parentView.prevBtn.hide()
-					if platform == 'IOS'
+						if @checkBuildResultTimer[platform]
+							window.clearTimeout(@checkBuildResultTimer[platform])
+						if @ticketTimer[platform]
+							window.clearTimeout(@ticketTimer[platform])
+					str = "<img src='"+ desc.getImgPath 'icon_success.png' +"'/>构建成功"
+					if @.find('#ios').is(':checked')
 						@IOSCODE.removeClass('hide')
+					if @.find('#android').is('checked')
+						@ANDROIDCODE.removeClass('hide')
+					if platform == 'IOS'
+						# @IOSCODE.removeClass('hide')
 						@.find(".iosTips").html("iOS")
 						@iOSCode.attr('src',"http://qr.liantu.com/api.php?text=#{data['url']}")
 						@iosUrl.attr('href',data['url'])
 						@iosUrl.html(data['url'])
+						@ios_build_result_tips.html(str)
 					else
-						@ANDROIDCODE.removeClass('hide')
+						# @ANDROIDCODE.removeClass('hide')
 						@.find(".androidTips").html("Android")
 						@androidCode.attr('src',"http://qr.liantu.com/api.php?text=#{data['url']}")
 						@androidUrl.attr('href',data['url'])
 						@androidUrl.html(data['url'])
+						@android_build_result_tips.html(str)
 				else if data['status'] == "BUILDING"
 					@buildTips.html("正在构建请耐心等待......")
 					if platform == "IOS"
 						timeTips = ".iosWaitTime"
-						@.find(".iosTips").html("构建 IOS 还需等待<span class='iosWaitTime'>#{data['remainTime']}</span>秒")
+						@.find(".iosTips").html("IOS 正在构建<span class='iosWaitTime'>#{data['remainTime']}</span>秒")
 					else
 						timeTips = ".androidWaitTime"
-						@.find(".androidTips").html("构建 ANDOIRD 还需等待<span class='androidWaitTime'>#{data['remainTime']}</span>秒")
-					loopTime = 30	# 调服务器时间 的时间间隔
-					loopTime2 = 30	# 倒计时循环次数
-					if data['remainTime'] < 30
+						@.find(".androidTips").html("ANDOIRD 正在构建<span class='androidWaitTime'>#{data['remainTime']}</span>秒")
+					loopTime = 25	# 调服务器时间 的时间间隔
+					loopTime2 = 25# 倒计时循环次数
+					if data['remainTime'] < 25
 						loopTime = data['remainTime']
 						loopTime2 = data['remainTime']
 					@checkBuildResultTimer[platform] = setTimeout =>
@@ -566,8 +606,25 @@ class BuildProjectInfoView extends View
 						@ticket timeTips,loopTime2,data['remainTime'],platform
 					,1000
 				else
-					alert "#{platform}构建失败"
-					return
+					if @checkBuildResultTimer[platform]
+						window.clearTimeout(@checkBuildResultTimer[platform])
+					if @ticketTimer[platform]
+						window.clearTimeout(@ticketTimer[platform])
+					if @.find('#ios').is(':checked')
+						@IOSCODE.removeClass('hide')
+					if @.find('#android').is('checked')
+						@ANDROIDCODE.removeClass('hide')
+					if !@urlCodeList.is(':visible')
+						@buildingTips.addClass('hide')
+						@urlCodeList.removeClass('hide')
+						@parentView.nextBtn.hide()
+						@parentView.prevBtn.hide()
+					str = "<img src='"+ desc.getImgPath 'btn_close.png' +"'/>构建失败"
+					if platform == 'IOS'
+						@ios_build_result_tips.html(str)
+					else
+						@android_build_result_tips.html(str)
+					# alert "#{platform}构建失败"
 			error: =>
 			 	console.log  "error"
 		client.getBuildUrl(params,id)

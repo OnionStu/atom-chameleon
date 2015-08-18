@@ -13,19 +13,19 @@ class UploadProjectInfoView extends View
 		@div class: "upload_project_view", =>
 			@div outlet: "select_upload_project", class:'form-horizontal form_width', =>
 					@div class: 'form-group', =>
-						@label '选择构建的应用：', class: 'col-sm-3 control-label'
+						@label '选择构建的应用', class: 'col-sm-3 text-align-right '
 						@div class: 'col-sm-9 ', =>
 							@select class: 'form-control', outlet: 'selectUploadProject'
 					@div class: 'form-group', =>
-						@label '应用名', class: 'col-sm-3 control-label'
+						@label '应用名', class: 'col-sm-3 text-align-right'
 						@div class: 'col-sm-9 ', =>
 							@label outlet: "name"
 					@div class: 'form-group', =>
-						@label '应用标识', class: 'col-sm-3 control-label'
+						@label '应用标识', class: 'col-sm-3 text-align-right'
 						@div class: 'col-sm-9 ', =>
 							@label outlet: "identifier"
 					@div class: 'form-group', =>
-						@label '应用关联模块', class: 'col-sm-3 control-label'
+						@label '应用关联模块', class: 'col-sm-3 text-align-right'
 						@div class: 'col-sm-9 ', =>
 							@div outlet: "moduleList"
 					# @div class: "image", =>
@@ -103,7 +103,7 @@ class UploadProjectInfoView extends View
 				#
 				str = ""
 				getMessage = (key,value) =>
-					str = str + "<label>#{key}&nbsp;:&nbsp;#{value}</label>&nbsp;&nbsp;&nbsp;"
+					str = str + "<label class='col-sm-4'>#{key}&nbsp;:&nbsp;#{value}</label>"
 				getMessage key,value for key,value of contentList['modules']
 				console.log str
 				@moduleList.html(str)

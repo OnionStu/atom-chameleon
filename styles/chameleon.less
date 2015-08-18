@@ -7,10 +7,13 @@
 @close_icon_size:2.5em;
 @item-logo-size:120px;
 
+
+
 atom-panel.modal.from-top.down{
   top:100px;
   padding: 10px;
 }
+
 .modal.down:before{
   .border_radius();
 }
@@ -222,6 +225,37 @@ atom-panel.modal > .login-box{
 }
 
 .configure-module{
+  label{
+    font-size: 12px;
+    text-align: right;
+    padding-top: 5px;
+    // padding-right: 10px;
+  }
+  .col-sm-12 {
+    width: 100%;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .col-sm-9{
+    width: 390px;
+    height: 30px;
+    border: #181b20;
+    background: #232027;
+    border-radius: 3px;
+    padding: 0px;
+  }
+  .col-sm-3 {
+    width: 90px;
+    padding-left: 0px;
+    padding-right: 0px;
+    margin-right: 20px;
+  }
+  .padding-none {
+    padding: 0px;
+  }
   .step{
     display: none;
   }
@@ -232,13 +266,190 @@ atom-panel.modal > .login-box{
     width: 100%;
     height: inherit;
     display: block;
+    margin-top: 0px;
+    margin-bottom: 0px;
   }
-  .item{
-    padding: 10px;
+  .checkboxFive {
+  	position: relative;
+  }
+  .label-empty{
+    padding-left: 20px;
+    padding-top: 0px;
+  }
+  .checkboxFive label {
+  	cursor: pointer;
+  	position: absolute;
+  	width: 15px;
+  	height: 15px;
+  	top: 0;
+    	left: 0;
+  	background: #232027;
+  	border:1px solid #181b20;
+  }
+  .checkboxFive label:after {
+  	opacity: 0;
+  	content: '';
+  	position: absolute;
+  	width: 9px;
+  	height: 5px;
+  	background: transparent;
+    top: 3px;
+    left: 2px;
+  	border: 3px solid #FFF;
+  	border-top: none;
+  	border-right: none;
+  	-webkit-transform: rotate(-45deg);
+  	-moz-transform: rotate(-45deg);
+  	-o-transform: rotate(-45deg);
+  	-ms-transform: rotate(-45deg);
+  	transform: rotate(-45deg);
+  }
+  .checkboxFive label:hover::after {
+  	opacity: 0.5;
+  }
+  .checkboxFive input[type=checkbox]:checked + label:after {
+  	opacity: 1;
+  }
+}
 
-    &:hover{
-      .hover();
-    }
+.upload-module{
+  label{
+    font-size: 12px;
+    text-align: right;
+    padding-top: 5px;
+    // padding-right: 10px;
+  }
+  button{
+    margin-right: 5px;
+    width: 60px;
+    height: 28px;
+    background: #525564;
+    border-radius: 3px;
+    font-size: 12px;
+    // padding-right: 10px;
+  }
+  .label-empty{
+    padding-left: 20px;
+    padding-top: 0px;
+  }
+  .col-sm-12 {
+    width: 100%;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 10px;
+    // padding-bottom: 10px;
+  }
+  .col-sm-2{
+    width: 62px;
+    padding: 0px;
+  }
+  .col-sm-4{
+    width: 33.3%;
+    padding-left: 10px;
+    padding-right: 0px;
+  }
+  .col-sm-6{
+    width: 50%;
+    padding: 0px;
+  }
+  .col-sm-9{
+    width: 390px;
+    height: 30px;
+    border: #181b20;
+    background: #232027;
+    border-radius: 3px;
+    padding: 0px;
+  }
+  .col-sm-3 {
+    width: 90px;
+    padding-left: 0px;
+    padding-right: 0px;
+    margin-right: 20px;
+  }
+  .padding-none {
+    padding: 0px;
+  }
+  .checkboxFive {
+  	position: relative;
+  }
+  .label-empty{
+    padding-left: 20px;
+    padding-top: 0px;
+  }
+  .checkboxFive label {
+  	cursor: pointer;
+  	position: absolute;
+  	width: 15px;
+  	height: 15px;
+  	top: 0;
+    	left: 0;
+  	background: #232027;
+  	border:1px solid #181b20;
+  }
+  .checkboxFive label:after {
+  	opacity: 0;
+  	content: '';
+  	position: absolute;
+  	width: 9px;
+  	height: 5px;
+  	background: transparent;
+    top: 3px;
+    left: 2px;
+  	border: 3px solid #FFF;
+  	border-top: none;
+  	border-right: none;
+  	-webkit-transform: rotate(-45deg);
+  	-moz-transform: rotate(-45deg);
+  	-o-transform: rotate(-45deg);
+  	-ms-transform: rotate(-45deg);
+  	transform: rotate(-45deg);
+  }
+  .checkboxFive label:hover::after {
+  	opacity: 0.5;
+  }
+  .checkboxFive input[type=checkbox]:checked + label:after {
+  	opacity: 1;
+  }
+}
+
+.configure_project_vew{
+  label{
+    font-size: 12px;
+    text-align: right;
+    padding-top: 5px;
+    // padding-right: 10px;
+  }
+  select {
+    color: #9da5b4;
+    background-clip: content-box;
+    background-color: #353b45;
+    border-color: #181a1f;
+    font-size: 1.25em;
+    width: 100%;
+    height: 2em;
+    padding: 0;
+    border-radius: 3px;
+  }
+  .col-sm-12 {
+    width: 100%;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+  .col-sm-9{
+    width: 390px;
+    height: 28px;
+    border: #181b20;
+    background: #232027;
+    border-radius: 3px;
+    padding: 0px;
+  }
+  .col-sm-3 {
+    width: 90px;
+    padding-left: 0px;
+    padding-right: 0px;
+    margin-right: 20px;
   }
 }
 
@@ -403,20 +614,72 @@ atom-panel.modal > .login-box{
     list-style: none;
   }
 }
+
 .build_project_vew{
+  label{
+    font-size: 12px;
+  }
   display: inline-block;
   width: 100%;
-  img{
-    width: 50%;
-    height: inherit;
+  // img{
+  //   width: 50%;
+  //   height: inherit;
+  // }
+  button{
+    margin-right: 5px;
+    width: 90px;
+    height: 28px;
+    background: #525564;
+    border-radius: 3px;
+    font-size: 12px;
+    // padding-right: 10px;
   }
+  .padding-left{
+    padding-left: 0px;
+  }
+  .padding-top{
+    padding-top: 10px;
+  }
+  .text-align-left{
+    text-align: left;
+  }
+  .text-align-right{
+    text-align: right;
+  }
+  .col-sm-12 {
+    width: 100%;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-bottom: 10px;
+  }
+  .col-sm-9 {
+    width: 75%;
+    padding-left: 0px;
+    padding-right: 15px;
+  }
+  .selectBuildTemplate {
+    width: 125px;
+    height: 125px;
+    background: #f2f2f2;
+    padding-top: 10%;
+    margin-left: 40px;
+    border-radius: 5px;
+  }
+  .selectBuildTemplate.active{
+    border: 3px solid #1889d9;
+    border-radius: 5px;
+    padding-top: 9%;
+  }
+  .selectBuildTemplate img{
+    // width: 50%;
+    vertical-align: middle;
+    // height: inherit;
+    text-align: center;
+  }
+
   .codeImg{
     width: 100%;
     height: inherit;
-  }
-  .label_pad{
-    padding-left: 30px;
-    font-size: 16px;
   }
   select {
     color: #9da5b4;
@@ -427,23 +690,29 @@ atom-panel.modal > .login-box{
     width: 100%;
     height: 2em;
     padding: 0;
+    border-radius: 3px;
   }
   .form_width{
 
   }
   progress{
-    width: 80%;
-    height: 30px;
-    background-size: 50px 30px, 100% 100%, 100% 100%;
+    width: 100%;
+    height: 20px;
+    background-size: 32px 19px, 100% 100%, 100% 100%;
+    background-color: #353a47;
+    background-image: linear-gradient(-45deg, transparent 33%, #515663 33%, #515663 66%, transparent 66%);
   }
   .block span{
-    padding-left: 10%;
-    padding-bottom: 5px;
-    font-size: 16px;
+    // padding-left: 10%;
+    // padding-bottom: 5px;
+    font-size: 12px;
   }
 }
 
 .upload_project_view{
+  label{
+    font-size: 12px;
+  }
   select {
     color: #9da5b4;
     background-clip: content-box;
@@ -453,6 +722,25 @@ atom-panel.modal > .login-box{
     width: 100%;
     height: 2em;
     padding: 0;
+    border-radius: 3px;
+  }
+  .text-align-right{
+    text-align: right;
+  }
+  .col-sm-12 {
+    width: 100%;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-bottom: 10px;
+  }
+  .col-sm-9 {
+    width: 75%;
+    padding-left: 0px;
+    padding-right: 15px;
+  }
+  .col-sm-4 {
+    width: 33.3%;
+    padding: 3px;
   }
 }
 
