@@ -59,15 +59,17 @@ module.exports = Util =
     regEx1 = /[\`\~\!\@\#\$\%\^\&\*\(\)\+\=\|\{\}\'\:\;\,\·\\\[\]\<\>\/\?\~\！\@\#\￥\%\…\…\&\*\（\）\—\—\+\|\{\}\【\】\‘\；\：\”\“\’\。\，\、\？]/g
     regEx2 = /[^\x00-\xff]/g
     regEx3 = /\d/
+    firstchar = str[0]
     flag1 = regEx1.test str
     flag2 = regEx2.test str
-    flag3 = regEx3.test str[0]
+    flag3 = regEx3.test firstchar
+    flag4 = firstchar is "-"
     # strcheck = str.replace(/[^\x00-\xff]/g,"")
     # strcheck = strcheck.replace(regEx,"")
     # strcheck = strcheck.replace(/-+/g, '-')
     # # 特殊处理
     # strcheck = '...' if strcheck is '.' or strcheck is '..'
-    return !(flag1 or flag2 or flag3)
+    return !(flag1 or flag2 or flag3 or flag4)
 
   getRepo: (appPath,repoUri, cb) ->
     options =

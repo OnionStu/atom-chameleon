@@ -57,10 +57,13 @@ class NewProjectView extends View
     @element
 
   getProjectInfo: ->
+    path = @appPath.getText().trim()
+    dir = new Directory(path)
+    path = pathM.join desc.newProjectDefaultPath,dir.getBaseName() if dir.getParent().isRoot() is yes
     projectInfo =
-      appId : @appId.getText();
-      appName : @appName.getText();
-      appPath : @appPath.getText();
+      appId : @appId.getText()
+      appName : @appName.getText()
+      appPath : path
 
     console.log projectInfo
     projectInfo
@@ -95,12 +98,15 @@ class NewProjectView extends View
       dir = new Directory(path);
       dir.exists()
         .then (isExists) =>
-          # console.log isExists,@,dir.getRealPathSync()
+          console.log isExists,dir.getRealPathSync()
           unless isExists
             @errorMsg.addClass('hide')
+
           else
             @errorMsg.removeClass('hide')
           @checkInput()
+    else
+      console.log 'empty'
 
   nextStep:(box) ->
     # console.log box

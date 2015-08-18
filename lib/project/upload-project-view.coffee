@@ -123,10 +123,10 @@ class UploadProjectInfoView extends View
 					# console.log "check version success"
 					build = data['build']
 					if data['version'] != ""
-						uploadVersion = moduleVersion.split('.')
-						version = data['version'].split('.')
+						# uploadVersion = moduleVersion.split('.')
+						# version = data['version'].split('.')
 						# 判断是否需要上传模块
-						result = UtilExtend.checkUploadModuleVersion(uploadVersion,version)
+						result = UtilExtend.checkUploadModuleVersion(moduleVersion,data['version'])
 						if result['error']
 							console.log "无需更新#{moduleIdentifer} 本地版本为#{moduleVersion},服务器版本为：#{data['version']}"
 							if modules.length == index+1

@@ -52,10 +52,13 @@ module.exports = CreateProject =
 
   # 空白项目创建
   newEmptyProject: (options) ->
+    LoadingMask = new @LoadingMask()
     info = options.projectInfo
     createSuccess = (err) =>
       if err
         console.error err
+        @modalPanel.item.children(".loading-mask").remove()
+        alert "项目创建失败#{':权限不足' if err.code is 'EACCES'}"
       else
         copySuccess = (err) =>
           throw err if err
@@ -77,7 +80,6 @@ module.exports = CreateProject =
         Util.copy @projectTempDir, info.appPath, copySuccess
 
     Util.createDir info.appPath, createSuccess
-    LoadingMask = new @LoadingMask()
     @modalPanel.item.append(LoadingMask)
 
   # 带框架项目创建
