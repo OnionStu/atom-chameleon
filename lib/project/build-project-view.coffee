@@ -570,7 +570,7 @@ class BuildProjectInfoView extends View
 					str = "<img src='"+ desc.getImgPath 'icon_success.png' +"'/>构建成功"
 					if @.find('#ios').is(':checked')
 						@IOSCODE.removeClass('hide')
-					if @.find('#android').is('checked')
+					if @.find('#android').is(':checked')
 						@ANDROIDCODE.removeClass('hide')
 					if platform == 'IOS'
 						# @IOSCODE.removeClass('hide')
