@@ -6,10 +6,16 @@
 @border_color:#858585;
 @close_icon_size:2.5em;
 @item-logo-size:120px;
+@font-white:#fff;
+@font-grey:#606676;
+@itemIcon_brc:#1889d9;
+@btn_bgc:#525564;
+@font_size_normal:14px;
+@font_size_small:12px;
 
 atom-panel.modal.from-top.down{
   top:100px;
-  padding: 10px;
+  padding: 15px;
 }
 .modal.down:before{
   .border_radius();
@@ -30,20 +36,27 @@ atom-panel.modal.from-top.down{
   }
 }
 .chameleon{
-  h1 {
-    font-size: 16px;
-    padding-top: 10px;
+  color: @font-white;
+
+  h2{
+    font-size: @font_size_normal;
+    margin-top: 5px;
+  }
+  .box-title{
+    font-size: @font_size_normal;
+    color: @font-white;
     padding-bottom: 10px;
-    border-bottom: 1px solid @border_color;
+    border-bottom: 1px solid #444;
   }
   .close-view {
     position: absolute;
-    top: 4px;
+    top: -5px;
     right: 4px;
     cursor: pointer;
     &::before{
       font-size:@close_icon_size;
       margin:0;
+      content: '\00D7'
     }
   }
   .box{
@@ -52,8 +65,29 @@ atom-panel.modal.from-top.down{
     overflow: hidden;
     overflow-y: auto;
   }
+  .btn{
+    .styleBtn();
+  }
   .btn.prev{
     margin-right: 10px;
+  }
+  .itemIcon{
+    width: 128px;
+    height: 128px;
+    margin: auto;
+    background-color: #f2f2f2;
+    padding: 30.5px;
+    border: 3px solid rgba(0,0,0,0);
+    .border_radius();
+  }
+  .itemIcon img{
+    width: 100%;
+  }
+  .select .itemIcon{
+    border: 3px solid @itemIcon_brc;
+  }
+  .desc{
+    color: @font-grey;
   }
 }
 atom-panel.modal > .login-box{
@@ -97,12 +131,6 @@ atom-panel.modal > .login-box{
   .item{
     padding: 10px;
     cursor: pointer;
-    &:hover{
-      .hover();
-    }
-  }
-  .title{
-
   }
 }
 
@@ -113,9 +141,6 @@ atom-panel.modal > .login-box{
     padding: 10px;
     display: inline-block;
     cursor: pointer;
-    &:hover{
-      .hover();
-    }
   }
   .openFolder{
     position: absolute;
@@ -156,6 +181,13 @@ atom-panel.modal > .login-box{
   }
   .btn.btn-action{
     padding: 0;
+    background-color: rgba(0, 0, 0, 0);
+    border: none;
+    width: auto;
+    height: auto;
+    &:hover{
+      background:none;
+    }
   }
 }
 
@@ -215,9 +247,9 @@ atom-panel.modal > .login-box{
   .border_radius();
 }
 .select{
-  .hover();
+  // .hover();
 }
-.border_radius(@radius:6px){
+.border_radius(@radius:3px){
   border-radius: @radius;
 }
 
@@ -482,4 +514,12 @@ atom-panel.modal > .login-box{
   &::-webkit-input-placeholder {
       color:rgba(157, 165, 180, 0.6);
   }
+}
+.styleBtn{
+  width: 90px;
+  height: 28px;
+  color: @font-white;
+  background: @btn_bgc;
+  font-size: @font_size_small;
+  .border_radius();
 }

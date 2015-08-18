@@ -24,6 +24,7 @@ class ChameleonBoxView extends View
 
   initialize: (options) ->
     # console.log options,@options
+    @cancelBtn.addClass('hide')
     @order = 0
     @options ?= {}
     @prevStep = []
