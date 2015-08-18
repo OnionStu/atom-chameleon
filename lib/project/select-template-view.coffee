@@ -9,9 +9,9 @@ module.exports =
       @div class: 'new-project', =>
         @h2 '请选择业务模板:'
         @div class: 'col-sm-12 col-md-12', outlet:'template', =>
-          @div class: 'new-template text-center', 'data-type': desc.newsTemplate.type, click: 'onItemClick',  =>
-            @img class: 'pic', src: desc.newsTemplate.pic
-            @h3 desc.newsTemplate.name, class: 'project-name'
+          @div class: 'new-template text-center', 'data-type': config.tempList[0].type, click: 'onItemClick',  =>
+            @img class: 'pic', src: config.tempList[0].pic
+            @h3 config.tempList[0].name, class: 'project-name'
         @div class: 'col-sm-12 col-md-12', outlet:'show-template', =>
           @div class : 'template-item text-center', =>
             @img class: 'pic', src: desc.getImgPath '3.jpeg'

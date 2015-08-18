@@ -201,7 +201,7 @@ module.exports = CreateProject =
             alert '项目创建失败：git clone失败，请检查网络连接'
             @modalPanel.item.children(".loading-mask").remove()
 
-        Util.getRepo(@templateDir, config.newstempUri, success) #没有，执行 git clone，成功后执行第二步
+        Util.getRepo(@templateDir, config.tempList[0].url, success) #没有，执行 git clone，成功后执行第二步
 
 
     LoadingMask = new @LoadingMask()
