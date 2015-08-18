@@ -16,20 +16,23 @@ class NewProjectView extends View
         @h2 '请选择要创建的项目类型:'
         @div class: 'flex-container', =>
           @button class:'btn btn-lg btn-action', outlet: 'prevPage',click: 'onPrevPageClick', =>
-            @span class: 'icon icon-chevron-left'
+            @img src: desc.getImgPath 'arrow_left.png'
           @div class: 'frameList', outlet:'frameList', =>
             @div class: 'new-item text-center', 'data-type': 'empty',  =>
-              @img class: 'pic', src: desc.getImgPath 'icon.png'
+              @div class: 'itemIcon', =>
+                @img src: desc.getImgPath 'icon_empty.png'
               @h3 '空白项目',class: 'project-name'
             @div class: 'new-item text-center', 'data-type': 'frame', =>
-              @img class: 'pic', src: desc.getImgPath 'icon.png'
+              @div class: 'itemIcon', =>
+                @img src: desc.getImgPath 'icon_frame.png'
               @h3 '自带框架项目',class: 'project-name'
             @div class: 'new-item text-center', 'data-type': 'template',  =>
-              @img class: 'pic', src: desc.getImgPath 'icon.png'
+              @div class: 'itemIcon', =>
+                @img src: desc.getImgPath 'icon_template.png'
               @h3 '业务模板',class: 'project-name'
             @div outlet:'divider'
           @button class:'btn btn-lg btn-action',outlet: 'nextPage',click: 'onNextPageClick', =>
-            @span class: 'icon icon-chevron-right'
+            @img src: desc.getImgPath 'arrow_right.png'
 
   attached: ->
     @disableNextPage()
