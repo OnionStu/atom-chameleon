@@ -54,7 +54,7 @@ class BuildProjectInfoView extends View
 						@label class: 'col-sm-9',outlet:'platform'
 				@div class: 'form-horizontal', outlet: 'iosForm', =>
 					# @div class: 'form-group', =>
-					# 	@label '应用logo：' , class: 'col-sm-3 control-label'
+					# 	@label '应用logo' , class: 'col-sm-3 control-label'
 					# 	@div class: 'col-sm-9', =>
           #     @subview 'iOSLogo', new TextEditorView(mini: true)
           #     @span class: 'inline-block status-added icon icon-file-directory openFolder', click: 'openIOS'
@@ -67,7 +67,7 @@ class BuildProjectInfoView extends View
 						@label class: 'col-sm-9 padding-left',outlet: 'iOSPlugins'
 				@div class: 'form-horizontal', outlet: 'androidForm', =>
 					# @div class: 'form-group', =>
-					# 	@label '应用logo：' , class: 'col-sm-3 control-label'
+					# 	@label '应用logo' , class: 'col-sm-3 control-label'
 					# 	@div class: 'col-sm-9', =>
 					# 		@subview 'androidLogo', new TextEditorView(mini: true)
 					# 		@span class: 'inline-block status-added icon icon-file-directory openFolder', click: 'openAndroid'
