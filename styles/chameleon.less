@@ -17,7 +17,8 @@
 
 atom-panel.modal.from-top.down{
   top:100px;
-  padding: 15px;
+  // padding: 15px;
+  padding: 0;
   font-family: 'microsoft yahei'
 }
 
@@ -41,6 +42,7 @@ atom-panel.modal.from-top.down{
 }
 .chameleon{
   color: @font-white;
+  position: relative;
 
   h2{
     font-size: @font_size_normal;
@@ -49,13 +51,13 @@ atom-panel.modal.from-top.down{
   .box-title{
     font-size: @font_size_normal;
     color: @font-white;
-    padding-bottom: 10px;
+    padding: 15px 15px 15px 10px;
     border-bottom: 1px solid #444;
   }
   .close-view {
     position: absolute;
-    top: -5px;
-    right: 4px;
+    top: 8px;
+    right: 15px;
     cursor: pointer;
     &::before{
       font-size:@close_icon_size;
@@ -66,11 +68,18 @@ atom-panel.modal.from-top.down{
   .box{
     min-height: 300px;
     max-height: 400px;
+    padding: 0 15px;
     overflow: hidden;
     overflow-y: auto;
   }
+  .box-actions{
+    padding: 0 15px 15px 15px;
+  }
   .btn{
     .styleBtn();
+  }
+  .btn:focus{
+    outline: none;
   }
   .btn.prev{
     margin-right: 10px;
@@ -84,7 +93,7 @@ atom-panel.modal.from-top.down{
     // border: 6px solid rgba(0,0,0,0);
     .border_radius();
   }
-  .title{
+  .title,.project-name{
     opacity: .6;
   }
   .itemIcon img{
@@ -94,7 +103,7 @@ atom-panel.modal.from-top.down{
     .itemIcon{
       border: 3px solid @itemIcon_brc;
     }
-    .title{
+    .title,.project-name{
       opacity: 1;
     }
   }
@@ -821,5 +830,6 @@ atom-panel.modal > .login-box{
   color: @font-white;
   background: @btn_bgc;
   font-size: @font_size_small;
-  .border_radius();
+  border: none;
+  .border_radius(3px);
 }
