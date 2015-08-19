@@ -81,14 +81,22 @@ atom-panel.modal.from-top.down{
     margin: auto;
     background-color: #f2f2f2;
     padding: 30.5px;
-    border: 3px solid rgba(0,0,0,0);
+    // border: 6px solid rgba(0,0,0,0);
     .border_radius();
+  }
+  .title{
+    opacity: .6;
   }
   .itemIcon img{
     width: 100%;
   }
-  .select .itemIcon{
-    border: 3px solid @itemIcon_brc;
+  .select {
+    .itemIcon{
+      border: 3px solid @itemIcon_brc;
+    }
+    .title{
+      opacity: 1;
+    }
   }
   .desc{
     color: @font-grey;
@@ -253,7 +261,7 @@ atom-panel.modal > .login-box{
 .select{
   // .hover();
 }
-.border_radius(@radius:3px){
+.border_radius(@radius:6px){
   border-radius: @radius;
 }
 
