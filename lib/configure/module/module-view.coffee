@@ -14,25 +14,25 @@ class ModuleInfoView extends View
 	@content: ->
 		@div class: 'configure-module container', =>
 			@div class: 'row',outlet: 'main', =>
-				@div class:'col-xs-12', =>
+				@div class:'col-sm-12', =>
 					@label '选择要配置的模块'
-				@div outlet : 'moduleList'
+				@div outlet : 'moduleList',class:'col-sm-12'
 			@div class: 'row hide',outlet: "second", =>
-				@div class: "col-xs-12", =>
-					@label class: 'col-sm-3 col-md-3', "logo"
-					@div class: 'col-sm-3 col-md-3', =>
+				@div class: "col-sm-12", =>
+					@label class: 'col-sm-3', "logo"
+					@div class: 'col-sm-3 padding-none', =>
 			      @img outlet:"logo",class:'pic', src: desc.getImgPath 'icon.png'
-				@div class: "col-xs-12", =>
-					@label class: 'col-sm-3 col-md-3', "模块名称"
-					@div class: 'col-sm-9 col-md-9', =>
+				@div class: "col-sm-12", =>
+					@label class: 'col-sm-3', "模块名称"
+					@div class: 'col-sm-9', =>
 			      @subview 'moduleName', new TextEditorView(mini: true,placeholderText: 'moduleName...')
-				@div class: "col-xs-12 ", =>
-					@label class: 'col-sm-3 col-md-3', "模块版本"
-					@div class: 'col-sm-9 col-md-9', =>
+				@div class: "col-sm-12 ", =>
+					@label class: 'col-sm-3', "模块版本"
+					@div class: 'col-sm-9', =>
 			      @subview 'moduleVersion', new TextEditorView(mini: true,placeholderText: 'moduleVersion...')
-				@div class: "col-xs-12 ", =>
-					@label class: 'col-sm-3 col-md-3', "模块描述"
-					@div class: 'col-sm-9 col-md-9', =>
+				@div class: "col-sm-12 ", =>
+					@label class: 'col-sm-3 ', "模块描述"
+					@div class: 'col-sm-9 ', =>
 			      @subview 'moduleDescription', new TextEditorView(mini: true,placeholderText: 'moduleDescription...')
 				# @div class: "col-xs-12 ", =>
 				# 	@label class: 'col-sm-3 col-md-3', "模块入口"
@@ -49,7 +49,7 @@ class ModuleInfoView extends View
 		cb = (selectPath) =>
 			# console.log selectPath[0]
 			# console.log selectPath[0].lastIndexOf('.')
-			if selectPath.length != 0
+			if selectPath? and selectPath.length != 0
 				tmp = selectPath[0].substring(selectPath[0].lastIndexOf('.'))
 				console.log tmp
 				if tmp is ".jpeg" or tmp is ".png"
@@ -84,7 +84,7 @@ class ModuleInfoView extends View
 				path = pathM.join filePath,"package.json"
 				if fs.existsSync(path)
 					contentList = JSON.parse(fs.readFileSync(path))
-					_moduleList.append('<div class="col-md-3"><input value="'+path+'" type="checkbox" class="modulecheckbox"><label>'+contentList['name']+'</label></div>')
+					_moduleList.append('<div class="col-sm-4 "><div class="checkboxFive"><input value="'+path+'" id="'+path+'" type="checkbox" class="modulecheckbox hide"/><label for="'+path+'"></label></div><label class="label-empty" for="'+path+'">'+contentList['name']+'</label></div>')
 					index = index + 1
 		printName pathM.join project_path,file for file in list
 		if index is 0

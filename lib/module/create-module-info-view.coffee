@@ -28,10 +28,10 @@ class CreateModuleInfoView extends View
           @label desc.moduleName, class: 'col-sm-3 control-label'
           @div class: 'col-sm-9', =>
             @subview 'moduleName', new TextEditorView(mini: true)
-        @div class: 'form-group', =>
-          @label desc.mainEntry, class: 'col-sm-3 control-label'
-          @div class: 'col-sm-9', =>
-            @subview 'mainEntry', new TextEditorView(mini: true)
+        # @div class: 'form-group', =>
+        #   @label desc.mainEntry, class: 'col-sm-3 control-label'
+        #   @div class: 'col-sm-9', =>
+        #     @subview 'mainEntry', new TextEditorView(mini: true)
         @div class: 'col-sm-9 col-sm-offset-3', =>
           @div desc.createModuleErrorMsg, class: 'text-warning hide', outlet: 'errorMsg'
 
@@ -46,11 +46,11 @@ class CreateModuleInfoView extends View
     @modulePath.getModel().onDidChange => @checkPath()
     @moduleId.getModel().onDidChange => @checkPath()
     @moduleName.getModel().onDidChange => @checkInput()
-    @mainEntry.getModel().onDidChange => @checkInput()
+    # @mainEntry.getModel().onDidChange => @checkInput()
     @selectProject.on 'change',(e) => @onSelectChange(e)
     @moduleName.setText ''
     @moduleId.setText ''
-    @mainEntry.setText desc.mainEntryFileName
+    # @mainEntry.setText desc.mainEntryFileName
     @modulePath.setText desc.newProjectDefaultPath
 
     @parentView.setNextBtn('finish')
@@ -96,7 +96,7 @@ class CreateModuleInfoView extends View
     isProject = Util.isFileExist configPath,'sync'
 
     info =
-      mainEntry: @mainEntry.getText()
+      mainEntry: desc.mainEntryFileName
       moduleId: @moduleId.getText()
       moduleName: @moduleName.getText()
       modulePath: modulePath
@@ -133,11 +133,11 @@ class CreateModuleInfoView extends View
   checkInput: ->
     flag1 = @moduleId.getText().trim() isnt ""
     flag2 = @moduleName.getText().trim() isnt ""
-    flag3 = @mainEntry.getText().trim() isnt ""
+    # flag3 = @mainEntry.getText().trim() isnt ""
     flag4 = @modulePath.getText().trim() isnt ""
     flag5 = @errorMsg.hasClass 'hide'
 
-    if flag1 and flag2 and flag3 and flag4 and flag5
+    if flag1 and flag2 and flag4 and flag5
       @parentView.enableNext()
     else
       @parentView.disableNext()

@@ -12,12 +12,12 @@ client = require '../utils/client'
 class PublishModuleInfoView extends View
 
 	@content: ->
-		@div class : 'publishModule', =>
+		@div class : 'upload-module container', =>
 			@div outlet : 'first' , =>
-				@h2 desc.publishModulePageOneTitle
-				@div outlet : 'moduleList'
+				@label desc.publishModulePageOneTitle
+				@div outlet : 'moduleList',class: 'col-sm-12'
 			@div outlet : 'second',class : 'hide', =>
-				@h2 desc.publishModulePageTwoTitle
+				@label desc.publishModulePageTwoTitle
 				@label id:'tips'
 				@div outlet : 'moduleMessageList'
 				@input type:"hidden",id:"projectIdentifier"
@@ -70,7 +70,7 @@ class PublishModuleInfoView extends View
 						file2.read(false).then (content) =>
 							length = length + 1
 							contetnList = JSON.parse(content)
-							_moduleList.append('<div class="col-md-3"><input value="'+file2.getPath()+'" type="checkbox"><label>'+contetnList['name']+'</label></div>')
+							_moduleList.append('<div class="col-sm-4"><div class="checkboxFive"><input id="'+file2.getPath()+'" value="'+file2.getPath()+'" type="checkbox" class="hide"><label for="'+file2.getPath()+'"></label></div><label for="'+file2.getPath()+'"class="label-empty">'+contetnList['name']+'</label></div>')
 		directory.exists().then (resolve, reject) =>
 			if resolve
 				list = directory.getEntriesSync()
@@ -284,7 +284,7 @@ class PublishModuleInfoView extends View
 									console.log "error"
 								else
 								  contentList = JSON.parse(data)
-									_moduleList.append('<div class="col-md-3"><input value="'+packageFilePath+'" type="checkbox"><label>'+contentList['name']+'</label></div>')
+									_moduleList.append('<div class="col-sm-4"><div class="checkboxFive"><input id="'+packageFilePath+'" value="'+packageFilePath+'" type="checkbox" class="hide" /><label for="'+packageFilePath+'"></label></div><label for="'+packageFilePath+'" class="label-empty">'+contentList['name']+'</label></div>')
 									# console.log data
 							options =
 								encoding: "UTF-8"
@@ -306,25 +306,25 @@ class PublishModuleInfoView extends View
 class ModuleMessageItem extends View
 
 	@content: (obj) ->
-		@div class: 'col-sm-12 col-md-12',=>
-			@div class: 'col-sm-12 col-md-12', =>
-				@label '模块名称: '
+		@div class: 'col-sm-12 ',=>
+			@div class: 'col-sm-12', =>
+				@label '模块名称：'
 				@label obj.moduleName
-			@div class : 'col-sm-12 col-md-12', =>
-				@div class : 'col-sm-6 col-md-6', =>
-					@label '上传版本: '
+			@div class : 'col-sm-12 ', =>
+				@div class : 'col-sm-6 ', =>
+					@label '上传版本：'
 					@label obj.uploadVersion,outlet:"uploadVersion"
-				@div class : 'col-sm-6 col-md-6', =>
-					@label '服务器版本:'
+				@div class : 'col-sm-6 ', =>
+					@label '服务器版本：'
 					@label obj.version,outlet:"version",value:obj.build
-			@div class : 'col-sm-12 col-md-12', =>
-				@div class : 'col-sm-2 col-md-2', =>
-					@label '更新日志:'
-				@div class : 'col-sm-6 col-md-6', =>
+			@div class : 'col-sm-12 ', =>
+				@div class : 'col-sm-2', =>
+					@label '更新日志：'
+				@div class : 'col-sm-6 ', =>
 					@subview 'updateLog', new TextEditorView(mini: true,placeholderText: 'update log...')
-				@div class : 'col-sm-4 col-md-4 publishModulecheckbox', =>
-					@button '上传',value:obj.modulePath,outlet:"uploadBtn",class:'btn upload_module_btn',click: 'postModuleMessage'
-					@button '应用到',value:obj.identifier,class:'btn',click: 'showAppList'
+				@div class : 'col-sm-4 publishModulecheckbox', =>
+					@button '上传',value:obj.modulePath,outlet:"uploadBtn",class:'upload_module_btn',click: 'postModuleMessage'
+					@button '应用到',value:obj.identifier,class:'',click: 'showAppList'
 					# @button '上传并应用',value:obj.modulePath,class:'btn'
 			@div class : 'col-sm-12 col-md-12 ', =>
 				@label "正在打包文件......",class:"#{obj.identifier}"
@@ -349,9 +349,9 @@ class ModuleMessageItem extends View
 						return
 					options = options + "<input type='checkbox' value='#{object.id}' >#{object.name}"
 				printAppList object for object in data
-				options = options + "<button name='uploadMApp' class='btn'>确认</button>"
+				options = options + "<button name='uploadMApp' class=''>确认</button>"
 				console.log @.find("button[name=uploadMApp]")
-				@appListView.append(options)
+				@appListView.html(options)
 				@.find("button[name=uploadMApp]").on 'click',(e) => @actModuleToApp(e)
 			error:() =>
 				console.log "error"
