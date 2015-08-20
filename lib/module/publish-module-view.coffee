@@ -14,8 +14,8 @@ class PublishModuleInfoView extends View
 	@content: ->
 		@div class : 'upload-module container', =>
 			@div outlet : 'first' , =>
-				@label desc.publishModulePageOneTitle
-				@div outlet : 'moduleList',class: 'col-sm-12'
+				@h2 desc.publishModulePageOneTitle, class: 'box-subtitle'
+				@div outlet : 'moduleList',class: 'box-form'
 			@div outlet : 'second',class : 'hide', =>
 				@label desc.publishModulePageTwoTitle
 				@label id:'tips'
@@ -23,12 +23,12 @@ class PublishModuleInfoView extends View
 				@input type:"hidden",id:"projectIdentifier"
 			@div outlet : 'third', class : 'hide', =>
 				@div class: 'new-project', =>
-			    @div class: 'form-group', =>
-						@div class: 'col-sm-3', =>
-							@label '请选择路径'
-						@div class: 'col-sm-9',=>
-	            @subview 'appPath', new TextEditorView(mini: true)
-	            @span class: 'inline-block status-added icon icon-file-directory openFolder', click: 'open'
+					@div class: 'box-form', =>
+						@div class: 'form-row clearfix', =>
+		          @label '请选择路径', class: 'row-title pull-left'
+		          @div class: 'row-content pull-left', =>
+		            @subview 'appPath', new TextEditorView(mini: true)
+		            @span class: 'inline-block status-added icon icon-file-directory openFolder', click: 'open'
 
 	open : ->
 		console.log "ssss"
