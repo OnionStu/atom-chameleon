@@ -42,16 +42,19 @@ class NewProjectView extends View
     @frameworks =
       [
         {
+          icon: desc.getImgPath 'icon_empty.png'
           dataName:''
           displayName: '空白应用'
           type: 'empty'
         },
         {
+          icon: desc.getImgPath 'icon_frame.png'
           dataName:''
           displayName: '自带框架应用'
           type: 'frame'
         },
         {
+          icon: desc.getImgPath 'icon_template.png'
           dataName: ''
           displayName: '业务模板'
           type: 'template'
@@ -128,7 +131,7 @@ class NewProjectView extends View
 
 
   renderListItem: (data) ->
-    data.icon?=desc.getImgPath 'icon.png'
+    data.icon?=desc.getImgPath 'icon_template.png'
     html = """
     <div class="new-item text-center" data-type="#{data.type}" data-name="#{data.dataName}">
       <img class="pic" src="#{data.icon}">
