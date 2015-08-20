@@ -63,16 +63,12 @@ class ModuleInfoView extends View
 	attached: ->
 		@logo.on 'click', (e) => @selectIcon(e)
 		project_path = pathM.join $('.entry.selected span').attr('data-path'),'modules'
-		if !fs.existsSync(project_path)
+		# 判断文件是否存在，存在则执行  || 后面的代码 即：判断文件是否为文件夹
+		# 文件不存在 则提示，文件不是文件夹时 也输出
+		if !fs.existsSync(project_path) || !fs.statSync(project_path).isDirectory()
 			alert "不存在 #{project_path} 文件夹"
 			@parentView.enable = false
 			return
-		stats = fs.statSync(project_path)
-		if !stats.isDirectory()
-			alert "不存在 #{project_path} 文件夹"
-			@parentView.enable = false
-			return
-		# console.log directory.getPath()
 		list = fs.readdirSync(project_path)
 		_moduleList = @moduleList
 		_moduleList.empty()

@@ -23,11 +23,11 @@ class PublishModuleInfoView extends View
 				@input type:"hidden",id:"projectIdentifier"
 			@div outlet : 'third', class : 'hide', =>
 				@div class: 'new-project', =>
-					@div class:'form-horizontal', =>
-				    @div class: 'form-group', =>
-				    @h2 '选择项目'
-			    @div class: 'form-group', =>
-				    @label '路径', class: 'col-sm-3 control-label'
+					@div class:'col-sm-12', =>
+				    @label '选择项目'
+			    @div class: 'col-sm-12', =>
+						@div class: 'col-sm-2 select-project-label',=>
+				    	@label '路径'
 				    @div class: 'col-sm-9', =>
               @subview 'appPath', new TextEditorView(mini: true)
               @span class: 'inline-block status-added icon icon-file-directory openFolder', click: 'open'
@@ -89,7 +89,7 @@ class PublishModuleInfoView extends View
 		console.log 'init finish'
 	nextStep: ->
 		_parentView = @parentView
-		console.log 'click next button'
+		# console.log 'click next button'
 		if @third.hasClass('hide')
 			console.log 'third is hide'
 		else
@@ -97,7 +97,7 @@ class PublishModuleInfoView extends View
 			return
 		if @parentView.prevBtn.hasClass('hide')
 			if this.find('input[type=checkbox]').is(':checked')
-				console.log 'has checked'
+				console.log '选择了模块'
 			else
 				alert '你还没有选择模块。'
 				return
@@ -133,8 +133,8 @@ class PublishModuleInfoView extends View
 										sendCookie: true
 										success: (data) =>
 											if true
-												console.log "check version success"
-												console.log data
+												# console.log "check version success"
+												console.log  "获取最新版本和上传次数"+ data
 												#获取版本 和 上传次数 ， 并判断和初始化  obj['build'] obj['version']
 												if data['build']? and data['build'] != ""
 													obj["build"] = parseInt(data['build'])
@@ -326,10 +326,9 @@ class ModuleMessageItem extends View
 					@button '上传',value:obj.modulePath,outlet:"uploadBtn",class:'upload_module_btn',click: 'postModuleMessage'
 					@button '应用到',value:obj.identifier,class:'',click: 'showAppList'
 					# @button '上传并应用',value:obj.modulePath,class:'btn'
-			@div class : 'col-sm-12 col-md-12 ', =>
+			@div class : 'col-sm-12',=>
 				@label "正在打包文件......",class:"#{obj.identifier}"
-			@div class : 'col-sm-12 col-md-12',outlet:"appListView"
-
+			@div class : 'col-sm-12 hide  app-list-view',outlet:"appListView"
 
 	fileChange: (param1,param2) ->
 		console.log $(param2).val()
@@ -338,24 +337,36 @@ class ModuleMessageItem extends View
 
 	showAppList:(btn,btn2) ->
 		# console.log $(btn2).val()
+		@appListView.removeClass('hide')
 		params =
 			sendCookie: true
 			success: (data) =>
 				# console.log "success"
 				console.log data
 				options = ""
+				length = 0
 				printAppList = (object) =>
 					if object is null
 						return
-					options = options + "<input type='checkbox' value='#{object.id}' >#{object.name}"
+					length = length + 1
+					if object.name?
+						object.name = object.name #+ "(#{object.id})"
+					else
+						object.name = object.id #+ "(#{object.id})"
+					options = options + "<div class='col-sm-4'><div class='checkboxFive'><input type='checkbox' class='hide' id='#{object.id}' value='#{object.id}' /><label for='#{object.id}'></label></div><label for='#{object.id}' class='label-empty'>#{object.name}</label></div>"
 				printAppList object for object in data
-				options = options + "<button name='uploadMApp' class=''>确认</button>"
-				console.log @.find("button[name=uploadMApp]")
+				options = options + "<div class='col-sm-12 padding-none'><button name='hideAppListbtn' class='btn-app-list-right'>取消</button><button name='uploadMApp'>确认</button><div>"
+				if length == 0
+					options = "还没与应用关联，请到网页客户端添加关联。"
+				# console.log @.find("button[name=uploadMApp]")
 				@appListView.html(options)
 				@.find("button[name=uploadMApp]").on 'click',(e) => @actModuleToApp(e)
+				@.find("button[name=hideAppListbtn]").on 'click',(e) => @hideAppListVIew(e)
 			error:() =>
 				console.log "error"
 		client.getAppListByModule(params,$(btn2).val())
+	hideAppListVIew:(e)->
+		@appListView.addClass('hide')
 
 	#  upload_module_use_to_application
 	actModuleToApp:(e) ->
