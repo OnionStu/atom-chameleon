@@ -9,31 +9,27 @@ class CreateModuleInfoView extends View
 
   @content: ->
     @div class: 'create-module', =>
-      @h2 desc.CreateModuleTitle
-      @div class: 'form-horizontal', =>
-        @div class: 'form-group', =>
-          @label '模块所在应用', class: 'col-sm-3 control-label'
-          @div class: 'col-sm-9', =>
+      @h2 desc.CreateModuleTitle, class: 'box-subtitle'
+      @div class: 'box-form', =>
+        @div class: 'form-row clearfix', =>
+          @label '模块所在应用', class: 'row-title pull-left'
+          @div class: 'row-content pull-left', =>
             @select class: 'form-control', outlet: 'selectProject'
-        @div class: 'form-group', =>
-          @label desc.modulePath, class: 'col-sm-3 control-label'
-          @div class: 'col-sm-9', =>
+        @div class: 'form-row clearfix', =>
+          @label desc.modulePath, class: 'row-title pull-left'
+          @div class: 'row-content pull-left', =>
             @subview 'modulePath', new TextEditorView(mini: true)
             @span class: 'inline-block status-added icon icon-file-directory openFolder', click: 'openFolder'
-        @div class: 'form-group', =>
-          @label desc.moduleId, class: 'col-sm-3 control-label'
-          @div class: 'col-sm-9', =>
+        @div class: 'form-row clearfix', =>
+          @label desc.moduleId, class: 'row-title pull-left'
+          @div class: 'row-content pull-left', =>
             @subview 'moduleId', new TextEditorView(mini: true)
-        @div class: 'form-group', =>
-          @label desc.moduleName, class: 'col-sm-3 control-label'
-          @div class: 'col-sm-9', =>
+        @div class: 'form-row clearfix', =>
+          @label desc.moduleName, class: 'row-title pull-left'
+          @div class: 'row-content pull-left', =>
             @subview 'moduleName', new TextEditorView(mini: true)
-        # @div class: 'form-group', =>
-        #   @label desc.mainEntry, class: 'col-sm-3 control-label'
-        #   @div class: 'col-sm-9', =>
-        #     @subview 'mainEntry', new TextEditorView(mini: true)
-        @div class: 'col-sm-9 col-sm-offset-3', =>
-          @div desc.createModuleErrorMsg, class: 'text-warning hide', outlet: 'errorMsg'
+        @div class: 'form-row msg clearfix hide', =>
+          @div desc.createModuleErrorMsg, class: 'text-warning', outlet: 'errorMsg'
 
   initialize: ->
     # @modulePath.getModel().onDidChange => @checkPath()
@@ -62,12 +58,12 @@ class CreateModuleInfoView extends View
     if projectNum isnt 0
       @selectProject.empty()
       @setSelectItem path for path in projectPaths
-      @modulePath.parents('.form-group').addClass 'hide'
-      @selectProject.parents('.form-group').removeClass 'hide'
+      @modulePath.parents('.form-row').addClass 'hide'
+      @selectProject.parents('.form-row').removeClass 'hide'
       @modulePath.setText pathM.join @selectProject.val(),'modules'
     else
-      @selectProject.parents('.form-group').addClass 'hide'
-      @modulePath.parents('.form-group').removeClass 'hide'
+      @selectProject.parents('.form-row').addClass 'hide'
+      @modulePath.parents('.form-row').removeClass 'hide'
     # console.log @
     @checkPath()
 

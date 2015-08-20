@@ -10,24 +10,24 @@ class NewProjectView extends View
 
   @content: (params) ->
     @div class: 'new-project', =>
-      @h2 '请填写要创建的应用信息:'
-      @div class: 'form-horizontal', =>
-        @div class: 'form-group', =>
-          @label '请输入应用标识', class: 'col-sm-3 control-label'
-          @div class: 'col-sm-9', =>
+      @h2 '请填写要创建的应用信息:', class: 'box-subtitle'
+      @div class: 'box-form', =>
+        @div class: 'form-row clearfix', =>
+          @label '请输入应用标识', class: 'row-title pull-left'
+          @div class: 'row-content pull-left', =>
             @subview 'appId', new TextEditorView(mini: true, placeholderText: '应用标识需以字母开头,且不能有中文')
-        @div class: 'col-sm-9 col-sm-offset-3', =>
+        @div class: 'form-row msg clearfix in-row', =>
           @div '应用标识非法，应用标识不能以数字开头,且不能有中文', class: 'text-warning hide errorMsg', outlet: 'errorMsg2'
-        @div class: 'form-group', =>
-          @label '请输入应用名称', class: 'col-sm-3 control-label'
-          @div class: 'col-sm-9', =>
+        @div class: 'form-row clearfix', =>
+          @label '请输入应用名称', class: 'row-title pull-left'
+          @div class: 'row-content pull-left', =>
             @subview 'appName', new TextEditorView(mini: true, placeholderText: '应用显示的名称')
-        @div class: 'form-group', =>
-          @label '应用创建位置', class: 'col-sm-3 control-label'
-          @div class: 'col-sm-9', =>
+        @div class: 'form-row clearfix', =>
+          @label '应用创建位置', class: 'row-title pull-left'
+          @div class: 'row-content pull-left', =>
             @subview 'appPath', new TextEditorView(mini: true)
             @span class: 'inline-block status-added icon icon-file-directory openFolder', click: 'openFolder'
-        @div class: 'col-sm-9 col-sm-offset-3', =>
+        @div class: 'form-row msg clearfix', =>
           @div '该目录已存在', class: 'text-warning hide errorMsg', outlet: 'errorMsg'
 
   initialize: ->
