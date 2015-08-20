@@ -1,4 +1,4 @@
-desc = require '../utils/text-description'
+# desc = require '../utils/text-d	escription'
 util = require '../utils/util'
 {$,TextEditorView,View} = require 'atom-space-pen-views'
 {File,Directory} = require 'atom'
@@ -23,14 +23,12 @@ class PublishModuleInfoView extends View
 				@input type:"hidden",id:"projectIdentifier"
 			@div outlet : 'third', class : 'hide', =>
 				@div class: 'new-project', =>
-					@div class:'col-sm-12', =>
-				    @label '选择项目'
-			    @div class: 'col-sm-12', =>
-						@div class: 'col-sm-2 select-project-label',=>
-				    	@label '路径'
-				    @div class: 'col-sm-9', =>
-              @subview 'appPath', new TextEditorView(mini: true)
-              @span class: 'inline-block status-added icon icon-file-directory openFolder', click: 'open'
+			    @div class: 'form-group', =>
+						@div class: 'col-sm-3', =>
+							@label '请选择路径'
+						@div class: 'col-sm-9',=>
+	            @subview 'appPath', new TextEditorView(mini: true)
+	            @span class: 'inline-block status-added icon icon-file-directory openFolder', click: 'open'
 
 	open : ->
 		console.log "ssss"
@@ -172,7 +170,7 @@ class PublishModuleInfoView extends View
 
 	attached: ->
 		@settings = Settings
-
+		@appPath.setText("")
 		if !util.isLogin()
 			@settings.activate()
 			@parentView.enable = false
