@@ -54,7 +54,7 @@ class PublishModuleInfoView extends View
 	initFirst:(appPath) ->
 		console.log "init"
 		appPath = PathM.join appPath,'modules'
-		directory = new Directory(appPath)
+		# directory = new Directory(appPath)
 		_moduleList = @moduleList
 		length = 0
 		_parentView = @parentView
@@ -69,6 +69,12 @@ class PublishModuleInfoView extends View
 							length = length + 1
 							contetnList = JSON.parse(content)
 							_moduleList.append('<div class="col-sm-4"><div class="checkboxFive"><input id="'+file2.getPath()+'" value="'+file2.getPath()+'" type="checkbox" class="hide"><label for="'+file2.getPath()+'"></label></div><label for="'+file2.getPath()+'"class="label-empty">'+contetnList['name']+'</label></div>')
+		if fs.existsSync(appPath)
+			stats = fs.statSync(appPath)
+			if stats.isDirectory()
+				list = fs.readdirSync(appPath)
+				_moduleList.empty()
+				printName file for file in list
 		directory.exists().then (resolve, reject) =>
 			if resolve
 				list = directory.getEntriesSync()
