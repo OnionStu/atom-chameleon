@@ -17,7 +17,8 @@
 
 atom-panel.modal.from-top.down{
   top:100px;
-  padding: 15px;
+  // padding: 15px;
+  padding: 0;
   font-family: 'microsoft yahei'
 }
 
@@ -41,6 +42,7 @@ atom-panel.modal.from-top.down{
 }
 .chameleon{
   color: @font-white;
+  position: relative;
 
   h2{
     font-size: @font_size_normal;
@@ -49,13 +51,13 @@ atom-panel.modal.from-top.down{
   .box-title{
     font-size: @font_size_normal;
     color: @font-white;
-    padding-bottom: 10px;
+    padding: 15px 15px 15px 10px;
     border-bottom: 1px solid #444;
   }
   .close-view {
     position: absolute;
-    top: -5px;
-    right: 4px;
+    top: 8px;
+    right: 15px;
     cursor: pointer;
     &::before{
       font-size:@close_icon_size;
@@ -66,11 +68,18 @@ atom-panel.modal.from-top.down{
   .box{
     min-height: 300px;
     max-height: 400px;
+    padding: 0 15px;
     overflow: hidden;
     overflow-y: auto;
   }
+  .box-actions{
+    padding: 0 15px 15px 15px;
+  }
   .btn{
     .styleBtn();
+  }
+  .btn:focus{
+    outline: none;
   }
   .btn.prev{
     margin-right: 10px;
@@ -81,14 +90,22 @@ atom-panel.modal.from-top.down{
     margin: auto;
     background-color: #f2f2f2;
     padding: 30.5px;
-    border: 3px solid rgba(0,0,0,0);
+    // border: 6px solid rgba(0,0,0,0);
     .border_radius();
+  }
+  .title,.project-name{
+    opacity: .6;
   }
   .itemIcon img{
     width: 100%;
   }
-  .select .itemIcon{
-    border: 3px solid @itemIcon_brc;
+  .select {
+    .itemIcon{
+      border: 3px solid @itemIcon_brc;
+    }
+    .title,.project-name{
+      opacity: 1;
+    }
   }
   .desc{
     color: @font-grey;
@@ -97,12 +114,80 @@ atom-panel.modal.from-top.down{
 atom-panel.modal > .login-box{
   width: 100%;
 }
+.addnewframework-view{
+  .head{
+    border-bottom: 1px solid #666;
+    h2{
+      display: inline-block;
+      margin: 0;
+      height: 30px;
+      line-height: 20px;
+      padding-bottom: 10px;
+    }
+  }
+  .btn-group{
+    .btn{
+      .styleBtn();
+      border: none !important;
+    }
+  }
+}
 .login-box{
-  padding: 20px 15px;
-  border: 1px solid @border_color;
+  overflow: hidden;
   width: 415px;
-  .border_radius();
-
+  .head{
+    border-bottom: 1px solid #666;
+    h2{
+      display: inline-block;
+      margin: 0;
+      height: 30px;
+      line-height: 20px;
+      padding-bottom: 10px;
+    }
+    .icon{
+      margin-top: 3px;
+      cursor: pointer;
+    }
+  }
+  .content{
+    overflow: hidden;
+    padding: 30px 100px 40px;
+    img{
+      display: block;
+      margin: 0 auto 30px;
+    }
+    .label_view{
+      width: 20%;
+      font-size: 14px;
+      text-align: center;
+      color: #fff;
+    }
+    .input-container{
+      display: inline-block;
+      height: 30px;
+      width: 80%;
+      vertical-align: middle;
+    }
+    .login-row{
+      margin: 10px 0;
+      .login-btn{
+        .styleBtn();
+        width: 48%;
+        border: none;
+        line-height: 28px;
+      }
+      .login-btn:last-child {
+        margin-left: 10px;
+      }
+    }
+    .login-row:last-child{
+      padding-left: 20%;
+    }
+    .forgetpsw{
+      margin-left: 20%;
+    }
+  }
+  
   .desc{
     font-size: 2em;
     width: 55px;
@@ -115,9 +200,6 @@ atom-panel.modal > .login-box{
   .checkBox_label_view{
     font-size:12px;
     padding-bottom:2px;
-  }
-  .label_view{
-    font-size:18px;
   }
   .loginBtn{
     font-size:12px;
@@ -253,7 +335,7 @@ atom-panel.modal > .login-box{
 .select{
   // .hover();
 }
-.border_radius(@radius:3px){
+.border_radius(@radius:6px){
   border-radius: @radius;
 }
 
@@ -800,6 +882,26 @@ atom-panel.modal > .login-box{
   }
 }
 
+.settingsPanel{
+  .btn-group {
+    .btn{
+      border: none !important; 
+    }
+  }
+  .btn{
+    border: none;
+    margin: 0 5px;
+    line-height: 28px;
+    .styleBtn()
+
+  }
+  .accountMsg{
+    display: inline-block;
+    color: #fff;
+    margin-right: 10px;
+  }
+}
+
 .publishModulecheckbox input[type=checkbox]{
 
   padding-top: 2px;
@@ -833,5 +935,18 @@ atom-panel.modal > .login-box{
   color: @font-white;
   background: @btn_bgc;
   font-size: @font_size_small;
-  .border_radius();
+  border: none;
+  .border_radius(3px);
+}
+
+atom-text-editor::shadow .password-lines .line {
+  span.text:before {
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #fff !important;
+  }
+  span.text {
+    color:rgba(0, 0, 0, 0);
+  }
 }

@@ -308,18 +308,18 @@ class ModuleMessageItem extends View
 	@content: (obj) ->
 		@div class: 'col-sm-12 ',=>
 			@div class: 'col-sm-12', =>
-				@label '模块名称：'
+				@label '模块名称'
 				@label obj.moduleName
 			@div class : 'col-sm-12 ', =>
 				@div class : 'col-sm-6 ', =>
-					@label '上传版本：'
+					@label '上传版本'
 					@label obj.uploadVersion,outlet:"uploadVersion"
 				@div class : 'col-sm-6 ', =>
-					@label '服务器版本：'
+					@label '服务器版本'
 					@label obj.version,outlet:"version",value:obj.build
 			@div class : 'col-sm-12 ', =>
 				@div class : 'col-sm-2', =>
-					@label '更新日志：'
+					@label '更新日志'
 				@div class : 'col-sm-6 ', =>
 					@subview 'updateLog', new TextEditorView(mini: true,placeholderText: 'update log...')
 				@div class : 'col-sm-4 publishModulecheckbox', =>

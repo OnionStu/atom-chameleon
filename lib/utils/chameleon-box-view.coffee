@@ -16,7 +16,7 @@ class ChameleonBoxView extends View
       @div class: 'box', outlet: 'contentBox', =>
         if options?
           @subview  'contentView', options.subview
-      @div class: 'clearfix', =>
+      @div class: 'box-actions clearfix', =>
         @button desc.cancel, class: 'btn cancel pull-left', outlet: 'cancelBtn', click: 'onCancelClick'
         @button desc.next, class: 'btn next pull-right', outlet: 'nextBtn', click: 'onNextClick'
         @button desc.prev, class: 'btn prev pull-right', outlet: 'prevBtn', click: 'onPrevClick'

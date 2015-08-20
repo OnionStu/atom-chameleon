@@ -11,8 +11,9 @@ class addNewFrameworkView extends View
   LoadingMask: loadingMask
   frameworksDir: pathM.join desc.chameleonHome,'src','frameworks'
   @content: ->
-    @div class: 'addnewframework-view container', =>
-      @h1 '添加框架'
+    @div class: 'addnewframework-view', =>
+      @div class: 'head', =>
+        @h2 '添加框架'
       @div class: 'inputContianer', =>
         @label for:'gitAddress', 'Git地址:'
         @subview 'gitAddress', new TextEditorView(mini: true, placeholderText: '请输入Git地址')
