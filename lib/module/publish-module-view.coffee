@@ -1,4 +1,4 @@
-# desc = require '../utils/text-d	escription'
+desc = require '../utils/text-description'
 util = require '../utils/util'
 {$,TextEditorView,View} = require 'atom-space-pen-views'
 {File,Directory} = require 'atom'
