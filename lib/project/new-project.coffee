@@ -13,7 +13,7 @@ class NewProjectView extends View
 
   @content: (params) ->
     @div class: 'new-project', =>
-        @h2 '请选择要创建的项目类型:'
+        @h2 '请选择要创建的应用类型:'
         @div class: 'flex-container', =>
           @button class:'btn btn-lg btn-action', outlet: 'prevPage',click: 'onPrevPageClick', =>
             @img src: desc.getImgPath 'arrow_left.png'
@@ -21,11 +21,11 @@ class NewProjectView extends View
             @div class: 'new-item text-center', 'data-type': 'empty',  =>
               @div class: 'itemIcon', =>
                 @img src: desc.getImgPath 'icon_empty.png'
-              @h3 '空白项目',class: 'project-name'
+              @h3 '空白应用',class: 'project-name'
             @div class: 'new-item text-center', 'data-type': 'frame', =>
               @div class: 'itemIcon', =>
                 @img src: desc.getImgPath 'icon_frame.png'
-              @h3 '自带框架项目',class: 'project-name'
+              @h3 '自带框架应用',class: 'project-name'
             @div class: 'new-item text-center', 'data-type': 'template',  =>
               @div class: 'itemIcon', =>
                 @img src: desc.getImgPath 'icon_template.png'
@@ -43,12 +43,12 @@ class NewProjectView extends View
       [
         {
           dataName:''
-          displayName: '空白项目'
+          displayName: '空白应用'
           type: 'empty'
         },
         {
           dataName:''
-          displayName: '自带框架项目'
+          displayName: '自带框架应用'
           type: 'frame'
         },
         {

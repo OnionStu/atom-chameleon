@@ -12,7 +12,7 @@ class CreateModuleInfoView extends View
       @h2 desc.CreateModuleTitle
       @div class: 'form-horizontal', =>
         @div class: 'form-group', =>
-          @label '模块所在项目', class: 'col-sm-3 control-label'
+          @label '模块所在应用', class: 'col-sm-3 control-label'
           @div class: 'col-sm-9', =>
             @select class: 'form-control', outlet: 'selectProject'
         @div class: 'form-group', =>

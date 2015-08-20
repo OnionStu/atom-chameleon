@@ -43,10 +43,10 @@
     'label':'变色龙QDT'
     'submenu':[
       {
-        'label':'项目'
+        'label':'应用'
         'submenu':[
           {
-            'label':'创建项目',
+            'label':'创建应用',
             'command':'chameleon:create-project'
           }
           {

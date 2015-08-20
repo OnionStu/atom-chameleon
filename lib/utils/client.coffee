@@ -3,9 +3,10 @@ config = require '../../config/config'
 request = require 'request'
 util = require './util'
 j = request.jar()
+Settings = require '../settings/settings'
 
 module.exports =
-
+  settings: Settings
   send: (params) ->
     defaultsParams =
       baseUrl: config.serverUrl
@@ -16,7 +17,7 @@ module.exports =
       params.jar = j
     params = $.extend defaultsParams, params
     cb = (err, httpResponse, body) =>
-      # console.log httpResponse
+      console.log httpResponse
       # console.log err
       # console.log body
       if !err && httpResponse.statusCode is 200
@@ -26,7 +27,10 @@ module.exports =
         util.removeStore('chameleon-cookie')
         util.removeStore('chameleon')
         alert '没有登录或登录超时，请重新登录'
-        params.error(err)
+        atom.workspace.getPanes()[0].destroyActiveItem()
+        @settings.activate()
+        util.rumAtomCommand('chameleon:login')
+        # params.error(err)
       else
         params.error(err)
     request params, cb

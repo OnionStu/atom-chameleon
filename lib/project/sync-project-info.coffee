@@ -11,7 +11,7 @@ class SyncProjectView extends View
 
   @content: (params) ->
     @div class: 'new-project', =>
-      @h2 '请填写要创建的项目信息:'
+      @h2 '请填写要创建的应用信息:'
       @div class: 'form-horizontal', =>
         @div class: 'form-group', =>
           @label '请输入应用标识', class: 'col-sm-3 control-label'

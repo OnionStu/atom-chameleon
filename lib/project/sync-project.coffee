@@ -14,7 +14,7 @@ class SyncProjectView extends View
     @div class: 'sync-project container', =>
       @div class: 'row', =>
         @div class: 'col-md-12', =>
-          @h2 '导入项目'
+          @h2 '导入应用'
           @ul class: 'projectList', outlet: 'projectList'
 
   pageSize: 10
@@ -29,6 +29,7 @@ class SyncProjectView extends View
     @parentView.disableNext()
 
     if !Util.isLogin()
+      atom.workspace.getPanes()[0].destroyActiveItem()
       @settings.activate()
       @parentView.closeView()
       alert '请先登录'
@@ -57,9 +58,9 @@ class SyncProjectView extends View
           @.children(".loading-mask").remove()
         error: (err) =>
           # alert err
-          @settings.activate()
-          @.children(".loading-mask").remove()
-          @parentView.closeView()
+          # @settings.activate()
+          # @.children(".loading-mask").remove()
+          # @parentView.closeView()
 
       @.append(LoadingMask)
       client.getUserProjects params
@@ -90,4 +91,4 @@ class notProjectItem extends View
   @content: ->
     @li class: 'sync-item inline-block new-item text-center',  =>
       @div class: 'add-icon icon icon-octoface'
-      @h3 '暂无项目', class: 'project-name'
+      @h3 '暂无应用', class: 'project-name'

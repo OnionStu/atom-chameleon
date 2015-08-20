@@ -86,7 +86,7 @@ class UploadProjectInfoView extends View
 					@.find("select option[value=' ']").remove()
 					@selectUploadProject.prepend optionStr
 				else
-					alert "请选择变色龙项目"
+					alert "请选择变色龙应用"
 				@selectUploadProject.get(0).selectedIndex = 0
 				@showProjectMessage(@selectUploadProject.val())
 			else

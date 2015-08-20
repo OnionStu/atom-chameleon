@@ -218,7 +218,7 @@ class BuildProjectInfoView extends View
 					@.find("select option[value=' ']").remove()
 					@selectProject.prepend optionStr
 				else
-					alert "请选择变色龙项目"
+					alert "请选择变色龙应用"
 				@selectProject.get(0).selectedIndex = 0
 			else
 				@selectProject.get(0).selectedIndex = 0

@@ -25,7 +25,7 @@ class PublishModuleInfoView extends View
 				@div class: 'new-project', =>
 					@div class:'form-horizontal', =>
 				    @div class: 'form-group', =>
-				    @h2 '选择项目'
+				    @h2 '选择应用'
 			    @div class: 'form-group', =>
 				    @label '路径', class: 'col-sm-3 control-label'
 				    @div class: 'col-sm-9', =>
@@ -231,20 +231,20 @@ class PublishModuleInfoView extends View
 						project_path = PathM.join project_path,"modules"
 						if !fs.existsSync(project_path)
 							# _parentView.enable = false
-							returnMessage = "请选择变色龙项目（不存在modules文件）"
+							returnMessage = "请选择变色龙应用（不存在modules文件）"
 							returnStatus = true
 						modulesStats = fs.statSync(project_path)
 						if modulesStats.isFile()
 							# _parentView.enable = false
-							returnMessage = "请选择变色龙项目（不存在modules文件）"
+							returnMessage = "请选择变色龙应用（不存在modules文件）"
 							returnStatus = true
 					else
 						# _parentView.enable = false
-						returnMessage = "请选择变色龙项目(不存在 appConfig.json)"
+						returnMessage = "请选择变色龙应用(不存在 appConfig.json)"
 						returnStatus = true
 				else
 					# _parentView.enable = false
-					returnMessage = "请选择变色龙项目"
+					returnMessage = "请选择变色龙应用"
 					returnStatus = true
 			else
 				_parentView.enable = false
