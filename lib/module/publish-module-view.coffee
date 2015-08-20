@@ -5,7 +5,6 @@ util = require '../utils/util'
 PathM = require 'path'
 UtilExtend = require './../utils/util-extend'
 ChameleonBox = require '../utils/chameleon-box-view'
-Settings = require '../settings/settings'
 fs = require 'fs-extra'
 client = require '../utils/client'
 
@@ -169,14 +168,8 @@ class PublishModuleInfoView extends View
 			@parentView.closeView()
 
 	attached: ->
-		@settings = Settings
 		@appPath.setText("")
-		if !util.isLogin()
-			@settings.activate()
-			@parentView.enable = false
-			alert '请先登录'
-		else
-			@attached2()
+		@attached2()
 
 	attached2: ->
 		$('#tips').fadeOut()

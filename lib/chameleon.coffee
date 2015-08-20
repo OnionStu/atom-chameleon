@@ -8,6 +8,7 @@ BuildProject = require './project/build-project'
 UploadProject = require './project/upload-project'
 # ConfigureGlobal = require './configure/global/global'
 Settings = require './settings/settings'
+util = require './utils/util'
 {CompositeDisposable} = require 'atom'
 
 module.exports = Chameleon =
@@ -68,20 +69,23 @@ module.exports = Chameleon =
 
   toggleBuildProject: (state) ->
     # console.log BuildProject
-    @buildProject.activate(state)
-    @buildProject.openView()
+    if util.isLogin()
+      @buildProject.activate(state)
+      @buildProject.openView()
 
   toggleUploadProject: (state) ->
-    @uploadProject.activate(state)
-    @uploadProject.openView()
+    if util.isLogin()
+      @uploadProject.activate(state)
+      @uploadProject.openView()
 
   toggleCreateModule:(state) ->
     @createModule.activate(state)
     @createModule.openView()
 
   togglePublishModule:(state) ->
-    @publishModule.activate(state)
-    @publishModule.openView()
+    if util.isLogin()
+      @publishModule.activate(state)
+      @publishModule.openView()
 
   loginViewOpen:(state) ->
     @login.activate(state)
