@@ -7,6 +7,7 @@ _ = require 'underscore-plus'
 dialog = require('remote').require 'dialog'
 {File,Directory} = require 'atom'
 request = require 'request'
+# Settings = require '../settings/settings'
 module.exports = Util =
 
   rumAtomCommand: (command) ->
@@ -114,6 +115,9 @@ module.exports = Util =
   isLogin: () ->
     user = @store('chameleon').account_id
     if typeof user is 'undefined'
+      # Settings.activate()
+      alert('请先登录')
+      @rumAtomCommand('chameleon:login')
       return false
     else
       return true

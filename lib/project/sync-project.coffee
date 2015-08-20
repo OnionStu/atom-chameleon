@@ -1,6 +1,5 @@
 desc = require '../utils/text-description'
 {$, View} = require 'atom-space-pen-views'
-Settings = require '../settings/settings'
 Util = require '../utils/util'
 client = require '../utils/client'
 loadingMask = require '../utils/loadingMask'
@@ -25,15 +24,9 @@ class SyncProjectView extends View
     @element
 
   attached: ->
-    @settings = Settings
     @parentView.disableNext()
 
-    if !Util.isLogin()
-      atom.workspace.getPanes()[0].destroyActiveItem()
-      @settings.activate()
-      @parentView.closeView()
-      alert '请先登录'
-    else
+    if Util.isLogin()
       LoadingMask = new @LoadingMask()
       @parentView.setNextBtn()
       @parentView.setPrevBtn('back')
@@ -57,10 +50,7 @@ class SyncProjectView extends View
             @projectList.append projectItem
           @.children(".loading-mask").remove()
         error: (err) =>
-          # alert err
-          # @settings.activate()
-          # @.children(".loading-mask").remove()
-          # @parentView.closeView()
+          alert err
 
       @.append(LoadingMask)
       client.getUserProjects params
