@@ -10,8 +10,8 @@
 @font-grey:#606676;
 @itemIcon_brc:#1889d9;
 @btn_bgc:#525564;
-@font_size_normal:14px;
-@font_size_small:12px;
+@font_size_title:14px;
+@font_size_article:12px;
 
 
 
@@ -44,12 +44,12 @@ atom-panel.modal.from-top.down{
   color: @font-white;
   position: relative;
 
-  h2{
-    font-size: @font_size_normal;
+  .box-subtitle{
+    font-size: @font_size_article;
     margin-top: 5px;
   }
   .box-title{
-    font-size: @font_size_normal;
+    font-size: @font_size_title;
     color: @font-white;
     padding: 15px 15px 15px 10px;
     border-bottom: 1px solid #444;
@@ -111,6 +111,36 @@ atom-panel.modal.from-top.down{
     color: @font-grey;
   }
 }
+
+.box-form{
+  width: 500px;
+  margin: auto;
+  .form-row{
+    margin-bottom: 20px;
+  }
+  .form-row.msg{
+    padding-left: 105px;
+  }
+  .form-row.in-row{
+    margin-top: -15px;
+  }
+  .row-title{
+    position: relative;
+    text-align: right;
+    margin-right: 15px;
+    margin-bottom: 0;
+    width: 95px;
+    height: 30px;
+    line-height: 30px;
+    font-size: @font_size_article;
+  }
+  .row-content{
+    position: relative;
+    width: 390px;
+    height: 30px;
+  }
+}
+
 atom-panel.modal > .login-box{
   width: 100%;
 }
@@ -187,7 +217,7 @@ atom-panel.modal > .login-box{
       margin-left: 20%;
     }
   }
-  
+
   .desc{
     font-size: 2em;
     width: 55px;
@@ -885,7 +915,7 @@ atom-panel.modal > .login-box{
 .settingsPanel{
   .btn-group {
     .btn{
-      border: none !important; 
+      border: none !important;
     }
   }
   .btn{
@@ -934,7 +964,7 @@ atom-panel.modal > .login-box{
   height: 28px;
   color: @font-white;
   background: @btn_bgc;
-  font-size: @font_size_small;
+  font-size: @font_size_article;
   border: none;
   .border_radius(3px);
 }
