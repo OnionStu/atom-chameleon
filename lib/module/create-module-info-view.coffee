@@ -28,7 +28,7 @@ class CreateModuleInfoView extends View
           @label desc.moduleName, class: 'row-title pull-left'
           @div class: 'row-content pull-left', =>
             @subview 'moduleName', new TextEditorView(mini: true)
-        @div class: 'form-row clearfix msg', =>
+        @div class: 'form-row msg clearfix hide', =>
           @div desc.createModuleErrorMsg, class: 'text-warning', outlet: 'errorMsg'
 
   initialize: ->
