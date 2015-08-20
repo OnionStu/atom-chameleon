@@ -10,25 +10,23 @@ UtilExtend = require './../utils/util-extend'
 class UploadProjectInfoView extends View
   @content: ->
     @div class: "upload_project_view", =>
-      @div outlet: "select_upload_project", class:'form-horizontal form_width', =>
-          @div class: 'form-group', =>
-            @label '选择构建的应用', class: 'col-sm-3 text-align-right '
-            @div class: 'col-sm-9 ', =>
+      @div outlet: "select_upload_project", class:'box-form form_width', =>
+          @div class: 'form-row clearfix', =>
+            @label '选择上传的应用', class: 'row-title pull-left'
+            @div class: 'row-content pull-left', =>
               @select class: 'form-control', outlet: 'selectUploadProject'
-          @div class: 'form-group', =>
-            @label '应用名', class: 'col-sm-3 text-align-right'
-            @div class: 'col-sm-9 ', =>
+          @div class: 'form-row clearfix', =>
+            @label '应用名称', class: 'row-title pull-left'
+            @div class: 'row-content pull-left', =>
               @label outlet: "name"
-          @div class: 'form-group', =>
-            @label '应用标识', class: 'col-sm-3 text-align-right'
-            @div class: 'col-sm-9 ', =>
+          @div class: 'form-row clearfix', =>
+            @label '应用标识', class: 'row-title pull-left'
+            @div class: 'row-content pull-left', =>
               @label outlet: "identifier"
-          @div class: 'form-group', =>
-            @label '应用关联模块', class: 'col-sm-3 text-align-right'
-            @div class: 'col-sm-9 ', =>
+          @div class: 'form-row clearfix', =>
+            @label '应用关联模块', class: 'row-title pull-left'
+            @div class: 'row-content pull-left', =>
               @div outlet: "moduleList"
-          # @div class: "image", =>
-          #   @img src: "http://qr.liantu.com/api.php?text=http://baidu.com"
 
   attached: ->
     @parentView.nextBtn.attr('disabled',false)
@@ -95,7 +93,7 @@ class UploadProjectInfoView extends View
         #
         str = ""
         getMessage = (key,value) =>
-          str = str + "<label class='col-sm-4'>#{key}&nbsp;:&nbsp;#{value}</label>"
+          str = str + "<label>#{key}&nbsp;:&nbsp;#{value}</label>"
         getMessage key,value for key,value of contentList['modules']
         console.log str
         @moduleList.html(str)
