@@ -10,7 +10,7 @@ class NewProjectView extends View
 
   @content: (params) ->
     @div class: 'new-project', =>
-      @h2 '请填写要创建的项目信息:', class: 'box-subtitle'
+      @h2 '请填写要创建的应用信息:', class: 'box-subtitle'
       @div class: 'box-form', =>
         @div class: 'form-row clearfix', =>
           @label '请输入应用标识', class: 'row-title pull-left'

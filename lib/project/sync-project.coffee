@@ -1,6 +1,5 @@
 desc = require '../utils/text-description'
 {$, View} = require 'atom-space-pen-views'
-Settings = require '../settings/settings'
 Util = require '../utils/util'
 client = require '../utils/client'
 loadingMask = require '../utils/loadingMask'
@@ -14,7 +13,7 @@ class SyncProjectView extends View
     @div class: 'sync-project container', =>
       @div class: 'row', =>
         @div class: 'col-md-12', =>
-          @h2 '导入项目'
+          @h2 '导入应用'
           @ul class: 'projectList', outlet: 'projectList'
 
   pageSize: 10
@@ -25,14 +24,9 @@ class SyncProjectView extends View
     @element
 
   attached: ->
-    @settings = Settings
     @parentView.disableNext()
 
-    if !Util.isLogin()
-      @settings.activate()
-      @parentView.closeView()
-      alert '请先登录'
-    else
+    if Util.isLogin()
       LoadingMask = new @LoadingMask()
       @parentView.setNextBtn()
       @parentView.setPrevBtn('back')
@@ -56,10 +50,7 @@ class SyncProjectView extends View
             @projectList.append projectItem
           @.children(".loading-mask").remove()
         error: (err) =>
-          # alert err
-          @settings.activate()
-          @.children(".loading-mask").remove()
-          @parentView.closeView()
+          alert err
 
       @.append(LoadingMask)
       client.getUserProjects params
@@ -90,4 +81,4 @@ class notProjectItem extends View
   @content: ->
     @li class: 'sync-item inline-block new-item text-center',  =>
       @div class: 'add-icon icon icon-octoface'
-      @h3 '暂无项目', class: 'project-name'
+      @h3 '暂无应用', class: 'project-name'

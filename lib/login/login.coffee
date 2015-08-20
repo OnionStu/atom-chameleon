@@ -56,10 +56,9 @@ module.exports = Login =
         switch data.flag
           when '0'
             alert "登录失败：邮箱或密码不正确"
-          when '1'
+          when '1' or '3'
             util.store('chameleon', data)
             util.store('chameleon-cookie', cookie)
-            alert "登录成功"
             @closeView()
             atom.workspace.getPanes()[0].destroyActiveItem()
             @settings.activate()

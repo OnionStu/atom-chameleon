@@ -12,7 +12,7 @@ class CreateModuleInfoView extends View
       @h2 desc.CreateModuleTitle, class: 'box-subtitle'
       @div class: 'box-form', =>
         @div class: 'form-row clearfix', =>
-          @label '模块所在项目', class: 'row-title pull-left'
+          @label '模块所在应用', class: 'row-title pull-left'
           @div class: 'row-content pull-left', =>
             @select class: 'form-control', outlet: 'selectProject'
         @div class: 'form-row clearfix', =>

@@ -5,7 +5,6 @@ util = require '../utils/util'
 PathM = require 'path'
 UtilExtend = require './../utils/util-extend'
 ChameleonBox = require '../utils/chameleon-box-view'
-Settings = require '../settings/settings'
 fs = require 'fs-extra'
 client = require '../utils/client'
 
@@ -14,8 +13,8 @@ class PublishModuleInfoView extends View
 	@content: ->
 		@div class : 'upload-module container', =>
 			@div outlet : 'first' , =>
-				@label desc.publishModulePageOneTitle
-				@div outlet : 'moduleList',class: 'col-sm-12'
+				@h2 desc.publishModulePageOneTitle, class: 'box-subtitle'
+				@div outlet : 'moduleList',class: 'box-form'
 			@div outlet : 'second',class : 'hide', =>
 				@label desc.publishModulePageTwoTitle
 				@label id:'tips'
@@ -23,12 +22,12 @@ class PublishModuleInfoView extends View
 				@input type:"hidden",id:"projectIdentifier"
 			@div outlet : 'third', class : 'hide', =>
 				@div class: 'new-project', =>
-			    @div class: 'form-group', =>
-						@div class: 'col-sm-3', =>
-							@label '请选择路径'
-						@div class: 'col-sm-9',=>
-	            @subview 'appPath', new TextEditorView(mini: true)
-	            @span class: 'inline-block status-added icon icon-file-directory openFolder', click: 'open'
+					@div class: 'box-form', =>
+						@div class: 'form-row clearfix', =>
+		          @label '请选择路径', class: 'row-title pull-left'
+		          @div class: 'row-content pull-left', =>
+		            @subview 'appPath', new TextEditorView(mini: true)
+		            @span class: 'inline-block status-added icon icon-file-directory openFolder', click: 'open'
 
 	open : ->
 		console.log "ssss"
@@ -175,14 +174,8 @@ class PublishModuleInfoView extends View
 			@parentView.closeView()
 
 	attached: ->
-		@settings = Settings
 		@appPath.setText("")
-		if !util.isLogin()
-			@settings.activate()
-			@parentView.enable = false
-			alert '请先登录'
-		else
-			@attached2()
+		@attached2()
 
 	attached2: ->
 		$('#tips').fadeOut()
@@ -235,20 +228,20 @@ class PublishModuleInfoView extends View
 						project_path = PathM.join project_path,"modules"
 						if !fs.existsSync(project_path)
 							# _parentView.enable = false
-							returnMessage = "请选择变色龙项目（不存在modules文件）"
+							returnMessage = "请选择变色龙应用（不存在modules文件）"
 							returnStatus = true
 						modulesStats = fs.statSync(project_path)
 						if modulesStats.isFile()
 							# _parentView.enable = false
-							returnMessage = "请选择变色龙项目（不存在modules文件）"
+							returnMessage = "请选择变色龙应用（不存在modules文件）"
 							returnStatus = true
 					else
 						# _parentView.enable = false
-						returnMessage = "请选择变色龙项目(不存在 appConfig.json)"
+						returnMessage = "请选择变色龙应用(不存在 appConfig.json)"
 						returnStatus = true
 				else
 					# _parentView.enable = false
-					returnMessage = "请选择变色龙项目"
+					returnMessage = "请选择变色龙应用"
 					returnStatus = true
 			else
 				_parentView.enable = false
