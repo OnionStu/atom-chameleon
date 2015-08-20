@@ -164,7 +164,7 @@ class BuildProjectInfoView extends View
 			@selectProject.empty()
 			if projectNum isnt 0
 				@setSelectItem path for path in projectPaths
-			else
+			if @selectProject.children().length is 0
 				optionStr = "<option value=' '> </option>"
 				@selectProject.append optionStr
 			optionStr = "<option value='其他'>其他</option>"
