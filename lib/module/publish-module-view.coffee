@@ -27,9 +27,9 @@ class PublishModuleInfoView extends View
 		          @label '请选择路径', class: 'row-title pull-left'
 		          @div class: 'row-content pull-left', =>
 		            @subview 'appPath', new TextEditorView(mini: true)
-		            @span class: 'inline-block status-added icon icon-file-directory openFolder', click: 'open'
+		            @span outlet:'openFolder', class: 'inline-block status-added icon icon-file-directory openFolder'
 
-	open : ->
+	open :(e) ->
 		console.log "ssss"
 		atom.pickFolder (paths) =>
 			if paths?
@@ -57,39 +57,46 @@ class PublishModuleInfoView extends View
 		_moduleList = @moduleList
 		length = 0
 		_parentView = @parentView
-		printName = (file) =>
-			console.log file
-			if file.isDirectory()
-				path =PathM.join file.getPath(),"package.json"
-				file2 = new File(path)
-				file2.exists().then (resolve,reject) =>
-					if resolve
-						file2.read(false).then (content) =>
-							length = length + 1
-							contetnList = JSON.parse(content)
-							_moduleList.append('<div class="col-sm-4"><div class="checkboxFive"><input id="'+file2.getPath()+'" value="'+file2.getPath()+'" type="checkbox" class="hide"><label for="'+file2.getPath()+'"></label></div><label for="'+file2.getPath()+'"class="label-empty">'+contetnList['name']+'</label></div>')
+		printName = (filePath) =>
+			# console.log filePath
+			if filePath is ".gitHolder" || filePath is ".." || filePath is '.'
+				return
+			if fs.existsSync(filePath)
+				stats = fs.statSync(filePath)
+				# console.log "exists"
+				if stats.isDirectory()
+					# console.log "isDirectory"
+					path =PathM.join filePath,"package.json"
+					# console.log path
+					if fs.existsSync(path)
+						# console.log "path exists"
+						stats = fs.statSync(path)
+						if stats.isFile()
+							# console.log "is file"
+							contetnList = JSON.parse(fs.readFileSync(path))
+							# console.log contetnList
+							# console.log contetnList['identifier'],contetnList['name']
+							if contetnList['identifier']? and contetnList['name']?
+								length = length + 1
+								# console.log "length ++ "
+								_moduleList.append('<div class="col-sm-4"><div class="checkboxFive"><input id="'+path+'" value="'+path+'" type="checkbox" class="hide"><label for="'+path+'"></label></div><label for="'+path+'"class="label-empty">'+contetnList['name']+'</label></div>')
 		if fs.existsSync(appPath)
 			stats = fs.statSync(appPath)
 			if stats.isDirectory()
 				list = fs.readdirSync(appPath)
 				_moduleList.empty()
-				printName file for file in list
-		directory.exists().then (resolve, reject) =>
-			if resolve
-				list = directory.getEntriesSync()
-				_moduleList.empty()
-				printName file for file in list
-				console.log length
+				printName PathM.join appPath,file for file in list
+				# console.log length
 				if length == 0
 					_parentView.enable = false
 					alert "没有任何模块"
 					return
 				@third.addClass('hide')
 				@first.removeClass('hide')
-			else
-				alert '不存在路径['+appPath+']'
-				@parentView.closeView()
-		console.log 'init finish'
+		else
+			alert '不存在路径['+appPath+']'
+			@parentView.closeView()
+		# console.log 'init finish'
 	nextStep: ->
 		_parentView = @parentView
 		# console.log 'click next button'
@@ -175,6 +182,7 @@ class PublishModuleInfoView extends View
 
 	attached: ->
 		@appPath.setText("")
+		@openFolder.on 'click',(e) => @open(e)
 		@attached2()
 
 	attached2: ->
