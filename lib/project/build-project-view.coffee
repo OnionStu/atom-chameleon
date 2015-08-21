@@ -46,11 +46,11 @@ class BuildProjectInfoView extends View
           @div class: 'form-group', =>
             @label '应用标识' , class: 'col-sm-3 text-align-right'
             # @div class: 'col-sm-9', =>
-            @label class: 'col-sm-9',outlet:'identifier'
+            @label class: 'col-sm-9 disabled-text',outlet:'identifier'
           @div class: 'form-group', =>
             @label "构建平台", class: 'col-sm-3 text-align-right'
             # @div class: 'col-sm-9', =>
-            @label class: 'col-sm-9',outlet:'platform'
+            @label class: 'col-sm-9 disabled-text',outlet:'platform'
         @div class: 'form-horizontal', outlet: 'iosForm', =>
           # @div class: 'form-group', =>
           #   @label '应用logo' , class: 'col-sm-3 control-label'
@@ -89,27 +89,27 @@ class BuildProjectInfoView extends View
           @div class: "col-sm-12 text-center", =>
             @span "" ,class: "androidTips"
       @div outlet: 'urlCodeList', =>
-        @div class: 'col-xs-12', =>
-          @h2 "返回二维码"
-        @div class:'text-center',  =>
-          @div class: 'col-xs-6', outlet: 'IOSCODE' , class:'text-center',=>
-            @div class: 'col-xs-12', =>
+        @div class: 'col-sm-12', =>
+          @label "构建成功后返回的二维码"
+        @div class:'col-sm-12 text-center',  =>
+          @div class: 'col-sm-6 text-center', outlet: 'IOSCODE' ,=>
+            @div class: 'col-sm-12', =>
               @img class:'codeImg', outlet: 'iOSCode',src: desc.getImgPath 'iphone.png'
-            @div class: 'col-xs-12 label_pad', =>
+            @div class: 'col-sm-12 label_pad', =>
               @img src: desc.getImgPath 'icon_apple02.png'
               @label "iOS",class:'iosTips'
-            @div class: 'col-xs-12', =>
+            @div class: 'col-sm-12', =>
               @a outlet:'iosUrl'
             @div class: 'col-xs-12', outlet: 'ios_build_result_tips'
-          @div class: 'col-xs-6', outlet: 'ANDROIDCODE', class:'text-center', =>
-            @div class: 'col-xs-12', =>
+          @div class: 'col-sm-6 text-center', outlet: 'ANDROIDCODE', =>
+            @div class: 'col-sm-12', =>
               @img class:'codeImg',outlet: 'androidCode', src: desc.getImgPath 'android.png'
-            @div class: 'col-xs-12 label_pad', =>
+            @div class: 'col-sm-12 label_pad', =>
               @img src: desc.getImgPath 'icon_android02.png'
               @label "Andoird",class:'androidTips'
-            @div class: 'col-xs-12', =>
+            @div class: 'col-sm-12', =>
               @a outlet:'androidUrl'
-            @div class: 'col-xs-12', outlet: 'android_build_result_tips'
+            @div class: 'col-sm-12', outlet: 'android_build_result_tips'
 
   clickIcon:(e) ->
     console.log "hinhs"
@@ -148,6 +148,8 @@ class BuildProjectInfoView extends View
     @selectApp.removeClass('hide')
     @buildingTips.addClass('hide')
     @urlCodeList.addClass('hide')
+    # @urlCodeList.removeClass('hide')
+    # return
     @IOSCODE.addClass('hide')
     @ANDROIDCODE.addClass('hide')
     @parentView.nextBtn.attr('disabled',false)
@@ -292,7 +294,7 @@ class BuildProjectInfoView extends View
           if checkboxList.length is 1
             @androidBtn.attr( 'disabled', true)
         else
-          @platform.html('android')
+          @platform.html('Android')
           @androidBtn.attr( 'disabled', false)
           @iosBtn.attr( 'disabled', true)
           @iosForm.hide()

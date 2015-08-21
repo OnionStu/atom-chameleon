@@ -311,29 +311,31 @@ class PublishModuleInfoView extends View
 class ModuleMessageItem extends View
 
 	@content: (obj) ->
-		@div class: 'col-sm-12 ',=>
-			@div class: 'col-sm-12', =>
-				@label '模块名称'
+		@div class: 'col-sm-6 ',=>
+			@div class: 'col-sm-12 upload-view-padding', =>
+				@label '模块名称：'
 				@label obj.moduleName
-			@div class : 'col-sm-12 ', =>
-				@div class : 'col-sm-6 ', =>
-					@label '上传版本'
-					@label obj.uploadVersion,outlet:"uploadVersion"
-				@div class : 'col-sm-6 ', =>
-					@label '服务器版本'
-					@label obj.version,outlet:"version",value:obj.build
-			@div class : 'col-sm-12 ', =>
-				@div class : 'col-sm-2', =>
-					@label '更新日志'
-				@div class : 'col-sm-6 ', =>
-					@subview 'updateLog', new TextEditorView(mini: true,placeholderText: 'update log...')
-				@div class : 'col-sm-4 publishModulecheckbox', =>
-					@button '上传',value:obj.modulePath,outlet:"uploadBtn",class:'upload_module_btn',click: 'postModuleMessage'
-					@button '应用到',value:obj.identifier,class:'',click: 'showAppList'
+			@div class : 'col-sm-12 upload-view-padding', =>
+				@label '上传版本：'
+				@label obj.uploadVersion,outlet:"uploadVersion"
+			@div class : 'col-sm-12 upload-view-padding', =>
+				@label '服务器版本：'
+				@label obj.version,outlet:"version",value:obj.build
+			@div class : 'col-sm-12 upload-view-padding', =>
+				@label '更新日志：'
+			@div class : 'col-sm-12 upload-view-padding', =>
+				@subview 'updateLog', new TextEditorView(mini: true,placeholderText: 'update log...')
+			@div class : 'col-sm-12 publishModulecheckbox upload-view-padding', =>
+				@button '上传',value:obj.modulePath,outlet:"uploadBtn",class:'btn',click: 'postModuleMessage'
+				@button '应用到',value:obj.identifier,class:'btn',click: 'showAppList'
 					# @button '上传并应用',value:obj.modulePath,class:'btn'
-			@div class : 'col-sm-12',=>
+			@div class : 'col-sm-12 upload-view-padding',=>
 				@label "正在打包文件......",class:"#{obj.identifier}"
 			@div class : 'col-sm-12 hide  app-list-view',outlet:"appListView"
+
+	# initialize: ->
+	# 	@.find(".editor-contents--private").addClass("TextEditorView-heigth")
+	# 	console.log "initialize"
 
 	fileChange: (param1,param2) ->
 		console.log $(param2).val()
@@ -358,9 +360,9 @@ class ModuleMessageItem extends View
 						object.name = object.name #+ "(#{object.id})"
 					else
 						object.name = object.id #+ "(#{object.id})"
-					options = options + "<div class='col-sm-4'><div class='checkboxFive'><input type='checkbox' class='hide' id='#{object.id}' value='#{object.id}' /><label for='#{object.id}'></label></div><label for='#{object.id}' class='label-empty'>#{object.name}</label></div>"
+					options = options + "<div class='col-sm-6 upload-view-padding'><div class='checkboxFive'><input type='checkbox' class='hide' id='#{object.id}' value='#{object.id}' /><label for='#{object.id}'></label></div><label for='#{object.id}' class='label-empty'>#{object.name}</label></div>"
 				printAppList object for object in data
-				options = options + "<div class='col-sm-12 padding-none'><button name='hideAppListbtn' class='btn-app-list-right'>取消</button><button name='uploadMApp'>确认</button><div>"
+				options = options + "<div class='col-sm-12 upload-view-padding'><button name='hideAppListbtn' class='btn'>取消</button><button class='btn' name='uploadMApp'>确认</button><div>"
 				if length == 0
 					options = "还没与应用关联，请到网页客户端添加关联。"
 				# console.log @.find("button[name=uploadMApp]")
