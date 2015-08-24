@@ -279,8 +279,10 @@ class PublishModuleInfoView extends View
 				console.log fileLength
 				stats = fs.statSync(filePath)
 				if stats.isDirectory()
+					basename = PathM.basename filePath
 					packageFilePath = PathM.join filePath,"package.json"
 					if fs.existsSync(packageFilePath)
+						# alert "#{packageFilePath}"
 						packageFileStats = fs.statSync(packageFilePath)
 						if packageFileStats.isFile()
 							fileLength = fileLength + 1
@@ -289,7 +291,7 @@ class PublishModuleInfoView extends View
 									console.log "error"
 								else
 								  contentList = JSON.parse(data)
-									_moduleList.append('<div class="col-sm-4"><div class="checkboxFive"><input id="'+packageFilePath+'" value="'+packageFilePath+'" type="checkbox" class="hide" /><label for="'+packageFilePath+'"></label></div><label for="'+packageFilePath+'" class="label-empty">'+contentList['name']+'</label></div>')
+									_moduleList.append('<div class="col-sm-4"><div class="checkboxFive"><input id="module-upload'+basename+'" value="'+packageFilePath+'" type="checkbox" class="hide" /><label for="module-upload'+basename+'"></label></div><label for="module-upload'+basename+'" class="label-empty">'+contentList['name']+'</label></div>')
 									# console.log data
 							options =
 								encoding: "UTF-8"
@@ -501,9 +503,9 @@ class ModuleMessageItem extends View
 							#否则  +1
 							contentList['build'] = parseInt(_version.attr('value'))
 							contentList['build'] = contentList['build'] + 1
-							console.log contentList['build']
+							# console.log contentList['build']
 							params =
-								form:{
+								formData:{
 									module_tag: contentList['identifier'],
 									module_name: contentList['name'],
 									module_desc: contentList['description'],
@@ -522,7 +524,7 @@ class ModuleMessageItem extends View
 									alert "上传模块成功"
 									console.log "upload success"
 								error: =>
-									alert "error"
+									alert "configFilePathCallBack error"
 							client.postModuleMessage(params)
 							util.removeFileDirectory(PathM.join zipPath,zipName)
 					else

@@ -77,10 +77,11 @@ class ModuleInfoView extends View
 			stats = fs.statSync(filePath)
 			if stats.isDirectory()
 				# console.log file.getPath()
+				basename = pathM.basename filePath
 				path = pathM.join filePath,"package.json"
 				if fs.existsSync(path)
 					contentList = JSON.parse(fs.readFileSync(path))
-					_moduleList.append('<div class="col-sm-4 "><div class="checkboxFive"><input value="'+path+'" id="'+path+'" type="checkbox" class="modulecheckbox hide"/><label for="'+path+'"></label></div><label class="label-empty" for="'+path+'">'+contentList['name']+'</label></div>')
+					_moduleList.append('<div class="col-sm-4 "><div class="checkboxFive"><input value="'+path+'" id="module-config'+basename+'" type="checkbox" class="modulecheckbox hide"/><label for="module-config'+basename+'"></label></div><label class="label-empty" for="module-config'+basename+'">'+contentList['name']+'</label></div>')
 					index = index + 1
 		printName pathM.join project_path,file for file in list
 		if index is 0

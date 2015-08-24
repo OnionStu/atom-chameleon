@@ -16,10 +16,11 @@ module.exports =
       j.setCookie(cookie, config.serverUrl)
       params.jar = j
     params = $.extend defaultsParams, params
+    console.log params
     cb = (err, httpResponse, body) =>
       console.log httpResponse
-      console.log err
-      console.log body
+      # console.log err
+      # console.log body
       if !err && httpResponse.statusCode is 200
         headerCookie = if typeof httpResponse.headers['set-cookie'] is 'undefined' then '' else httpResponse.headers['set-cookie'][0]
         params.success(JSON.parse(body), headerCookie)
@@ -62,7 +63,8 @@ module.exports =
 
   postModuleMessage: (params) ->
     params.url = 'module/upload_module'
-    params.form.create_by = util.store('chameleon').account_id
+    console.log params
+    # params.form.create_by = util.store('chameleon').account_id
     # console.log params.form
     params.method = 'POST'
     @send params

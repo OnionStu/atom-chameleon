@@ -393,7 +393,7 @@ class BuildProjectInfoView extends View
                         contentList['build'] = 1
                       # alert contentList['build']+"  "+data2['url_id']
                       params =
-                        form:{
+                        formData:{
                           module_tag: contentList['identifier'],
                           module_name: contentList['name'],
                           module_desc: contentList['description'],
