@@ -68,7 +68,7 @@
           }
           {
             'label':'上传模块',
-            'command':'chameleon:publish-module'
+            'command':'chameleon:publish-module-select-path'
           }
           # {
           #   'label':'下载模块'

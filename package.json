@@ -18,7 +18,8 @@
       "chameleon:configure-module",
       "chameleon:configure-application",
       "chameleon:bulid-project",
-      "chameleon:upload-project"
+      "chameleon:upload-project",
+      "chameleon:publish-module-select-path"
     ]
   },
   "repository": "https://github.com/OnionStu/atom-chameleon",
