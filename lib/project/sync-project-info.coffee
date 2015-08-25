@@ -113,7 +113,7 @@ class SyncProjectView extends View
             @errorMsg.addClass('hide')
 
           else
-            @errorMsg.removeClass('hide')
+            @errorMsg.removeClass('hide') if appId isnt ""
           @checkInput()
 
   nextStep:(box) ->
