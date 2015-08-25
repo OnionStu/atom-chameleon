@@ -154,7 +154,7 @@ class UploadProjectInfoView extends View
                         formData:{
                           module_tag: contentList['identifier'],
                           module_name: contentList['name'],
-                          module_desc: contentList['description'],
+                          module_desc: "",#contentList['description']
                           version: contentList['version'],
                           url_id: data['url_id'],
                           build: contentList['build'],

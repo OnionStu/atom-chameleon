@@ -92,7 +92,8 @@ class BuildProjectInfoView extends View
         @div class: 'col-sm-12', =>
           @label "构建成功后返回的二维码"
         @div class:'col-sm-12 text-center',  =>
-          @div class: 'col-sm-6 text-center', outlet: 'IOSCODE' ,=>
+          @div class: 'col-sm-6 text-center', outlet: 'ios_code_view' ,=>
+            @div class: 'col-xs-12', outlet: 'ios_build_result_tips'
             @div class: 'col-sm-12', =>
               @img class:'codeImg', outlet: 'iOSCode',src: desc.getImgPath 'iphone.png'
             @div class: 'col-sm-12 label_pad', =>
@@ -100,8 +101,9 @@ class BuildProjectInfoView extends View
               @label "iOS",class:'iosTips'
             @div class: 'col-sm-12', =>
               @a outlet:'iosUrl'
-            @div class: 'col-xs-12', outlet: 'ios_build_result_tips'
-          @div class: 'col-sm-6 text-center', outlet: 'ANDROIDCODE', =>
+
+          @div class: 'col-sm-6 text-center', outlet: 'android_code_view', =>
+            @div class: 'col-sm-12', outlet: 'android_build_result_tips'
             @div class: 'col-sm-12', =>
               @img class:'codeImg',outlet: 'androidCode', src: desc.getImgPath 'android.png'
             @div class: 'col-sm-12 label_pad', =>
@@ -109,7 +111,7 @@ class BuildProjectInfoView extends View
               @label "Andoird",class:'androidTips'
             @div class: 'col-sm-12', =>
               @a outlet:'androidUrl'
-            @div class: 'col-sm-12', outlet: 'android_build_result_tips'
+
 
   clickIcon:(e) ->
     console.log "hinhs"
@@ -148,8 +150,8 @@ class BuildProjectInfoView extends View
     @urlCodeList.addClass('hide')
     # @urlCodeList.removeClass('hide')
     # return
-    @IOSCODE.addClass('hide')
-    @ANDROIDCODE.addClass('hide')
+    @ios_code_view.addClass('hide')
+    @android_code_view.addClass('hide')
     @parentView.nextBtn.attr('disabled',false)
     projectPaths = atom.project.getPaths()
     projectNum = projectPaths.length
@@ -394,7 +396,7 @@ class BuildProjectInfoView extends View
                         formData:{
                           module_tag: contentList['identifier'],
                           module_name: contentList['name'],
-                          module_desc: contentList['description'],
+                          module_desc: "",#contentList['description']
                           version: contentList['version'],
                           url_id: data['url_id'],
                           build:contentList['build'].toString(),
@@ -533,7 +535,7 @@ class BuildProjectInfoView extends View
           # setTimeout("checkBuildResult(#{id},#{platform})", 1000*60)
           if platform == "IOS"
             timeTips = ".iosWaitTime"
-            @.find(".iosTips").html("IOS 等待构建<span class='iosWaitTime'>#{data['waitingTime']}</span>秒")
+            @.find(".iosTips").html("IOS 还需等待构建<span class='iosWaitTime'>#{data['waitingTime']}</span>秒")
           else
             timeTips = ".androidWaitTime"
             @.find(".androidTips").html("ANDOIRD 还需等待构建<span class='androidWaitTime'>#{data['waitingTime']}</span>秒")
@@ -562,22 +564,20 @@ class BuildProjectInfoView extends View
               window.clearTimeout(@ticketTimer[platform])
           str = "<img src='"+ desc.getImgPath 'icon_success.png' +"'/>构建成功"
           if @.find('#ios').is(':checked')
-            @IOSCODE.removeClass('hide')
+            @ios_code_view.removeClass('hide')
           if @.find('#android').is(':checked')
-            @ANDROIDCODE.removeClass('hide')
+            @android_code_view.removeClass('hide')
           if platform == 'IOS'
-            # @IOSCODE.removeClass('hide')
             @.find(".iosTips").html("iOS")
             @iOSCode.attr('src',"http://qr.liantu.com/api.php?text=#{data['url']}")
             @iosUrl.attr('href',data['url'])
-            @iosUrl.html(data['url'])
+            @iosUrl.html("app下载地址[IOS]")
             @ios_build_result_tips.html(str)
           else
-            # @ANDROIDCODE.removeClass('hide')
             @.find(".androidTips").html("Android")
             @androidCode.attr('src',"http://qr.liantu.com/api.php?text=#{data['url']}")
             @androidUrl.attr('href',data['url'])
-            @androidUrl.html(data['url'])
+            @androidUrl.html("app下载地址[Android]")
             @android_build_result_tips.html(str)
         else if data['status'] == "BUILDING"
           @buildTips.html("正在构建请耐心等待......")
@@ -604,9 +604,13 @@ class BuildProjectInfoView extends View
           if @ticketTimer[platform]
             window.clearTimeout(@ticketTimer[platform])
           if @.find('#ios').is(':checked')
-            @IOSCODE.removeClass('hide')
-          if @.find('#android').is('checked')
-            @ANDROIDCODE.removeClass('hide')
+            @ios_code_view.removeClass('hide')
+          else
+            console.log "ios is hide"
+          if @.find('#android').is(':checked')
+            @andoird_code_view.removeClass('hide')
+          else
+            console.log "android is hide"
           if !@urlCodeList.is(':visible')
             @buildingTips.addClass('hide')
             @urlCodeList.removeClass('hide')

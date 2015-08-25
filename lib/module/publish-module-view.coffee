@@ -23,11 +23,14 @@ class PublishModuleInfoView extends View
 			@div outlet : 'third', class : 'hide', =>
 				@div class: 'new-project', =>
 					@div class: 'box-form', =>
-						@div class: 'form-row clearfix', =>
-		          @label '请选择路径', class: 'row-title pull-left'
-		          @div class: 'row-content pull-left', =>
-		            @subview 'appPath', new TextEditorView(mini: true)
-		            @span outlet:'openFolder', class: 'inline-block status-added icon icon-file-directory openFolder'
+						@div class: 'form-row clearfix col-sm-12 padding-none', =>
+							@div class:'col-sm-3', =>
+		          	@label '请选择路径', class: 'row-title pull-left'
+								@div class:'hide', =>
+									@subview 'appPath', new TextEditorView(mini: true)
+							@div class:'col-sm-9 textEditStyle',=>
+								@label outlet:'show_path',class:'padding-left'
+								@span outlet:'openFolder', class: 'inline-block status-added icon icon-file-directory openFolder'
 
 	open :(e) ->
 		console.log "ssss"
@@ -37,9 +40,9 @@ class PublishModuleInfoView extends View
 				path = PathM.join paths[0]
 				console.log  path
 				@appPath.setText path
+				@show_path.html(path)
 
 	prevStep: ->
-
 		@first.removeClass('hide')
 		@second.addClass('hide')
 		@parentView.prevBtn.addClass('hide')
@@ -98,6 +101,7 @@ class PublishModuleInfoView extends View
 			@parentView.closeView()
 		# console.log 'init finish'
 	nextStep: ->
+
 		_parentView = @parentView
 		# console.log 'click next button'
 		if @third.hasClass('hide')
@@ -424,7 +428,7 @@ class ModuleMessageItem extends View
 								form:{
 									module_tag: contentList['identifier'],
 									module_name: contentList['name'],
-									module_desc: contentList['description'],
+									module_desc: "",#contentList['description']
 									version: contentList['version'],
 									url_id: data['url_id'],
 									logo_url_id: data2['url_id'],

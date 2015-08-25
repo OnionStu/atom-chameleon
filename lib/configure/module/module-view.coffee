@@ -30,10 +30,10 @@ class ModuleInfoView extends View
 					@label class: 'col-sm-3', "模块版本"
 					@div class: 'col-sm-9', =>
 			      @subview 'moduleVersion', new TextEditorView(mini: true,placeholderText: 'moduleVersion...')
-				@div class: "col-sm-12 ", =>
-					@label class: 'col-sm-3 ', "模块描述"
-					@div class: 'col-sm-9 ', =>
-			      @subview 'moduleDescription', new TextEditorView(mini: true,placeholderText: 'moduleDescription...')
+				# @div class: "col-sm-12 ", =>
+				# 	@label class: 'col-sm-3 ', "模块描述"
+				# 	@div class: 'col-sm-9 ', =>
+			  #     @subview 'moduleDescription', new TextEditorView(mini: true,placeholderText: 'moduleDescription...')
 				# @div class: "col-xs-12 ", =>
 				# 	@label class: 'col-sm-3 col-md-3', "模块入口"
 				# 	@div class: 'col-sm-9 col-md-9', =>
