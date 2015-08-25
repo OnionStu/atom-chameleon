@@ -10,11 +10,12 @@ client = require '../utils/client'
 
 class PublishModuleInfoView extends View
 
-	@content: ->
+	@content:(flag) ->
 		@div class : 'upload-module container', =>
 			@div outlet : 'first' , =>
 				@h2 desc.publishModulePageOneTitle, class: 'box-subtitle'
 				@div outlet : 'moduleList',class: 'box-form'
+				@input type:'hide',outlet:"flag",value:"#{flag}"
 			@div outlet : 'second',class : 'hide', =>
 				@label desc.publishModulePageTwoTitle
 				@label id:'tips'
@@ -186,7 +187,6 @@ class PublishModuleInfoView extends View
 
 	attached: ->
 		@appPath.setText("")
-		@openFolder.on 'click',(e) => @open(e)
 		@attached2()
 
 	attached2: ->
@@ -194,7 +194,7 @@ class PublishModuleInfoView extends View
 		test = $('.entry.selected span')
 		_parentView = @parentView
 		_moduleList = @moduleList
-		if test.length == 0
+		if test.length == 0 and @flag.val()
 			console.log "#{test.length}"
 			@first.addClass('hide')
 			@third.removeClass('hide')
@@ -311,6 +311,9 @@ class PublishModuleInfoView extends View
 		@element
 
 	serialize: ->
+
+	initialize: ->
+		@openFolder.on 'click',(e) => @open(e)
 
 	# attached: ->
 
@@ -566,7 +569,6 @@ class ModuleMessageItem extends View
 
 module.exports =
 class PublishModuleView extends ChameleonBox
-
-  options :
+	options :
     title : desc.publishModule
-    subview : new PublishModuleInfoView()
+    subview :  new PublishModuleInfoView()

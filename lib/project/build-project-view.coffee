@@ -130,6 +130,8 @@ class BuildProjectInfoView extends View
 
   initialize: ->
     @.find('.selectBuildTemplate').on 'click',(e) => @clickIcon(e)
+    # @selectProject.on 'change',(e) => @onSelectChange(e)
+    # @.find('.formBtn').on 'click', (e) => @formBtnClick(e)
 
   attached: ->
     # android_img_checkbox_html = "<input type='checkbox' value='android' id='android' class='hide'/><label for='android'>Android</label>"

@@ -6,7 +6,7 @@ module.exports = PublishModule =
 	chameleonBox : null
 	modalPanel : null
 
-	activate: (state) ->
+	activate: (state,flag) ->
 		# opt =
 		# 	title: desc.publishModule
 		# 	subview : new PublishModelView()
