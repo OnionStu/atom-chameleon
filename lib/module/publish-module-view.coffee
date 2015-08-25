@@ -10,12 +10,11 @@ client = require '../utils/client'
 
 class PublishModuleInfoView extends View
 
-	@content:(flag) ->
+	@content: ->
 		@div class : 'upload-module container', =>
 			@div outlet : 'first' , =>
 				@h2 desc.publishModulePageOneTitle, class: 'box-subtitle'
 				@div outlet : 'moduleList',class: 'box-form'
-				@input type:'hide',outlet:"flag",value:"#{flag}"
 			@div outlet : 'second',class : 'hide', =>
 				@label desc.publishModulePageTwoTitle
 				@label id:'tips'
