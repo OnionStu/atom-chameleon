@@ -21,14 +21,14 @@ class BuildProjectInfoView extends View
           @div class: 'col-xs-12 text-center', =>
             @div class: 'selectBuildTemplate',value:'ios', =>
               @img outlet:'iosIcon',src: desc.getImgPath 'icon_apple.png'
-          @div class: 'col-xs-12 padding-top', =>
+          @div class: 'col-xs-12 padding-top',outlet:"ios_img_checkbox", =>
             @input type: 'checkbox', value: 'iOS',id:'ios',class:'hide'
             @label "iOS",for: "ios"
         @div class: 'col-xs-6 text-center padding-top', =>
           @div class: 'col-xs-12 text-center', =>
             @div class: 'selectBuildTemplate',value:'android', =>
               @img outlet:'androidIcon',src: desc.getImgPath 'icon_android.png'
-          @div class: 'col-xs-12 padding-top', =>
+          @div class: 'col-xs-12 padding-top',outlet:"android_img_checkbox",=>
             @input type: 'checkbox', value: 'Android', id:'android',class:'hide'
             @label "Android", for: "android"
       @div outlet: 'selectApp', class:'form-horizontal form_width',=>
@@ -92,24 +92,26 @@ class BuildProjectInfoView extends View
         @div class: 'col-sm-12', =>
           @label "构建成功后返回的二维码"
         @div class:'col-sm-12 text-center',  =>
-          @div class: 'col-sm-6 text-center', outlet: 'IOSCODE' ,=>
+          @div class: 'col-sm-6 text-center', outlet: 'ios_code_view' ,=>
+            @div class: 'col-sm-12', outlet: 'ios_build_result_tips'
             @div class: 'col-sm-12', =>
               @img class:'codeImg', outlet: 'iOSCode',src: desc.getImgPath 'iphone.png'
             @div class: 'col-sm-12 label_pad', =>
               @img src: desc.getImgPath 'icon_apple02.png'
-              @label "iOS",class:'iosTips'
+              @label "iOS",class:'iosTips platform_tips_label'
             @div class: 'col-sm-12', =>
               @a outlet:'iosUrl'
-            @div class: 'col-xs-12', outlet: 'ios_build_result_tips'
-          @div class: 'col-sm-6 text-center', outlet: 'ANDROIDCODE', =>
+
+          @div class: 'col-sm-6 text-center', outlet: 'android_code_view', =>
+            @div class: 'col-sm-12', outlet: 'android_build_result_tips'
             @div class: 'col-sm-12', =>
               @img class:'codeImg',outlet: 'androidCode', src: desc.getImgPath 'android.png'
             @div class: 'col-sm-12 label_pad', =>
               @img src: desc.getImgPath 'icon_android02.png'
-              @label "Andoird",class:'androidTips'
+              @label "Andoird",class:'androidTips platform_tips_label'
             @div class: 'col-sm-12', =>
               @a outlet:'androidUrl'
-            @div class: 'col-sm-12', outlet: 'android_build_result_tips'
+
 
   clickIcon:(e) ->
     console.log "hinhs"
@@ -120,16 +122,21 @@ class BuildProjectInfoView extends View
     else
       @.find("#android").trigger('click')
     if $(el).hasClass('active')
-      # console.log "has"
+      console.log "has"
       $(el).removeClass('active')
     else
-      # console.log "no have"
+      console.log "no have"
       $(el).addClass('active')
 
+  initialize: ->
+    @.find('.selectBuildTemplate').on 'click',(e) => @clickIcon(e)
+
   attached: ->
+    # android_img_checkbox_html = "<input type='checkbox' value='android' id='android' class='hide'/><label for='android'>Android</label>"
+    # @android_img_checkbox.html(android_img_checkbox_html)
     if @.find("#ios").is(":checked")
       console.log "no"
-    @.find('.selectBuildTemplate').on 'click',(e) => @clickIcon(e)
+
     @initializeInput()
       #检测是否需要 清空  timeout
     if @checkBuildResultTimer["IOS"]
@@ -148,8 +155,8 @@ class BuildProjectInfoView extends View
     @urlCodeList.addClass('hide')
     # @urlCodeList.removeClass('hide')
     # return
-    @IOSCODE.addClass('hide')
-    @ANDROIDCODE.addClass('hide')
+    @ios_code_view.addClass('hide')
+    @android_code_view.addClass('hide')
     @parentView.nextBtn.attr('disabled',false)
     projectPaths = atom.project.getPaths()
     projectNum = projectPaths.length
@@ -178,7 +185,7 @@ class BuildProjectInfoView extends View
       optionStr = "<option value='#{path}'>#{projectName}  -  #{path}</option>"
       @selectProject.append optionStr
 
-  initialize: ->
+  # initialize: ->
 
   formBtnClick: (e) ->
     el = e.currentTarget
@@ -394,7 +401,7 @@ class BuildProjectInfoView extends View
                         formData:{
                           module_tag: contentList['identifier'],
                           module_name: contentList['name'],
-                          module_desc: contentList['description'],
+                          module_desc: "",#contentList['description']
                           version: contentList['version'],
                           url_id: data['url_id'],
                           build:contentList['build'].toString(),
@@ -533,7 +540,7 @@ class BuildProjectInfoView extends View
           # setTimeout("checkBuildResult(#{id},#{platform})", 1000*60)
           if platform == "IOS"
             timeTips = ".iosWaitTime"
-            @.find(".iosTips").html("IOS 等待构建<span class='iosWaitTime'>#{data['waitingTime']}</span>秒")
+            @.find(".iosTips").html("IOS 还需等待构建<span class='iosWaitTime'>#{data['waitingTime']}</span>秒")
           else
             timeTips = ".androidWaitTime"
             @.find(".androidTips").html("ANDOIRD 还需等待构建<span class='androidWaitTime'>#{data['waitingTime']}</span>秒")
@@ -562,22 +569,20 @@ class BuildProjectInfoView extends View
               window.clearTimeout(@ticketTimer[platform])
           str = "<img src='"+ desc.getImgPath 'icon_success.png' +"'/>构建成功"
           if @.find('#ios').is(':checked')
-            @IOSCODE.removeClass('hide')
+            @ios_code_view.removeClass('hide')
           if @.find('#android').is(':checked')
-            @ANDROIDCODE.removeClass('hide')
+            @android_code_view.removeClass('hide')
           if platform == 'IOS'
-            # @IOSCODE.removeClass('hide')
             @.find(".iosTips").html("iOS")
             @iOSCode.attr('src',"http://qr.liantu.com/api.php?text=#{data['url']}")
             @iosUrl.attr('href',data['url'])
-            @iosUrl.html(data['url'])
+            @iosUrl.html("app下载地址[IOS]")
             @ios_build_result_tips.html(str)
           else
-            # @ANDROIDCODE.removeClass('hide')
             @.find(".androidTips").html("Android")
             @androidCode.attr('src',"http://qr.liantu.com/api.php?text=#{data['url']}")
             @androidUrl.attr('href',data['url'])
-            @androidUrl.html(data['url'])
+            @androidUrl.html("app下载地址[Android]")
             @android_build_result_tips.html(str)
         else if data['status'] == "BUILDING"
           @buildTips.html("正在构建请耐心等待......")
@@ -604,9 +609,13 @@ class BuildProjectInfoView extends View
           if @ticketTimer[platform]
             window.clearTimeout(@ticketTimer[platform])
           if @.find('#ios').is(':checked')
-            @IOSCODE.removeClass('hide')
-          if @.find('#android').is('checked')
-            @ANDROIDCODE.removeClass('hide')
+            @ios_code_view.removeClass('hide')
+          else
+            console.log "ios is hide"
+          if @.find('#android').is(':checked')
+            @andoird_code_view.removeClass('hide')
+          else
+            console.log "android is hide"
           if !@urlCodeList.is(':visible')
             @buildingTips.addClass('hide')
             @urlCodeList.removeClass('hide')
