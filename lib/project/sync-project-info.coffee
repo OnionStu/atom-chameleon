@@ -17,7 +17,7 @@ class SyncProjectView extends View
         @div class: 'form-group', =>
           @label '请输入应用标识', class: 'col-sm-3 control-label'
           @div class: 'col-sm-9', =>
-            @subview 'appId', new TextEditorView(mini: true)
+            @div class:'textEditStyle', outlet: 'appId'
         @div class: 'form-group', =>
           @label '请输入应用名称', class: 'col-sm-3 control-label'
           @div class: 'col-sm-9', =>
@@ -31,16 +31,17 @@ class SyncProjectView extends View
           @div '该目录已存在', class: 'text-warning hide', outlet: 'errorMsg'
 
   initialize: ->
-    @appId.getModel().onDidChange => @checkProjectName()
+    # @appId.getModel().onDidChange => @checkProjectName()
     @appName.getModel().onDidChange => @checkInput()
     # @appPath.getModel().onDidChange => @checkPath()
 
   attached: ->
     @type = @parentView.options.newType
+    @appPath.html desc.newProjectDefaultPath
     @getProjectDetail(@parentView.options.projectId, @parentView.options.account_id)
     @parentView.setNextBtn('finish')
     @parentView.disableNext()
-    @appPath.html desc.newProjectDefaultPath
+    
 
   getProjectDetail: (projectId, accountId) ->
     params =
@@ -50,8 +51,9 @@ class SyncProjectView extends View
         identifier: projectId
       success: (data) =>
         @projectDetail = data
-        @appId.setText @projectDetail.identifier
+        @appId.html @projectDetail.identifier
         @appName.setText @projectDetail.name
+        @checkPath()
       error: (err) ->
         console.log err
     client.getProjectDetail params
@@ -61,18 +63,20 @@ class SyncProjectView extends View
       if paths?
         console.log paths[0]
         @appPath.html paths[0]
+        @checkPath()
 
   getElement: ->
     @element
 
   getProjectInfo: ->
-    appId = @appId.getText().trim()
+    # appId = @appId.getText().trim()
+    appId = @appId.html()
     appPath = @appPath.html().trim()
     path = pathM.join appPath,appId
     dir = new Directory(path)
     path = pathM.join desc.newProjectDefaultPath,dir.getBaseName() if dir.getParent().isRoot() is yes
     projectInfo =
-      appId : @appId.getText()
+      appId : @appId.html()
       appName : @appName.getText()
       appPath : path
 
@@ -80,12 +84,10 @@ class SyncProjectView extends View
     projectInfo
 
   checkInput: ->
-    flag1 = @appId.getText().trim() isnt ""
     flag2 = @appName.getText().trim() isnt ""
-    flag3 = @appPath.html().trim() isnt ""
     flag4 = @errorMsg.hasClass('hide')
 
-    if flag1 and flag2 and flag3 and flag4
+    if flag2 and flag4
       @parentView.enableNext()
     else
       @parentView.disableNext()
@@ -95,13 +97,14 @@ class SyncProjectView extends View
     str = @appId.getText().trim()
     console.log Util.checkProjectName str
     if Util.checkProjectName str
-      @errorMsg2.addClass('hide')
+      @errorMsg.addClass('hide')
     else
-      @errorMsg2.removeClass('hide')
+      @errorMsg.removeClass('hide')
     @checkPath()
 
   checkPath: ->
-    appId = @appId.getText().trim()
+    # appId = @appId.getText().trim()
+    appId = @appId.html().trim()
     appPath = @appPath.html().trim()
     path = pathM.join appPath,appId
     if path isnt ""
