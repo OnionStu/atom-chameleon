@@ -34,9 +34,10 @@ module.exports = CreateProject =
     chameleonBoxState: @chameleonBox.serialize()
 
   openView: ->
-    unless @modalPanel.isVisible()
-      console.log 'CreateProject was opened!',@
-      @modalPanel.show()
+    # unless @modalPanel.isVisible()
+    #   console.log 'CreateProject was opened!',@
+    #   @modalPanel.show()
+    @chameleonBox.openView()
 
   closeView: ->
     if @modalPanel.isVisible()
@@ -165,11 +166,24 @@ module.exports = CreateProject =
           targetPath = pathM.join info.appPath,'modules', fileName
           Util.copy pathM.join(@templateDir, fileName), targetPath, (err) => # 复制成功后，将框架复制到应用的 modules 下
             throw err if err
-            alert '应用创建成功'
+            packageJson = pathM.join targetPath,'package.json'
             gfp = pathM.join targetPath,'.git'
             delSuccess = (err) ->
               throw err if err
               console.log 'deleted!'
+              if fs.existsSync(packageJson)
+                stats = fs.statSync(packageJson)
+                if stats.isFile()
+                  contentJson = JSON.parse(fs.readFileSync(packageJson))
+                  if fs.existsSync(appConfigPath)
+                    stats = fs.statSync(appConfigPath)
+                    if stats.isFile()
+                      contentList = JSON.parse(fs.readFileSync(appConfigPath))
+                      contentList['modules'][contentJson['name']] = contentJson['version']
+                      if contentList['mainModule'] == ""
+                        contentList['mainModule'] = contentJson['name']
+                      fs.writeJson appConfigPath,contentList,null
+              alert '应用创建成功'
             Util.delete gfp,delSuccess
 
             appConfigPath = pathM.join info.appPath, desc.ProjectConfigFileName
