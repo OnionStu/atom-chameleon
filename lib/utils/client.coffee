@@ -30,7 +30,7 @@ module.exports =
         atom.workspace.getPanes()[0].destroyActiveItem()
         @settings.activate()
         util.rumAtomCommand('chameleon:login')
-        # params.error(err)
+        params.error(err)
       else
         params.error(err)
     request params, cb
@@ -55,15 +55,14 @@ module.exports =
 
   getModuleLastVersion: (params,identifier) ->
     userId = util.store('chameleon').account_id
-    console.log userId,identifier
+    # console.log userId,identifier
     params.url = "app_update/get_lastversion/#{identifier}"
     # params.url = "app_update/get_lastversion/#{identifier}"
     @send params
 
   postModuleMessage: (params) ->
     params.url = 'module/upload_module'
-    params.form.create_by = util.store('chameleon').account_id
-    # console.log params.form
+    console.log params
     params.method = 'POST'
     @send params
 

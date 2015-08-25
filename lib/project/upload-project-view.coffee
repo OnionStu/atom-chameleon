@@ -151,7 +151,7 @@ class UploadProjectInfoView extends View
                         contentList['build'] = 1
                       # alert contentList['build']+"  "+data2['url_id']
                       params =
-                        form:{
+                        formData:{
                           module_tag: contentList['identifier'],
                           module_name: contentList['name'],
                           module_desc: contentList['description'],
@@ -191,6 +191,7 @@ class UploadProjectInfoView extends View
                         alert "上传icon失败"
                     client.uploadFile(fileParams2,"module","")
                   else
+                    data2["url_id"] = ""
                     methodUploadModule()
                 error: =>
                   Util.removeFileDirectory(zipPath)

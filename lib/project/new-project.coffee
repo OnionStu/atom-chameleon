@@ -107,7 +107,7 @@ class NewProjectView extends View
     Util.readDir fp, (err,files) =>
       return console.error err if err
       files.forEach (file,i) =>
-        unless file is '.githolder' or file is 'butterfly-slim'
+        unless file is '.githolder' or file is 'butterfly-slim' or file is '.gitkeep'
           configPath = Path.join fp,file,desc.moduleConfigFileName
           Util.readJson configPath, (err,json) =>
             # return console.error err if err
@@ -134,7 +134,9 @@ class NewProjectView extends View
     data.icon?=desc.getImgPath 'icon_template.png'
     html = """
     <div class="new-item text-center" data-type="#{data.type}" data-name="#{data.dataName}">
-      <img class="pic" src="#{data.icon}">
+      <div class="itemIcon">
+        <img src="#{data.icon}">
+      </div>
       <h3 class="project-name">#{data.displayName}</h3>
     </div>
     """

@@ -25,15 +25,16 @@ class NewProjectView extends View
         @div class: 'form-row clearfix', =>
           @label '应用创建位置', class: 'row-title pull-left'
           @div class: 'row-content pull-left', =>
-            @subview 'appPath', new TextEditorView(mini: true)
+            # @subview 'appPath', new TextEditorView(mini: true)
+            @div class: 'textEditStyle',outlet: 'appPath'
             @span class: 'inline-block status-added icon icon-file-directory openFolder', click: 'openFolder'
         @div class: 'form-row msg clearfix', =>
-          @div '该目录已存在', class: 'text-warning hide errorMsg', outlet: 'errorMsg'
+          @div '该应用目录已存在', class: 'text-warning hide errorMsg', outlet: 'errorMsg'
 
   initialize: ->
-    @appId.getModel().onDidChange => @setPath()
+    @appId.getModel().onDidChange => @checkProjectName()
     @appName.getModel().onDidChange => @checkInput()
-    @appPath.getModel().onDidChange => @checkPath()
+    # @appPath.getModel().onDidChange => @checkPath()
 
   attached: ->
     console.log @parentView.options
@@ -41,23 +42,23 @@ class NewProjectView extends View
     # if @type isnt 'template'
     @parentView.setNextBtn('finish')
     @parentView.disableNext()
-    @appPath.basePath = desc.newProjectDefaultPath
-    @appPath.setText @appPath.basePath
+    @appPath.html desc.newProjectDefaultPath
 
   openFolder: ->
     atom.pickFolder (paths) =>
       if paths?
         console.log paths[0]
-        path = pathM.join paths[0],@appId.getText()
-        console.log  path
-        @appPath.basePath = path
-        @appPath.setText @appPath.basePath
+        # path = pathM.join paths[0],@appId.getText()
+        # console.log  path
+        @appPath.html paths[0]
 
   getElement: ->
     @element
 
   getProjectInfo: ->
-    path = @appPath.getText().trim()
+    appId = @appId.getText().trim()
+    appPath = @appPath.html().trim()
+    path = pathM.join appPath,appId
     dir = new Directory(path)
     path = pathM.join desc.newProjectDefaultPath,dir.getBaseName() if dir.getParent().isRoot() is yes
     projectInfo =
@@ -71,7 +72,7 @@ class NewProjectView extends View
   checkInput: ->
     flag1 = @appId.getText().trim() isnt ""
     flag2 = @appName.getText().trim() isnt ""
-    flag3 = @appPath.getText().trim() isnt ""
+    flag3 = @appPath.html().trim() isnt ""
     flag4 = @errorMsg.hasClass('hide')
     flag5 = @errorMsg2.hasClass('hide')
 
@@ -80,20 +81,22 @@ class NewProjectView extends View
     else
       @parentView.disableNext()
 
-  setPath: ->
-    currPath = @appPath.basePath
+  checkProjectName: ->
+    # currPath = @appPath.basePath
     str = @appId.getText().trim()
     console.log Util.checkProjectName str
     if Util.checkProjectName str
       @errorMsg2.addClass('hide')
     else
       @errorMsg2.removeClass('hide')
-    @appPath.setText pathM.join currPath,str if currPath isnt ""
-    @checkInput()
+    # @appPath.setText pathM.join currPath,str if currPath isnt ""
+    @checkPath()
+    # @checkInput()
 
   checkPath: ->
-    path = @appPath.getText().trim()
-    @appPath.basePath = path if @appPath.hasFocus()
+    appId = @appId.getText().trim()
+    appPath = @appPath.html().trim()
+    path = pathM.join appPath,appId
     if path isnt ""
       dir = new Directory(path);
       dir.exists()
