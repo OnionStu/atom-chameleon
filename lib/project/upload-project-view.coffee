@@ -191,6 +191,7 @@ class UploadProjectInfoView extends View
                         alert "上传icon失败"
                     client.uploadFile(fileParams2,"module","")
                   else
+                    data2["url_id"] = ""
                     methodUploadModule()
                 error: =>
                   Util.removeFileDirectory(zipPath)

@@ -362,7 +362,7 @@ class ModuleMessageItem extends View
 						object.name = object.name #+ "(#{object.id})"
 					else
 						object.name = object.id #+ "(#{object.id})"
-					options = options + "<div class='col-sm-6 upload-view-padding'><div class='checkboxFive'><input type='checkbox' class='hide' id='#{object.id}' value='#{object.id}' /><label for='#{object.id}'></label></div><label for='#{object.id}' class='label-empty'>#{object.name}</label></div>"
+					options = options + "<div class='col-sm-6 upload-view-padding'><div class='checkboxFive'><input type='checkbox' class='hide' id='#{object.id}_#{length}' value='#{object.id}' /><label for='#{object.id}_#{length}'></label></div><label for='#{object.id}_#{length}' class='label-empty'>#{object.name}</label></div>"
 				printAppList object for object in data
 				options = options + "<div class='col-sm-12 upload-view-padding'><button name='hideAppListbtn' class='btn'>取消</button><button class='btn' name='uploadMApp'>确认</button><div>"
 				if length == 0
@@ -503,7 +503,7 @@ class ModuleMessageItem extends View
 							#否则  +1
 							contentList['build'] = parseInt(_version.attr('value'))
 							contentList['build'] = contentList['build'] + 1
-							# console.log contentList['build']
+							console.log contentList['build']
 							params =
 								formData:{
 									module_tag: contentList['identifier'],
@@ -526,6 +526,7 @@ class ModuleMessageItem extends View
 								error: =>
 									alert "configFilePathCallBack error"
 							client.postModuleMessage(params)
+							console.log "sdsd"
 							util.removeFileDirectory(PathM.join zipPath,zipName)
 					else
 						util.removeFileDirectory(PathM.join zipPath,zipName)
@@ -534,6 +535,10 @@ class ModuleMessageItem extends View
 				#当存在 icon 时 上传Icon后再上传模块信息
 				#否则直接上床模块信息
 				if !fs.existsSync(iconPath)
+					console.log "exists"
+					data2 =
+						url_id: ""
+					console.log data2["url_id"]
 					fs.exists($(btn2).val(),configFilePathCallBack)
 				else
 					fileParams2 =
@@ -544,7 +549,7 @@ class ModuleMessageItem extends View
 						success: (data) =>
 							#给 data2 初始化
 							data2 = data
-							# console.log data2
+							console.log data2
 							fs.exists($(btn2).val(),configFilePathCallBack)
 						error: =>
 							# console.log iconPath

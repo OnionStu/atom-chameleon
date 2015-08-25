@@ -16,9 +16,8 @@ module.exports =
       j.setCookie(cookie, config.serverUrl)
       params.jar = j
     params = $.extend defaultsParams, params
-    console.log params
     cb = (err, httpResponse, body) =>
-      console.log httpResponse
+      # console.log httpResponse
       # console.log err
       # console.log body
       if !err && httpResponse.statusCode is 200
@@ -31,7 +30,7 @@ module.exports =
         atom.workspace.getPanes()[0].destroyActiveItem()
         @settings.activate()
         util.rumAtomCommand('chameleon:login')
-        # params.error(err)
+        params.error(err)
       else
         params.error(err)
     request params, cb
@@ -56,7 +55,7 @@ module.exports =
 
   getModuleLastVersion: (params,identifier) ->
     userId = util.store('chameleon').account_id
-    console.log userId,identifier
+    # console.log userId,identifier
     params.url = "app_update/get_lastversion/#{identifier}"
     # params.url = "app_update/get_lastversion/#{identifier}"
     @send params
@@ -64,8 +63,6 @@ module.exports =
   postModuleMessage: (params) ->
     params.url = 'module/upload_module'
     console.log params
-    # params.form.create_by = util.store('chameleon').account_id
-    # console.log params.form
     params.method = 'POST'
     @send params
 

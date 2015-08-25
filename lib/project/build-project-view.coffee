@@ -119,13 +119,11 @@ class BuildProjectInfoView extends View
       @.find("#ios").trigger('click')
     else
       @.find("#android").trigger('click')
-    # if @.find("#ios").is(":checked")
-    #   console.log "checked"
-    # else
-    #   console.log "unchecked"
     if $(el).hasClass('active')
+      # console.log "has"
       $(el).removeClass('active')
     else
+      # console.log "no have"
       $(el).addClass('active')
 
   attached: ->
@@ -431,6 +429,7 @@ class BuildProjectInfoView extends View
                         alert "上传icon失败"
                     client.uploadFile(fileParams2,"module","")
                   else
+                    data2["url_id"] = ""
                     methodUploadModule()
                 error: =>
                   Util.removeFileDirectory(zipPath)
