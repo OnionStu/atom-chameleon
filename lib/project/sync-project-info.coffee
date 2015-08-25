@@ -1,5 +1,6 @@
 desc = require '../utils/text-description'
 pathM = require 'path'
+Util = require '../utils/util'
 {Directory} = require 'atom'
 {$, TextEditorView, View} = require 'atom-space-pen-views'
 client = require '../utils/client'
@@ -39,7 +40,7 @@ class SyncProjectView extends View
     @getProjectDetail(@parentView.options.projectId, @parentView.options.account_id)
     @parentView.setNextBtn('finish')
     @parentView.disableNext()
-    @appPath.setText desc.newProjectDefaultPath
+    @appPath.html desc.newProjectDefaultPath
 
   getProjectDetail: (projectId, accountId) ->
     params =
