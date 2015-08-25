@@ -34,9 +34,10 @@ module.exports = CreateProject =
     chameleonBoxState: @chameleonBox.serialize()
 
   openView: ->
-    unless @modalPanel.isVisible()
-      console.log 'CreateProject was opened!',@
-      @modalPanel.show()
+    @chameleonBox.openView()
+    # unless @modalPanel.isVisible()
+    #   console.log 'CreateProject was opened!',@
+    #   @modalPanel.show()
 
   closeView: ->
     if @modalPanel.isVisible()
