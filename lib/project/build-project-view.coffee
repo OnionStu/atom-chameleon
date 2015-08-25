@@ -21,14 +21,14 @@ class BuildProjectInfoView extends View
           @div class: 'col-xs-12 text-center', =>
             @div class: 'selectBuildTemplate',value:'ios', =>
               @img outlet:'iosIcon',src: desc.getImgPath 'icon_apple.png'
-          @div class: 'col-xs-12 padding-top', =>
+          @div class: 'col-xs-12 padding-top',outlet:"ios_img_checkbox", =>
             @input type: 'checkbox', value: 'iOS',id:'ios',class:'hide'
             @label "iOS",for: "ios"
         @div class: 'col-xs-6 text-center padding-top', =>
           @div class: 'col-xs-12 text-center', =>
             @div class: 'selectBuildTemplate',value:'android', =>
               @img outlet:'androidIcon',src: desc.getImgPath 'icon_android.png'
-          @div class: 'col-xs-12 padding-top', =>
+          @div class: 'col-xs-12 padding-top',outlet:"android_img_checkbox",=>
             @input type: 'checkbox', value: 'Android', id:'android',class:'hide'
             @label "Android", for: "android"
       @div outlet: 'selectApp', class:'form-horizontal form_width',=>
@@ -93,12 +93,12 @@ class BuildProjectInfoView extends View
           @label "构建成功后返回的二维码"
         @div class:'col-sm-12 text-center',  =>
           @div class: 'col-sm-6 text-center', outlet: 'ios_code_view' ,=>
-            @div class: 'col-xs-12', outlet: 'ios_build_result_tips'
+            @div class: 'col-sm-12', outlet: 'ios_build_result_tips'
             @div class: 'col-sm-12', =>
               @img class:'codeImg', outlet: 'iOSCode',src: desc.getImgPath 'iphone.png'
             @div class: 'col-sm-12 label_pad', =>
               @img src: desc.getImgPath 'icon_apple02.png'
-              @label "iOS",class:'iosTips'
+              @label "iOS",class:'iosTips platform_tips_label'
             @div class: 'col-sm-12', =>
               @a outlet:'iosUrl'
 
@@ -108,7 +108,7 @@ class BuildProjectInfoView extends View
               @img class:'codeImg',outlet: 'androidCode', src: desc.getImgPath 'android.png'
             @div class: 'col-sm-12 label_pad', =>
               @img src: desc.getImgPath 'icon_android02.png'
-              @label "Andoird",class:'androidTips'
+              @label "Andoird",class:'androidTips platform_tips_label'
             @div class: 'col-sm-12', =>
               @a outlet:'androidUrl'
 
@@ -122,16 +122,21 @@ class BuildProjectInfoView extends View
     else
       @.find("#android").trigger('click')
     if $(el).hasClass('active')
-      # console.log "has"
+      console.log "has"
       $(el).removeClass('active')
     else
-      # console.log "no have"
+      console.log "no have"
       $(el).addClass('active')
 
+  initialize: ->
+    @.find('.selectBuildTemplate').on 'click',(e) => @clickIcon(e)
+
   attached: ->
+    # android_img_checkbox_html = "<input type='checkbox' value='android' id='android' class='hide'/><label for='android'>Android</label>"
+    # @android_img_checkbox.html(android_img_checkbox_html)
     if @.find("#ios").is(":checked")
       console.log "no"
-    @.find('.selectBuildTemplate').on 'click',(e) => @clickIcon(e)
+
     @initializeInput()
       #检测是否需要 清空  timeout
     if @checkBuildResultTimer["IOS"]
@@ -180,7 +185,7 @@ class BuildProjectInfoView extends View
       optionStr = "<option value='#{path}'>#{projectName}  -  #{path}</option>"
       @selectProject.append optionStr
 
-  initialize: ->
+  # initialize: ->
 
   formBtnClick: (e) ->
     el = e.currentTarget
