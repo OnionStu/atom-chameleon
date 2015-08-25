@@ -104,9 +104,8 @@ class NewProjectView extends View
           console.log isExists,dir.getRealPathSync()
           unless isExists
             @errorMsg.addClass('hide')
-
           else
-            @errorMsg.removeClass('hide')
+            @errorMsg.removeClass('hide') if appId isnt ""
           @checkInput()
     else
       console.log 'empty'
