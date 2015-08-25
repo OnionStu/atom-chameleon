@@ -18,7 +18,8 @@ class CreateModuleInfoView extends View
         @div class: 'form-row clearfix', =>
           @label desc.modulePath, class: 'row-title pull-left'
           @div class: 'row-content pull-left', =>
-            @subview 'modulePath', new TextEditorView(mini: true)
+            # @subview 'modulePath', new TextEditorView(mini: true)
+            @div class: 'textEditStyle', outlet: 'modulePath'
             @span class: 'inline-block status-added icon icon-file-directory openFolder', click: 'openFolder'
         @div class: 'form-row clearfix', =>
           @label desc.moduleId, class: 'row-title pull-left'
@@ -39,7 +40,7 @@ class CreateModuleInfoView extends View
     # @selectProject.on 'change',(e) => @onSelectChange(e)
 
   attached: ->
-    @modulePath.getModel().onDidChange => @checkPath()
+    # @modulePath.getModel().onDidChange => @checkPath()
     @moduleId.getModel().onDidChange => @checkPath()
     @moduleName.getModel().onDidChange => @checkInput()
     # @mainEntry.getModel().onDidChange => @checkInput()
@@ -47,7 +48,7 @@ class CreateModuleInfoView extends View
     @moduleName.setText ''
     @moduleId.setText ''
     # @mainEntry.setText desc.mainEntryFileName
-    @modulePath.setText desc.newProjectDefaultPath
+    @modulePath.html desc.newProjectDefaultPath
 
     @parentView.setNextBtn('finish')
     @parentView.disableNext()
@@ -60,7 +61,7 @@ class CreateModuleInfoView extends View
       @setSelectItem path for path in projectPaths
       @modulePath.parents('.form-row').addClass 'hide'
       @selectProject.parents('.form-row').removeClass 'hide'
-      @modulePath.setText pathM.join @selectProject.val(),'modules'
+      @modulePath.html pathM.join @selectProject.val(),'modules'
     else
       @selectProject.parents('.form-row').addClass 'hide'
       @modulePath.parents('.form-row').removeClass 'hide'
@@ -82,7 +83,7 @@ class CreateModuleInfoView extends View
   serialize: ->
 
   getModuleInfo: ->
-    modulePath = @modulePath.getText()
+    modulePath = @modulePath.html()
     hasModulesFolder = modulePath.lastIndexOf('modules') isnt '-1'
     if hasModulesFolder
       projectHome = pathM.dirname modulePath
@@ -104,25 +105,28 @@ class CreateModuleInfoView extends View
     atom.pickFolder (paths) =>
       if paths?
         console.log paths[0]
-        @modulePath.setText paths[0]
+        @modulePath.html paths[0]
 
   onSelectChange: (e) ->
     el = e.currentTarget
     # console.log el.value
-    @modulePath.setText pathM.join el.value,'modules'
+    @modulePath.html pathM.join el.value,'modules'
+    @checkPath()
 
   checkPath: ->
     path = @moduleId.getText().trim()
     if path isnt ""
-      projectPath = @modulePath.getText().trim()
+      projectPath = @modulePath.html().trim()
       path = pathM.join projectPath,path
+      console.log path
       dir = new Directory(path);
       dir.exists()
         .then (isExists) =>
+          console.log isExists,@errorMsg
           unless isExists
-            @errorMsg.addClass('hide')
+            @errorMsg.parent().addClass('hide')
           else
-            @errorMsg.removeClass('hide')
+            @errorMsg.parent().removeClass('hide')
           @checkInput()
 
 
@@ -130,8 +134,8 @@ class CreateModuleInfoView extends View
     flag1 = @moduleId.getText().trim() isnt ""
     flag2 = @moduleName.getText().trim() isnt ""
     # flag3 = @mainEntry.getText().trim() isnt ""
-    flag4 = @modulePath.getText().trim() isnt ""
-    flag5 = @errorMsg.hasClass 'hide'
+    flag4 = @modulePath.html().trim() isnt ""
+    flag5 = @errorMsg.parent().hasClass 'hide'
 
     if flag1 and flag2 and flag4 and flag5
       @parentView.enableNext()

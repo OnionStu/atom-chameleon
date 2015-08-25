@@ -30,7 +30,6 @@ class CreateOrSynchronize extends View
             @div class: 'desc', '同步已登录账户中的应用到本地，未登录的用户请登录'
 
   attached: ->
-    console.log 'c'
     @parentView.disableNext()
     @parentView.hidePrevBtn()
     $('.item.select').removeClass 'select'

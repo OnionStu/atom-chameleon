@@ -17,7 +17,7 @@ module.exports =
       params.jar = j
     params = $.extend defaultsParams, params
     cb = (err, httpResponse, body) =>
-      # console.log httpResponse
+      console.log httpResponse
       # console.log err
       # console.log body
       if !err && httpResponse.statusCode is 200
