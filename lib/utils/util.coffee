@@ -115,10 +115,16 @@ module.exports = Util =
     user = @store('chameleon').account_id
     if typeof user is 'undefined'
       alert('请先登录')
+      @findCurrModalPanel()?.item.closeView?()
       @rumAtomCommand('chameleon:login')
       return false
     else
       return true
+
+  findCurrModalPanel: ->
+    currentModalPanel = _.find atom.workspace.getModalPanels(), (modalPanel) =>
+      return modalPanel.visible is true
+    currentModalPanel
 
   writeFile: (file, textContent, cb) ->
     fs.writeFile file, textContent, cb
