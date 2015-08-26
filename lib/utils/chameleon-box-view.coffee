@@ -49,10 +49,10 @@ class ChameleonBoxView extends View
 
     if typeof @options.subview is 'function'
       @contentView = new @options.subview()
-    else if typeof @options.subview is 'object'
+    else if typeof @options.subview is 'object' and @options.subview instanceof View
       @contentView = new @options.subview.constructor()
     else
-      @contentView = {};
+      @contentView = document.createElement('div');
 
     @contentView.parentView = @
     @contentBox.append(@contentView)
