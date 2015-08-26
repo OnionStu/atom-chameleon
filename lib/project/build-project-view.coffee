@@ -542,10 +542,16 @@ class BuildProjectInfoView extends View
           # setTimeout("checkBuildResult(#{id},#{platform})", 1000*60)
           if platform == "IOS"
             timeTips = ".iosWaitTime"
-            @.find(".iosTips").html("IOS 还需等待构建<span class='iosWaitTime'>#{data['waitingTime']}</span>秒")
+            if data['waitingTime'] == 0
+              @.find(".iosTips").html("IOS 准备开始构建")
+            else
+              @.find(".iosTips").html("IOS 还需等待构建<span class='iosWaitTime'>#{data['waitingTime']}</span>秒")
           else
             timeTips = ".androidWaitTime"
-            @.find(".androidTips").html("ANDOIRD 还需等待构建<span class='androidWaitTime'>#{data['waitingTime']}</span>秒")
+            if data['waitingTime'] == 0
+              @.find(".androidTips").html("ANDOIRD 准备开始构建")
+            else
+              @.find(".androidTips").html("ANDOIRD 还需等待构建<span class='androidWaitTime'>#{data['waitingTime']}</span>秒")
           loopTime = 25 # 调服务器时间 的时间间隔
           loopTime2 = 25  # 倒计时循环次数
           if data['waitingTime'] < 25
