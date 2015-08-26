@@ -26,7 +26,7 @@ class PublishModuleInfoView extends View
           @div class: 'box-form', =>
             @div class: 'form-row clearfix col-sm-12 padding-none', =>
               @div class:'col-sm-3', =>
-                @label '请选择路径', class: 'row-title pull-left'
+                @label '请选择应用路径', class: 'row-title pull-left'
                 @div class:'hide', =>
                   @subview 'appPath', new TextEditorView(mini: true)
               @div class:'col-sm-9 textEditStyle',=>

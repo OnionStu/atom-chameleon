@@ -6,6 +6,7 @@ pathM = require 'path'
 fs = require 'fs-extra'
 ChameleonBox = require '../../utils/chameleon-box-view'
 util = require '../../utils/util'
+_ = require 'underscore-plus'
 
 class ModuleInfoView extends View
 
@@ -21,15 +22,16 @@ class ModuleInfoView extends View
         @div class: "col-sm-12", =>
           @label class: 'col-sm-3', "logo"
           @div class: 'col-sm-3 padding-none', =>
-          @img outlet:"logo",class:'pic', src: desc.getImgPath 'icon.png'
+            @img outlet:"logo",class:'pic', src: desc.getImgPath 'icon.png'
         @div class: "col-sm-12", =>
           @label class: 'col-sm-3', "模块名称"
           @div class: 'col-sm-9', =>
-          @subview 'moduleName', new TextEditorView(mini: true,placeholderText: 'moduleName...')
+            @subview 'moduleName', new TextEditorView(mini: true,placeholderText: 'moduleName...')
         @div class: "col-sm-12 ", =>
           @label class: 'col-sm-3', "模块版本"
           @div class: 'col-sm-9', =>
-          @subview 'moduleVersion', new TextEditorView(mini: true,placeholderText: 'moduleVersion...')
+            @subview 'moduleVersion', new TextEditorView(mini: true,placeholderText: 'moduleVersion...')
+      @div class: 'layout hide',outlet:"layout"
         # @div class: "col-sm-12 ", =>
         #   @label class: 'col-sm-3 ', "模块描述"
         #   @div class: 'col-sm-9 ', =>
@@ -46,6 +48,8 @@ class ModuleInfoView extends View
     real_path = $('.modulecheckbox:checked').attr('value')
     img_path = pathM.join real_path,"..","icon.png"
     options={}
+    # console.log "bb"
+    @layout.removeClass('hide')
     cb = (selectPath) =>
       # console.log selectPath[0]
       # console.log selectPath[0].lastIndexOf('.')
@@ -55,10 +59,15 @@ class ModuleInfoView extends View
         if tmp is ".jpeg" or tmp is ".png"
           fs.writeFileSync(img_path,fs.readFileSync(selectPath[0]))
           @logo.attr("src",img_path)
+          @layout.addClass('hide')
         else
           alert "请选择扩展名为 .jpeg 或者 .png"
+          @layout.addClass('hide')
           return
+      else
+        @layout.addClass('hide')
     util.openFile options,cb
+
 
   attached: ->
     @logo.on 'click', (e) => @selectIcon(e)
