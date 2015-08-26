@@ -40,7 +40,7 @@ class ChameleonBoxView extends View
     @remove()
 
   _refresh: ->
-    console.log 'refresh...'
+    console.log 'refresh...',@prevStep, @options
     @_destroyCurrentStep()
     # @options.subviews[@order]
     @setPrevBtn()
@@ -91,7 +91,7 @@ class ChameleonBoxView extends View
     else
       @order--
       console.log @options,@prevStep
-      @mergeOptions {subview:prevView} if prevView = @getPrevStep()
+      @mergeOptions {subview: prevView} if prevView = @getPrevStep()
       @_refresh()
 
   onFinish: (callback) ->

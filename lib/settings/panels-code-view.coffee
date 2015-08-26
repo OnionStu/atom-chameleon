@@ -30,7 +30,6 @@ class CodePanel extends View
   renderCodePackList: =>
     repoDir =  desc.getFrameworkPath()
     util.readDir repoDir, (err, files) =>
-      console.log files
       if files.indexOf('.gitkeep') >= 0
         files.splice(files.indexOf('.gitkeep'),1)
       if files.length > 0
@@ -45,7 +44,6 @@ class CodePanel extends View
                 @codePackList.append(codeListTemp)
                 codeListTemp.deleteCodePack = (event, element) =>
                   fileDir = pathM.join desc.chameleonHome,'src','frameworks',element.attr('filename')
-                  console.log fileDir
                   if confirm("是否删除这个框架")
                     util.delete fileDir, (err) =>
                       if err
@@ -55,20 +53,23 @@ class CodePanel extends View
                 codeListTemp.updateCode = (event, element) =>
                   fileDir = pathM.join desc.chameleonHome,'src','frameworks',element.attr('filename')
                   success = (tips) =>
-                    alert "更新成功: #{tips}"
+                    alert "更新成功"
+                    @renderCodePackList()
+                  error = () =>
+                    alert "更新失败"
                     @renderCodePackList()
 
                   $('.' + projectName).find('.loading-mask').removeClass('hidden')
-                  util.updateRepo(fileDir, success)
+                  util.updateRepo(fileDir, success, error)
       else
         @codePackList.html '<li class="nothing">没有找到任何框架</li>'
 
   renderTemplatesList: =>
     repoDir =  pathM.join desc.chameleonHome,'src','templates'
     util.readDir repoDir, (err, files) =>
-      console.log files
       if files.indexOf('.gitkeep') >= 0
         files.splice(files.indexOf('.gitkeep'),1)
+
       if files.length > 0
         @templatesList.html ''
         files.forEach (file) =>
@@ -81,7 +82,6 @@ class CodePanel extends View
                 @templatesList.append(templatesListTemp)
                 templatesListTemp.deleteCodePack = (event, element) =>
                   fileDir = pathM.join desc.chameleonHome,'src','templates',element.attr('filename')
-                  console.log fileDir
                   if confirm("是否删除这个模板")
                     util.delete fileDir, (err) =>
                       if err
@@ -91,11 +91,14 @@ class CodePanel extends View
                 templatesListTemp.updateCode = (event, element) =>
                   fileDir = pathM.join desc.chameleonHome,'src','templates',element.attr('filename')
                   success = (tips) =>
-                    alert "更新成功: #{tips}"
+                    alert "更新成功"
+                    @renderTemplatesList()
+                  error = () =>
+                    alert "更新失败"
                     @renderTemplatesList()
 
                   $('.' + projectName).find('.loading-mask').removeClass('hidden')
-                  util.updateRepo(fileDir, success)
+                  util.updateRepo(fileDir, success, error)
       else
         @templatesList.html '<li class="nothing">没有找到任何模板</li>'
 
