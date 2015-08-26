@@ -203,7 +203,7 @@ class ModuleInfoView extends View
   #   @element.remove()
   #
   getElement: ->
-  @element
+    @element
 
   move: ->
     @element.parentElement.classList.add('down')

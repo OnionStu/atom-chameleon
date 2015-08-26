@@ -375,7 +375,7 @@ class ModuleMessageItem extends View
         printAppList object for object in data
         options = options + "<div class='col-sm-12 upload-view-padding'><button name='hideAppListbtn' class='btn'>取消</button><button class='btn' name='uploadMApp'>确认</button><div>"
         if length == 0
-          options = "还没与应用关联，请到网页客户端添加关联。"
+          options = "还没与应用关联，请到网页客户端添加关联。<div class='col-sm-12 '><button name='hideAppListbtn' class='btn margin-lfet-120'>取消</button></div>"
         # console.log @.find("button[name=uploadMApp]")
         @appListView.html(options)
         @.find("button[name=uploadMApp]").on 'click',(e) => @actModuleToApp(e)
