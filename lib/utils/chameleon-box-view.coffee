@@ -46,7 +46,14 @@ class ChameleonBoxView extends View
     @setPrevBtn()
     @setNextBtn()
     @title.text @options.title
-    @contentView = @options.subview
+
+    if typeof @options.subview is 'function'
+      @contentView = new @options.subview()
+    else if typeof @options.subview is 'object'
+      @contentView = new @options.subview.constructor()
+    else
+      @contentView = {};
+
     @contentView.parentView = @
     @contentBox.append(@contentView)
 
@@ -63,7 +70,7 @@ class ChameleonBoxView extends View
     _.extend @options, options
 
   setPrevStep:(prevStep) ->
-    @prevStep.unshift prevStep
+    @prevStep.unshift prevStep.constructor
     @prevStep
 
   getPrevStep: ->
@@ -138,8 +145,7 @@ class ChameleonBoxView extends View
 
     # console.log @modalPanel,atom.workspace.getModalPanels(),@,atom.workspace.getModalPanels()[0].item is @
     # console.dir @element.parentElement
-    # view = new @options.begining?()
-    view = @options.begining if @options.begining?
+    view = @options.begining
     @mergeOptions subview:view if view?
     @findModalPanel()
     # console.log @modalPanel,@modalPanel?.isVisible()

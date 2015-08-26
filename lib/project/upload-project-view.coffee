@@ -54,9 +54,11 @@ class UploadProjectInfoView extends View
 
   initialize: ->
     # @selectUploadProject.on 'change',(e) => @onSelectChange(e)
+    # @selectUploadProject.on 'change',(e) => @onSelectChange(e)
 
   onSelectChange: (e) ->
     el = e.currentTarget
+    console.log "xxx"
     if el.value is 'other'
       @open()
     else

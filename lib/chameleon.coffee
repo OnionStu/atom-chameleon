@@ -43,7 +43,8 @@ module.exports = Chameleon =
     @subscriptions.add atom.commands.add 'atom-workspace', 'chameleon:create-module' : => @toggleCreateModule(state)
     @subscriptions.add atom.commands.add 'atom-workspace', 'chameleon:bulid-project' : => @toggleBuildProject(state)
     @subscriptions.add atom.commands.add 'atom-workspace', 'chameleon:upload-project' : => @toggleUploadProject(state)
-    @subscriptions.add atom.commands.add 'atom-workspace', 'chameleon:publish-module' : => @togglePublishModule(state)
+    @subscriptions.add atom.commands.add 'atom-workspace', 'chameleon:publish-module' : => @togglePublishModule(state,false)
+    @subscriptions.add atom.commands.add 'atom-workspace', 'chameleon:publish-module-select-path' : => @togglePublishModule(state,true)
     @subscriptions.add atom.commands.add 'atom-workspace', 'chameleon:login': => @loginViewOpen(state)
     @subscriptions.add atom.commands.add 'atom-workspace', 'chameleon:configure-module': => @configureModuleViewOpen(state)
     @subscriptions.add atom.commands.add 'atom-workspace', 'chameleon:configure-application': => @configureAppViewOpen(state)
@@ -82,10 +83,15 @@ module.exports = Chameleon =
     @createModule.activate(state)
     @createModule.openView()
 
-  togglePublishModule:(state) ->
+  togglePublishModule:(state,flag) ->
     if util.isLogin()
-      @publishModule.activate(state)
+      @publishModule.activate(state,flag)
       @publishModule.openView()
+
+  # togglePublishModuleSelectPath:(state) ->
+  #   if util.isLogin()
+  #     @publishModule.activate(state)
+  #     @publishModule.openView()
 
   loginViewOpen:(state) ->
     @login.activate(state)

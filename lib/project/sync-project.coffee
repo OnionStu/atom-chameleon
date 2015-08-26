@@ -106,9 +106,8 @@ class SyncProjectView extends View
 
   nextStep: (box)=>
     projectId = $('.select').attr('projectId')
-    nextStepView = new syncInfoView(projectId)
-    box.setPrevStep SyncProjectView
-    box.mergeOptions {subview:nextStepView,sub: syncInfoView, projectId: projectId, account_id: @account_id, projects: {list: @projects, currentIndex: @currentIndex, totalCount: @totalCount}}
+    box.setPrevStep @
+    box.mergeOptions {subview: syncInfoView, projectId: projectId, account_id: @account_id, projects: {list: @projects, currentIndex: @currentIndex, totalCount: @totalCount}}
     box.nextStep()
 
   onItemClick: (e) ->
