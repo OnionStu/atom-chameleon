@@ -29,8 +29,8 @@ module.exports =
         alert '没有登录或登录超时，请重新登录'
         atom.workspace.getPanes()[0].destroyActiveItem()
         @settings.activate()
+        util.findCurrModalPanel()?.item.closeView?()
         util.rumAtomCommand('chameleon:login')
-        params.error(err)
       else
         params.error(err)
     request params, cb

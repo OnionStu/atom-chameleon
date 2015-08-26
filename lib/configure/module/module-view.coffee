@@ -127,7 +127,7 @@ class ModuleInfoView extends View
         contentList['description'] = @moduleDescription.getText().trim()
         # contentList['main'] = @moduleInput.getText().trim()
         if contentList['name'] is "" or contentList['version'] is ""
-          alert "模块名、版本、主入口不能为空"
+          alert "模块名、版本不能为空"
           return
 
         configPath = pathM.join real_path, '..', '..', '..', 'appConfig.json'
