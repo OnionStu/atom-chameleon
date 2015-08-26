@@ -124,7 +124,7 @@ class ModuleInfoView extends View
         contentList = JSON.parse(fs.readFileSync(real_path,options))
         contentList['name'] = @moduleName.getText().trim()
         contentList['version'] = @moduleVersion.getText().trim()
-        contentList['description'] = @moduleDescription.getText().trim()
+        # contentList['description'] = @moduleDescription.getText().trim()
         # contentList['main'] = @moduleInput.getText().trim()
         if contentList['name'] is "" or contentList['version'] is ""
           alert "模块名、版本不能为空"

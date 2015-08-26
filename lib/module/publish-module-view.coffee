@@ -161,13 +161,13 @@ class PublishModuleInfoView extends View
                         else
                           obj['version'] = "0.0.0"
                         item = new ModuleMessageItem(obj)
-                        item.find('button').attr('disabled',true)
+                        # item.find('button').attr('disabled',true)
                         # console.log item.find('button')
                         _moduleMessageList.append(item)
-                        util.fileCompression(PathM.join $(checkbox).attr('value'),'..')
-                        callbackOper = ->
-                          item.find('button').attr("disabled",false)
-                        $(".#{obj.identifier}").fadeOut(3000,callbackOper)
+                        # util.fileCompression(PathM.join $(checkbox).attr('value'),'..')
+                        # callbackOper = ->
+                        #   item.find('button').attr("disabled",false)
+                        # $(".#{obj.identifier}").fadeOut(3000,callbackOper)
                     error : =>
                       console.log "获取模板最新版本 的url 调不通"
                   client.getModuleLastVersion(params,obj.identifier)
@@ -340,8 +340,8 @@ class ModuleMessageItem extends View
         @button '上传',value:obj.modulePath,outlet:"uploadBtn",class:'btn',click: 'postModuleMessage'
         @button '应用到',value:obj.identifier,class:'btn',click: 'showAppList'
           # @button '上传并应用',value:obj.modulePath,class:'btn'
-      @div class : 'col-sm-12 upload-view-padding',=>
-        @label "正在打包文件......",class:"#{obj.identifier}"
+      # @div class : 'col-sm-12 upload-view-padding',=>
+      #   @label "正在打包文件......",class:"#{obj.identifier}"
       @div class : 'col-sm-12 hide  app-list-view',outlet:"appListView"
 
   # initialize: ->
@@ -433,7 +433,7 @@ class ModuleMessageItem extends View
                 form:{
                   module_tag: contentList['identifier'],
                   module_name: contentList['name'],
-                  module_desc: "",#contentList['description']
+                  module_desc: "",
                   version: contentList['version'],
                   url_id: data['url_id'],
                   logo_url_id: data2['url_id'],
@@ -495,6 +495,7 @@ class ModuleMessageItem extends View
     if result["error"]
       alert result["errorMessage"]
       return
+    util.fileCompression(PathM.join $(btn2).val(),"..")
     fileParams =
       formData: {
         up_file: fs.createReadStream(PathM.join zipPath,zipName)
@@ -517,7 +518,7 @@ class ModuleMessageItem extends View
                 formData:{
                   module_tag: contentList['identifier'],
                   module_name: contentList['name'],
-                  module_desc: contentList['description'],
+                  module_desc: "",
                   version: contentList['version'],
                   url_id: data['url_id'],
                   logo_url_id: data2['url_id'],
