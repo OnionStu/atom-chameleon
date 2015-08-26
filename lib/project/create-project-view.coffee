@@ -49,9 +49,11 @@ class CreateOrSynchronize extends View
     @parentView.enableNext()
 
   nextStep: (box)->
-    nextStepView = new @v[@createType]()
-    box.setPrevStep @
-    box.mergeOptions {subview:nextStepView}
+    # nextStepView = new @v[@createType]()
+    nextStepView = @v[@createType]
+    # box.setPrevStep @
+    box.setPrevStep CreateOrSynchronize
+    box.mergeOptions {subview: nextStepView, sub: nextStepView}
     box.nextStep()
 
 module.exports =
@@ -61,3 +63,4 @@ class CreateProjectView extends ChameleonBox
     title : desc.createProject
     begining : CreateOrSynchronize
     subview : new CreateOrSynchronize()
+    sub: CreateOrSynchronize

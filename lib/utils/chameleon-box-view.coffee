@@ -40,7 +40,7 @@ class ChameleonBoxView extends View
     @remove()
 
   _refresh: ->
-    console.log 'refresh...'
+    console.log 'refresh...',@prevStep, @options
     @_destroyCurrentStep()
     # @options.subviews[@order]
     @setPrevBtn()
@@ -84,7 +84,7 @@ class ChameleonBoxView extends View
     else
       @order--
       console.log @options,@prevStep
-      @mergeOptions {subview:prevView} if prevView = @getPrevStep()
+      @mergeOptions {subview: prevView} if prevView = @getPrevStep()
       @_refresh()
 
   onFinish: (callback) ->
@@ -138,7 +138,8 @@ class ChameleonBoxView extends View
 
     # console.log @modalPanel,atom.workspace.getModalPanels(),@,atom.workspace.getModalPanels()[0].item is @
     # console.dir @element.parentElement
-    view = new @options.begining?()
+    # view = new @options.begining?()
+    view = @options.begining if @options.begining?
     @mergeOptions subview:view if view?
     @findModalPanel()
     # console.log @modalPanel,@modalPanel?.isVisible()

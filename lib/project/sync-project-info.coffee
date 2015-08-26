@@ -120,6 +120,6 @@ class SyncProjectView extends View
           @checkInput()
 
   nextStep:(box) ->
-    box.setPrevStep @
+    box.setPrevStep SyncProjectView
     box.mergeOptions {projectInfo: @getProjectInfo(), projectDetail: @projectDetail, newType: 'syncProject'}
     box.nextStep()

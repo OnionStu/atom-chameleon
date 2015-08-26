@@ -22,7 +22,6 @@ class SyncProjectView extends View
               @img src: desc.getImgPath 'arrow_right.png'
 
   pageSize: 3
-  pageIndex: 1
   account_id: ''
   projects: []
   currentIndex: 1
@@ -96,7 +95,7 @@ class SyncProjectView extends View
     @renderCurrentList()
 
   renderCurrentList: () ->
-    currentList = @projects.slice(@currentIndex * 3 - 3, @currentIndex * 3 )
+    currentList = @projects.slice(@currentIndex * @pageSize - @pageSize, @currentIndex * @pageSize )
     @projectList.html('')
     if currentList.length > 0
       currentList.forEach (item)=>
@@ -108,8 +107,8 @@ class SyncProjectView extends View
   nextStep: (box)=>
     projectId = $('.select').attr('projectId')
     nextStepView = new syncInfoView(projectId)
-    box.setPrevStep @
-    box.mergeOptions {subview:nextStepView, projectId: projectId, account_id: @account_id}
+    box.setPrevStep SyncProjectView
+    box.mergeOptions {subview:nextStepView,sub: syncInfoView, projectId: projectId, account_id: @account_id, projects: {list: @projects, currentIndex: @currentIndex, totalCount: @totalCount}}
     box.nextStep()
 
   onItemClick: (e) ->
