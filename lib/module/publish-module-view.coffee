@@ -10,12 +10,12 @@ client = require '../utils/client'
 
 class PublishModuleInfoView extends View
 
-	@content:(flag) ->
+	@content:() ->
 		@div class : "upload-module container", =>
 			@div outlet : 'first' , =>
 				@h2 desc.publishModulePageOneTitle, class: 'box-subtitle'
 				@div outlet : 'moduleList',class: 'box-form'
-				@input type:'hidden',value:"#{flag}",outlet:'flag'
+				# @input type:'text',value:"#{flag}",outlet:'flag'
 			@div outlet : 'second',class : 'hide', =>
 				@label desc.publishModulePageTwoTitle
 				@label id:'tips'
@@ -195,8 +195,9 @@ class PublishModuleInfoView extends View
 		_parentView = @parentView
 		_moduleList = @moduleList
 		# console.log @flag.val()
-		if @flag.val() == "true"
-			console.log "#{test.length}"
+		# console.log @parentView.flag
+		if @parentView.flag is "select_path"
+			# console.log "#{test.length}"
 			@first.addClass('hide')
 			@third.removeClass('hide')
 			if @second.hasClass('hide')
@@ -206,7 +207,7 @@ class PublishModuleInfoView extends View
 				# @third.addClass('hide')
 			return
 		else
-		  project_path = PathM.join $('.entry.selected span').attr('data-path')
+		  project_path = $('.entry.selected span').attr('data-path')
 			if @first.hasClass('hide')
 				@first.removeClass('hide')
 				@third.addClass('hide')
@@ -572,8 +573,7 @@ module.exports =
 class PublishModuleView extends ChameleonBox
 	setOptions:(flag) ->
 		# flag = "123"
-		@options.subview = new PublishModuleInfoView(flag)
-
+		@flag = flag
 	options :
     title : desc.publishModule
-    subview :  null
+    subview :  new PublishModuleInfoView()

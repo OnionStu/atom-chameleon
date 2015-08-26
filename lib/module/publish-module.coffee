@@ -13,6 +13,7 @@ module.exports = PublishModule =
 
 
 		@chameleonBox = new PublishModelView()
+		# console.log flag
 		@chameleonBox.setOptions(flag)
 		@chameleonBox.modalPanel = @modalPanel = atom.workspace.addModalPanel(item: @chameleonBox, visible: false)
 		@chameleonBox.move()
