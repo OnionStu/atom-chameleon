@@ -10,28 +10,28 @@ client = require '../utils/client'
 
 class PublishModuleInfoView extends View
 
-	@content:(flag) ->
-		@div class : "upload-module container", =>
-			@div outlet : 'first' , =>
-				@h2 desc.publishModulePageOneTitle, class: 'box-subtitle'
-				@div outlet : 'moduleList',class: 'box-form'
-				@input type:'hidden',value:"#{flag}",outlet:'flag'
-			@div outlet : 'second',class : 'hide', =>
-				@label desc.publishModulePageTwoTitle
-				@label id:'tips'
-				@div outlet : 'moduleMessageList'
-				@input type:"hidden",id:"projectIdentifier"
-			@div outlet : 'third', class : 'hide', =>
-				@div class: 'new-project', =>
-					@div class: 'box-form', =>
-						@div class: 'form-row clearfix col-sm-12 padding-none', =>
-							@div class:'col-sm-3', =>
-		          	@label '请选择路径', class: 'row-title pull-left'
-								@div class:'hide', =>
-									@subview 'appPath', new TextEditorView(mini: true)
-							@div class:'col-sm-9 textEditStyle',=>
-								@label outlet:'show_path',class:'padding-left'
-								@span outlet:'openFolder', class: 'inline-block status-added icon icon-file-directory openFolder'
+  @content:() ->
+    @div class : "upload-module container", =>
+      @div outlet : 'first' , =>
+        @h2 desc.publishModulePageOneTitle, class: 'box-subtitle'
+        @div outlet : 'moduleList',class: 'box-form'
+        # @input type:'text',value:"#{flag}",outlet:'flag'
+      @div outlet : 'second',class : 'hide', =>
+        @label desc.publishModulePageTwoTitle
+        @label id:'tips'
+        @div outlet : 'moduleMessageList'
+        @input type:"hidden",id:"projectIdentifier"
+      @div outlet : 'third', class : 'hide', =>
+        @div class: 'new-project', =>
+          @div class: 'box-form', =>
+            @div class: 'form-row clearfix col-sm-12 padding-none', =>
+              @div class:'col-sm-3', =>
+                @label '请选择路径', class: 'row-title pull-left'
+                @div class:'hide', =>
+                  @subview 'appPath', new TextEditorView(mini: true)
+              @div class:'col-sm-9 textEditStyle',=>
+                @label outlet:'show_path',class:'padding-left'
+                @span outlet:'openFolder', class: 'inline-block status-added icon icon-file-directory openFolder'
 
   open :(e) ->
     console.log "ssss"
@@ -185,138 +185,139 @@ class PublishModuleInfoView extends View
     else
       @parentView.closeView()
 
-	attached: ->
-		@appPath.setText("")
-		@attached2()
+  attached: ->
+    @appPath.setText("")
+    @attached2()
 
-	attached2: ->
-		$('#tips').fadeOut()
-		test = $('.entry.selected span')
-		_parentView = @parentView
-		_moduleList = @moduleList
-		# console.log @flag.val()
-		if @flag.val() == "true"
-			console.log "#{test.length}"
-			@first.addClass('hide')
-			@third.removeClass('hide')
-			if @second.hasClass('hide')
-				return
-			else
-				@second.addClass('hide')
-				# @third.addClass('hide')
-			return
-		else
-		  project_path = PathM.join $('.entry.selected span').attr('data-path')
-			if @first.hasClass('hide')
-				@first.removeClass('hide')
-				@third.addClass('hide')
-				@second.addClass('hide')
-			#这是一个回调函数 的开始
-			# console.log "hello"
-			projectPaths = atom.project.getPaths()
-			isRootNodeIsBSLProject = false
-			rootPath = null
-			checkContains = (path) =>
-				directory = new Directory(path)
-				if directory.contains(project_path)
-					if UtilExtend.checkIsBSLProject(path)
-						isRootNodeIsBSLProject = true
-						rootPath = path
-			checkContains path for path in projectPaths
-			console.log isRootNodeIsBSLProject
-			returnMessage = null
-			returnStatus = false
-			if fs.existsSync(project_path)
-				projectStats = fs.statSync(project_path)
-				#判断是否目录
-				if projectStats.isDirectory()
-					configFilePath = PathM.join project_path,"appConfig.json"
-					#判断  appConfig.json 是否存在
-					if fs.existsSync(configFilePath)
-						configFileStats = fs.statSync(configFilePath)
-						file = new File(configFilePath)
-						file.read(false).then (content) =>
-							contentList = JSON.parse(content)
-							$('#projectIdentifier').attr('value',contentList['identifier'])
-						project_path = PathM.join project_path,"modules"
-						if !fs.existsSync(project_path)
-							# _parentView.enable = false
-							returnMessage = "请选择变色龙应用（不存在modules文件）"
-							returnStatus = true
-						modulesStats = fs.statSync(project_path)
-						if modulesStats.isFile()
-							# _parentView.enable = false
-							returnMessage = "请选择变色龙应用（不存在modules文件）"
-							returnStatus = true
-					else
-						# _parentView.enable = false
-						returnMessage = "请选择变色龙应用(不存在 appConfig.json)"
-						returnStatus = true
-				else
-					# _parentView.enable = false
-					returnMessage = "请选择变色龙应用"
-					returnStatus = true
-			else
-				_parentView.enable = false
-				alert "文件不存在"
-				return
-			if returnStatus
-				if isRootNodeIsBSLProject
-					project_path = rootPath
-					project_path = PathM.join project_path,"modules"
-					if !fs.existsSync(project_path)
-						_parentView.enable = false
-						alert returnMessage
-						return
-					modulesStats = fs.statSync(project_path)
-					if modulesStats.isFile()
-						_parentView.enable = false
-						alert returnMessage
-						return
-				else
-					_parentView.enable = false
-					alert returnMessage
-					return
-			modulesCount = 0
-			list = fs.readdirSync(project_path)
-			fileLength = 0
-			printName = (filePath) ->
-				console.log fileLength
-				stats = fs.statSync(filePath)
-				if stats.isDirectory()
-					basename = PathM.basename filePath
-					packageFilePath = PathM.join filePath,"package.json"
-					if fs.existsSync(packageFilePath)
-						# alert "#{packageFilePath}"
-						packageFileStats = fs.statSync(packageFilePath)
-						if packageFileStats.isFile()
-							fileLength = fileLength + 1
-							getMessage = (err, data) =>
-								if err
-									console.log "error"
-								else
-								  contentList = JSON.parse(data)
-									_moduleList.append('<div class="col-sm-4"><div class="checkboxFive"><input id="module-upload'+basename+'" value="'+packageFilePath+'" type="checkbox" class="hide" /><label for="module-upload'+basename+'"></label></div><label for="module-upload'+basename+'" class="label-empty">'+contentList['name']+'</label></div>')
-									# console.log data
-							options =
-								encoding: "UTF-8"
-							fs.readFile(packageFilePath,options,getMessage)
-			_moduleList.empty()
-			printName PathM.join project_path,fileName for fileName in list
-			if fileLength == 0
-				_parentView.enable = false
-				alert "没有任何模块"
-				return
+  attached2: ->
+    $('#tips').fadeOut()
+    test = $('.entry.selected span')
+    _parentView = @parentView
+    _moduleList = @moduleList
+    # console.log @flag.val()
+    # console.log @parentView.flag
+    if @parentView.flag is "select_path"
+      # console.log "#{test.length}"
+      @first.addClass('hide')
+      @third.removeClass('hide')
+      if @second.hasClass('hide')
+        return
+      else
+        @second.addClass('hide')
+        # @third.addClass('hide')
+      return
+    else
+      project_path = $('.entry.selected span').attr('data-path')
+      if @first.hasClass('hide')
+        @first.removeClass('hide')
+        @third.addClass('hide')
+        @second.addClass('hide')
+      #这是一个回调函数 的开始
+      # console.log "hello"
+      projectPaths = atom.project.getPaths()
+      isRootNodeIsBSLProject = false
+      rootPath = null
+      checkContains = (path) =>
+        directory = new Directory(path)
+        if directory.contains(project_path)
+          if UtilExtend.checkIsBSLProject(path)
+            isRootNodeIsBSLProject = true
+            rootPath = path
+      checkContains path for path in projectPaths
+      console.log isRootNodeIsBSLProject
+      returnMessage = null
+      returnStatus = false
+      if fs.existsSync(project_path)
+        projectStats = fs.statSync(project_path)
+        #判断是否目录
+        if projectStats.isDirectory()
+          configFilePath = PathM.join project_path,"appConfig.json"
+          #判断  appConfig.json 是否存在
+          if fs.existsSync(configFilePath)
+            configFileStats = fs.statSync(configFilePath)
+            file = new File(configFilePath)
+            file.read(false).then (content) =>
+              contentList = JSON.parse(content)
+              $('#projectIdentifier').attr('value',contentList['identifier'])
+            project_path = PathM.join project_path,"modules"
+            if !fs.existsSync(project_path)
+              # _parentView.enable = false
+              returnMessage = "请选择变色龙应用（不存在modules文件）"
+              returnStatus = true
+            modulesStats = fs.statSync(project_path)
+            if modulesStats.isFile()
+              # _parentView.enable = false
+              returnMessage = "请选择变色龙应用（不存在modules文件）"
+              returnStatus = true
+          else
+            # _parentView.enable = false
+            returnMessage = "请选择变色龙应用(不存在 appConfig.json)"
+            returnStatus = true
+        else
+          # _parentView.enable = false
+          returnMessage = "请选择变色龙应用"
+          returnStatus = true
+      else
+        _parentView.enable = false
+        alert "文件不存在"
+        return
+      if returnStatus
+        if isRootNodeIsBSLProject
+          project_path = rootPath
+          project_path = PathM.join project_path,"modules"
+          if !fs.existsSync(project_path)
+            _parentView.enable = false
+            alert returnMessage
+            return
+          modulesStats = fs.statSync(project_path)
+          if modulesStats.isFile()
+            _parentView.enable = false
+            alert returnMessage
+            return
+        else
+          _parentView.enable = false
+          alert returnMessage
+          return
+      modulesCount = 0
+      list = fs.readdirSync(project_path)
+      fileLength = 0
+      printName = (filePath) ->
+        console.log fileLength
+        stats = fs.statSync(filePath)
+        if stats.isDirectory()
+          basename = PathM.basename filePath
+          packageFilePath = PathM.join filePath,"package.json"
+          if fs.existsSync(packageFilePath)
+            # alert "#{packageFilePath}"
+            packageFileStats = fs.statSync(packageFilePath)
+            if packageFileStats.isFile()
+              fileLength = fileLength + 1
+              getMessage = (err, data) =>
+                if err
+                  console.log "error"
+                else
+                  contentList = JSON.parse(data)
+                  _moduleList.append('<div class="col-sm-4"><div class="checkboxFive"><input id="module-upload'+basename+'" value="'+packageFilePath+'" type="checkbox" class="hide" /><label for="module-upload'+basename+'"></label></div><label for="module-upload'+basename+'" class="label-empty">'+contentList['name']+'</label></div>')
+                  # console.log data
+              options =
+                encoding: "UTF-8"
+              fs.readFile(packageFilePath,options,getMessage)
+      _moduleList.empty()
+      printName PathM.join project_path,fileName for fileName in list
+      if fileLength == 0
+        _parentView.enable = false
+        alert "没有任何模块"
+        return
 
   getElement: ->
     @element
 
   serialize: ->
 
-	initialize: ->
-		@openFolder.on 'click',(e) => @open(e)
+  initialize: ->
+    @openFolder.on 'click',(e) => @open(e)
 
-	# attached: ->
+  # attached: ->
 
 class ModuleMessageItem extends View
 
@@ -570,10 +571,9 @@ class ModuleMessageItem extends View
 
 module.exports =
 class PublishModuleView extends ChameleonBox
-	setOptions:(flag) ->
-		# flag = "123"
-		@options.subview = new PublishModuleInfoView(flag)
-
-	options :
+  setOptions:(flag) ->
+    # flag = "123"
+    @flag = flag
+  options :
     title : desc.publishModule
-    subview :  null
+    subview :  new PublishModuleInfoView()
