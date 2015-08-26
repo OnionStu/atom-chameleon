@@ -12,7 +12,7 @@ module.exports = ConfigureModule =
     @chameleonBox.move()
     @chameleonBox.prevBtn.addClass('hide')
     @chameleonBox.onCancelClick = => @clearOrCloseView()
-    @chameleonBox.onCloseClick = => @closeView()
+    # @chameleonBox.onCloseClick = => @closeView()
     @chameleonBox.onNextClick = => @chameleonBox.contentView.nextStep()
     @chameleonBox.onPrevClick = => @chameleonBox.contentView.prevStep()
 
