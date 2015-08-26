@@ -11,8 +11,8 @@ module.exports = ConfigureModule =
     @chameleonBox.modalPanel = @modalPanel = atom.workspace.addModalPanel(item: @chameleonBox, visible: false)
     @chameleonBox.move()
     @chameleonBox.prevBtn.addClass('hide')
-    @chameleonBox.onCancelClick = => @clearOrCloseView()
-    @chameleonBox.onCloseClick = => @closeView()
+    # @chameleonBox.onCancelClick = => @clearOrCloseView()
+    # @chameleonBox.onCloseClick = => @closeView()
     @chameleonBox.onNextClick = => @chameleonBox.contentView.nextStep()
     @chameleonBox.onPrevClick = => @chameleonBox.contentView.prevStep()
 
