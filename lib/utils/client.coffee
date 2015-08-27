@@ -26,7 +26,7 @@ module.exports =
       else if httpResponse.statusCode is 403
         util.removeStore('chameleon-cookie')
         util.removeStore('chameleon')
-        alert '没有登录或登录超时，请重新登录'
+        alert '登录超时，请重新登录'
         atom.workspace.getPanes()[0].destroyActiveItem()
         @settings.activate()
         util.findCurrModalPanel()?.item.closeView?()

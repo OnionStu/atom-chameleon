@@ -11,15 +11,16 @@ client = require '../utils/client'
 class PublishModuleInfoView extends View
 
   @content:() ->
-    @div class : "upload-module container", =>
+    @div class : "upload-module", =>
       @div outlet : 'first' , =>
         @h2 desc.publishModulePageOneTitle, class: 'box-subtitle'
         @div outlet : 'moduleList',class: 'box-form'
         # @input type:'text',value:"#{flag}",outlet:'flag'
-      @div outlet : 'second',class : 'hide', =>
+      @div outlet : 'second',class : 'hide', style: 'overflow-x: scroll', =>
         @label desc.publishModulePageTwoTitle
-        @label id:'tips'
-        @div outlet : 'moduleMessageList'
+        @div class: 'modules-container', outlet : 'moduleMessageList', =>
+
+
         @input type:"hidden",id:"projectIdentifier"
       @div outlet : 'third', class : 'hide', =>
         @div class: 'new-project', =>
@@ -164,6 +165,7 @@ class PublishModuleInfoView extends View
                         item.find('button').attr('disabled',true)
                         # console.log item.find('button')
                         _moduleMessageList.append(item)
+                        _moduleMessageList.css({'width': 5 * 240})
                         util.fileCompression(PathM.join $(checkbox).attr('value'),'..')
                         callbackOper = ->
                           item.find('button').attr("disabled",false)
@@ -322,27 +324,27 @@ class PublishModuleInfoView extends View
 class ModuleMessageItem extends View
 
   @content: (obj) ->
-    @div class: 'col-sm-6 ',=>
-      @div class: 'col-sm-12 upload-view-padding', =>
+    @div class: 'module_item', =>
+      @div class: 'upload-view-padding', =>
         @label '模块名称：'
         @label obj.moduleName
-      @div class : 'col-sm-12 upload-view-padding', =>
+      @div class : 'upload-view-padding', =>
         @label '上传版本：'
         @label obj.uploadVersion,outlet:"uploadVersion"
-      @div class : 'col-sm-12 upload-view-padding', =>
+      @div class : 'upload-view-padding', =>
         @label '服务器版本：'
         @label obj.version,outlet:"version",value:obj.build
-      @div class : 'col-sm-12 upload-view-padding', =>
+      @div class : 'upload-view-padding', =>
         @label '更新日志：'
-      @div class : 'col-sm-12 upload-view-padding', =>
+      @div class : 'upload-view-padding', =>
         @subview 'updateLog', new TextEditorView(mini: true,placeholderText: 'update log...')
-      @div class : 'col-sm-12 publishModulecheckbox upload-view-padding', =>
+      @div class : 'publishModulecheckbox upload-view-padding', =>
         @button '上传',value:obj.modulePath,outlet:"uploadBtn",class:'btn',click: 'postModuleMessage'
         @button '应用到',value:obj.identifier,class:'btn',click: 'showAppList'
           # @button '上传并应用',value:obj.modulePath,class:'btn'
-      @div class : 'col-sm-12 upload-view-padding',=>
+      @div class : 'upload-view-padding',=>
         @label "正在打包文件......",class:"#{obj.identifier}"
-      @div class : 'col-sm-12 hide  app-list-view',outlet:"appListView"
+      @div class : 'hide  app-list-view',outlet:"appListView"
 
   # initialize: ->
   #   # @.find(".editor-contents--private").addClass("TextEditorView-heigth")
