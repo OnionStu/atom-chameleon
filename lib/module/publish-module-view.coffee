@@ -27,7 +27,7 @@ class PublishModuleInfoView extends View
           @div class: 'box-form', =>
             @div class: 'form-row clearfix col-sm-12 padding-none', =>
               @div class:'col-sm-3', =>
-                @label '请选择路径', class: 'row-title pull-left'
+                @label '请选择应用路径', class: 'row-title pull-left'
                 @div class:'hide', =>
                   @subview 'appPath', new TextEditorView(mini: true)
               @div class:'col-sm-9 textEditStyle',=>
@@ -103,7 +103,6 @@ class PublishModuleInfoView extends View
       @parentView.closeView()
     # console.log 'init finish'
   nextStep: ->
-
     _parentView = @parentView
     # console.log 'click next button'
     if @third.hasClass('hide')
@@ -121,65 +120,113 @@ class PublishModuleInfoView extends View
       _moduleMessageList = @moduleMessageList
       _moduleMessageList.empty()
       # 输出模块选项
+      moduleList = []
+      modulePathJson = {}
       printModuleMessage = (checkbox) =>
+        # if $(checkbox).is(':checked')
+        #   moduleFolderCallBack = (exists) =>
+        #     if exists
+        #       moduleConfigCallBack = (exists) =>
+        #         if exists
+        #           console.log $(checkbox).attr('value')
+        #           contentList = JSON.parse(fs.readFileSync($(checkbox).attr('value')))
+        #           obj =
+        #             moduleName: contentList['name']
+        #             uploadVersion: contentList['version']
+        #             identifier: contentList['identifier']
+        #             version: contentList['serviceVersion']
+        #             modulePath: $(checkbox).attr('value')
+        #           console.log contentList['identifier']
+        #           if contentList['identifier'] is "undefined" || contentList['identifier'] is ""
+        #             console.log contentList['identifier']
+        #             alert "模块#{contentList['name']}的identifer不存在！"
+        #             @prevStep()
+        #             return
+        #           if contentList['version'] is "undefined" || contentList['version'] is ""
+        #             alert "模块#{contentList['name']}的version不存在！"
+        #             @prevStep()
+        #             return
+        #           params =
+        #             sendCookie: true
+        #             success: (data) =>
+        #               if true
+        #                 # console.log "check version success"
+        #                 console.log  "获取最新版本和上传次数"+ data
+        #                 #获取版本 和 上传次数 ， 并判断和初始化  obj['build'] obj['version']
+        #                 if data['build']? and data['build'] != ""
+        #                   obj["build"] = parseInt(data['build'])
+        #                 else
+        #                   obj["build"] = 0
+        #
+        #                 if data['version']? and data['version'] != ""
+        #                   obj['version'] = data['version']
+        #                 else
+        #                   obj['version'] = "0.0.0"
+        #                 item = new ModuleMessageItem(obj)
+        #                 # item.find('button').attr('disabled',true)
+        #                 # console.log item.find('button')
+        #                 _moduleMessageList.append(item)
+        #                 # util.fileCompression(PathM.join $(checkbox).attr('value'),'..')
+        #                 # callbackOper = ->
+        #                 #   item.find('button').attr("disabled",false)
+        #                 # $(".#{obj.identifier}").fadeOut(3000,callbackOper)
+        #             error : =>
+        #               console.log "获取模板最新版本 的url 调不通"
+        #           client.getModuleLastVersion(params,obj.identifier)
+        #       configFilePath = PathM.join $(checkbox).attr('value')
+        #       fs.exists(configFilePath,moduleConfigCallBack)
+        #
+        #   folderPath = PathM.join $(checkbox).attr('value'),'..'
+        #   fs.exists(folderPath,moduleFolderCallBack)
         if $(checkbox).is(':checked')
-          moduleFolderCallBack = (exists) =>
-            if exists
-              moduleConfigCallBack = (exists) =>
-                if exists
-                  console.log $(checkbox).attr('value')
-                  contentList = JSON.parse(fs.readFileSync($(checkbox).attr('value')))
-                  obj =
-                    moduleName: contentList['name']
-                    uploadVersion: contentList['version']
-                    identifier: contentList['identifier']
-                    version: contentList['serviceVersion']
-                    modulePath: $(checkbox).attr('value')
-                  console.log contentList['identifier']
-                  if contentList['identifier'] is "undefined" || contentList['identifier'] is ""
-                    console.log contentList['identifier']
-                    alert "模块#{contentList['name']}的identifer不存在！"
-                    @prevStep()
-                    return
-                  if contentList['version'] is "undefined" || contentList['version'] is ""
-                    alert "模块#{contentList['name']}的version不存在！"
-                    @prevStep()
-                    return
-                  params =
-                    sendCookie: true
-                    success: (data) =>
-                      if true
-                        # console.log "check version success"
-                        console.log  "获取最新版本和上传次数"+ data
-                        #获取版本 和 上传次数 ， 并判断和初始化  obj['build'] obj['version']
-                        if data['build']? and data['build'] != ""
-                          obj["build"] = parseInt(data['build'])
-                        else
-                          obj["build"] = 0
-
-                        if data['version']? and data['version'] != ""
-                          obj['version'] = data['version']
-                        else
-                          obj['version'] = "0.0.0"
-                        item = new ModuleMessageItem(obj)
-                        item.find('button').attr('disabled',true)
-                        # console.log item.find('button')
-                        _moduleMessageList.append(item)
-                        _moduleMessageList.css({'width': 5 * 240})
-                        util.fileCompression(PathM.join $(checkbox).attr('value'),'..')
-                        callbackOper = ->
-                          item.find('button').attr("disabled",false)
-                        $(".#{obj.identifier}").fadeOut(3000,callbackOper)
-                    error : =>
-                      console.log "获取模板最新版本 的url 调不通"
-                  client.getModuleLastVersion(params,obj.identifier)
-              configFilePath = PathM.join $(checkbox).attr('value')
-              fs.exists(configFilePath,moduleConfigCallBack)
-          folderPath = PathM.join $(checkbox).attr('value'),'..'
-          fs.exists(folderPath,moduleFolderCallBack)
-
+          identifer =PathM.basename PathM.join $(checkbox).attr('value'),".."
+          moduleList.push(identifer)
+          modulePathJson[identifer] = $(checkbox).attr('value')
+          _moduleMessageList.css({'width': moduleList.length * 240})
       printModuleMessage checkbox for checkbox in checkboxList
+      params =
+        formData:{
+          identifier:JSON.stringify(moduleList)
+        }
+        sendCookie: true
+        success: (data) =>
+          console.log data
+          errorMessage = "不存在路径"
+          errorCode = 0
+          html = ""
+          showModuleMessage = (object) =>
+            configPath = modulePathJson[object.identifier]
+            if !fs.existsSync(configPath)
+              errorCode = 1
+            else
+              stats = fs.statSync(configPath)
+              if stats.isFile()
+                contentList = JSON.parse(fs.readFileSync(configPath))
+                # modulePath = PathM.join configPath,".."
+                obj =
+                  moduleName: contentList['name']
+                  uploadVersion: contentList['version']
+                  identifier: contentList['identifier']
+                  version: contentList['serviceVersion']
+                  modulePath: configPath
+                # 获取版本 和 上传次数 ， 并判断和初始化  obj['build'] obj['version']
+                if object['build']? and object['build'] != ""
+                  obj["build"] = parseInt(object['build'])
+                else
+                  obj["build"] = 0
+                if object['version']? and object['version'] != ""
+                  obj['version'] = object['version']
+                else
+                  obj['version'] = "0.0.0"
+                item = new ModuleMessageItem(obj)
+                _moduleMessageList.append(item)
+          showModuleMessage object for object in data
 
+        error : =>
+          console.log "获取模板最新版本 的url 调不通"
+      client.getModuleLastVersion(params)
+      console.log moduleList
+      console.log modulePathJson
       @second.removeClass('hide')
       @first.addClass('hide')
       @parentView.prevBtn.removeClass('hide')
@@ -338,13 +385,13 @@ class ModuleMessageItem extends View
         @label '更新日志：'
       @div class : 'upload-view-padding', =>
         @subview 'updateLog', new TextEditorView(mini: true,placeholderText: 'update log...')
-      @div class : 'publishModulecheckbox upload-view-padding', =>
+      @div class : 'publishModulecheckbox upload-view-padding btngroup', =>
         @button '上传',value:obj.modulePath,outlet:"uploadBtn",class:'btn',click: 'postModuleMessage'
         @button '应用到',value:obj.identifier,class:'btn',click: 'showAppList'
           # @button '上传并应用',value:obj.modulePath,class:'btn'
-      @div class : 'upload-view-padding',=>
-        @label "正在打包文件......",class:"#{obj.identifier}"
-      @div class : 'hide  app-list-view',outlet:"appListView"
+      # @div class : 'col-sm-12 upload-view-padding',=>
+      #   @label "正在打包文件......",class:"#{obj.identifier}"
+      @div class : 'hide app-list-view',outlet:"appListView"
 
   # initialize: ->
   #   # @.find(".editor-contents--private").addClass("TextEditorView-heigth")
@@ -373,11 +420,11 @@ class ModuleMessageItem extends View
             object.name = object.name #+ "(#{object.id})"
           else
             object.name = object.id #+ "(#{object.id})"
-          options = options + "<div class='col-sm-6 upload-view-padding'><div class='checkboxFive'><input type='checkbox' class='hide' id='#{object.id}_#{length}' value='#{object.id}' /><label for='#{object.id}_#{length}'></label></div><label for='#{object.id}_#{length}' class='label-empty'>#{object.name}</label></div>"
+          options = options + "<div class='upload-view-padding'><div class='checkboxFive'><input type='checkbox' class='hide' id='#{object.id}_#{length}' value='#{object.id}' /><label for='#{object.id}_#{length}'></label></div><label for='#{object.id}_#{length}' class='label-empty'>#{object.name}</label></div>"
         printAppList object for object in data
-        options = options + "<div class='col-sm-12 upload-view-padding'><button name='hideAppListbtn' class='btn'>取消</button><button class='btn' name='uploadMApp'>确认</button><div>"
+        options = options + "<div class='upload-view-padding btngroup'><button name='hideAppListbtn' class='btn'>取消</button><button class='btn' name='uploadMApp'>确认</button><div>"
         if length == 0
-          options = "还没与应用关联，请到网页客户端添加关联。"
+          options = "还没与应用关联，请到网页客户端添加关联。<button name='hideAppListbtn' class='btn cancel'>取消</button>"
         # console.log @.find("button[name=uploadMApp]")
         @appListView.html(options)
         @.find("button[name=uploadMApp]").on 'click',(e) => @actModuleToApp(e)
@@ -412,7 +459,7 @@ class ModuleMessageItem extends View
     if result["error"]
       alert result["errorMessage"]
       return
-
+    util.fileCompression(PathM.join @uploadBtn.val(),"..")
     fileParams =
       formData: {
         up_file: fs.createReadStream(PathM.join zipPath,zipName)
@@ -435,7 +482,7 @@ class ModuleMessageItem extends View
                 form:{
                   module_tag: contentList['identifier'],
                   module_name: contentList['name'],
-                  module_desc: "",#contentList['description']
+                  module_desc: "",
                   version: contentList['version'],
                   url_id: data['url_id'],
                   logo_url_id: data2['url_id'],
@@ -497,6 +544,7 @@ class ModuleMessageItem extends View
     if result["error"]
       alert result["errorMessage"]
       return
+    util.fileCompression(PathM.join $(btn2).val(),"..")
     fileParams =
       formData: {
         up_file: fs.createReadStream(PathM.join zipPath,zipName)
@@ -508,6 +556,7 @@ class ModuleMessageItem extends View
         configFilePathCallBack = (exists) =>
           if exists
             file = new File($(btn2).val())
+            console.log $(btn2).val()
             file.read(false).then (content) =>
               contentList = JSON.parse(content)
               # 当  配置信息中不存在build字段时，新建字段 初始化为 1
@@ -519,7 +568,7 @@ class ModuleMessageItem extends View
                 formData:{
                   module_tag: contentList['identifier'],
                   module_name: contentList['name'],
-                  module_desc: contentList['description'],
+                  module_desc: "",
                   version: contentList['version'],
                   url_id: data['url_id'],
                   logo_url_id: data2['url_id'],
