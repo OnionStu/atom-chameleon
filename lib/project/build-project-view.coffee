@@ -13,7 +13,7 @@ class BuildProjectInfoView extends View
   buildPlatformId:{}
 
   @content: ->
-    @div class: 'build_project_vew', =>
+    @div class: 'build_project_view', =>
       @div outlet: 'main', =>
         @div class: 'col-xs-12', =>
           @label "选择需要构建的应用平台"
@@ -579,23 +579,36 @@ class BuildProjectInfoView extends View
               window.clearTimeout(@checkBuildResultTimer[platform])
             if @ticketTimer[platform]
               window.clearTimeout(@ticketTimer[platform])
-          str = "<img src='"+ desc.getImgPath 'icon_success.png' +"'/>构建成功"
+          str = "<img src='"+ desc.getImgPath 'icon_success.png' +"'/>构建成功,开始加载二位码"
           if @.find('#ios').is(':checked')
             @ios_code_view.removeClass('hide')
           if @.find('#android').is(':checked')
             @android_code_view.removeClass('hide')
           if platform == 'IOS'
             @.find(".iosTips").html("iOS")
-            @iOSCode.attr('src',"http://qr.liantu.com/api.php?text=#{data['url']}")
             @iosUrl.attr('href',data['url'])
             @iosUrl.html("app下载地址[IOS]")
             @ios_build_result_tips.html(str)
           else
             @.find(".androidTips").html("Android")
-            @androidCode.attr('src',"http://qr.liantu.com/api.php?text=#{data['url']}")
             @androidUrl.attr('href',data['url'])
             @androidUrl.html("app下载地址[Android]")
             @android_build_result_tips.html(str)
+          str = "<img src='"+ desc.getImgPath 'icon_success.png' +"'/>构建成功"
+          if platform == 'IOS'
+            img1 = new Image()
+            img1.onload = =>
+              @iOSCode.attr('src',img1.src)
+              @ios_build_result_tips.html(str)
+              img1 = null
+            img1.src = "http://qr.liantu.com/api.php?text=#{data['url']}"
+          else
+            img2 = new Image()
+            img2.onload = =>
+              @androidCode.attr('src',img2.src)
+              @android_build_result_tips.html(str)
+              img2 = null
+            img2.src = "http://qr.liantu.com/api.php?text=#{data['url']}"
         else if data['status'] == "BUILDING"
           @buildTips.html("正在构建请耐心等待......")
           if platform == "IOS"
