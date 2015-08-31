@@ -109,16 +109,22 @@ class UploadProjectInfoView extends View
       moduleIdentifer = modules[index]['identifier']
       moduleVersion = modules[index]['version']
       moduleRealPath = pathM.join modulePath, moduleIdentifer
+      moduleList = [moduleIdentifer]
       params =
+        formData:{
+          identifier:JSON.stringify(moduleList)
+        }
         sendCookie: true
         success: (data) =>
           # console.log "check version success"
-          build = data['build']
+          console.log data
+          build = data[0]['build']
+          console.log data[0]['version']
           if data['version'] != ""
             # uploadVersion = moduleVersion.split('.')
             # version = data['version'].split('.')
             # 判断是否需要上传模块
-            result = UtilExtend.checkUploadModuleVersion(moduleVersion,data['version'])
+            result = UtilExtend.checkUploadModuleVersion(moduleVersion,data[0]['version'])
             if result['error']
               console.log "无需更新#{moduleIdentifer} 本地版本为#{moduleVersion},服务器版本为：#{data['version']}"
               if modules.length == index+1
@@ -207,7 +213,7 @@ class UploadProjectInfoView extends View
           #   console.log "需要上传#{moduleIdentifer}模块,服务器版本为空，本地版本为#{moduleVersion}"
         error : =>
           console.log "获取模板最新版本 的url 调不通"
-      client.getModuleLastVersion(params,moduleIdentifer)
+      client.getModuleLastVersion(params)
     # console.log
 
   sendBuildMessage: ->
