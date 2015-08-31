@@ -20,19 +20,23 @@ module.exports =
       console.log httpResponse
       # console.log err
       # console.log body
-      if !err && httpResponse.statusCode is 200
-        headerCookie = if typeof httpResponse.headers['set-cookie'] is 'undefined' then '' else httpResponse.headers['set-cookie'][0]
-        params.success(JSON.parse(body), headerCookie)
-      else if httpResponse.statusCode is 403
-        util.removeStore('chameleon-cookie')
-        util.removeStore('chameleon')
-        alert '登录超时，请重新登录'
-        atom.workspace.getPanes()[0].destroyActiveItem()
-        @settings.activate()
-        util.findCurrModalPanel()?.item.closeView?()
-        util.rumAtomCommand('chameleon:login')
-      else
-        params.error(err)
+      if httpResponse.complete
+        if typeof params.complete is 'function'
+          params.complete()
+          
+        if !err && httpResponse.statusCode is 200
+          headerCookie = if typeof httpResponse.headers['set-cookie'] is 'undefined' then '' else httpResponse.headers['set-cookie'][0]
+          params.success(JSON.parse(body), headerCookie)
+        else if httpResponse.statusCode is 403
+          util.removeStore('chameleon-cookie')
+          util.removeStore('chameleon')
+          alert '登录超时，请重新登录'
+          atom.workspace.getPanes()[0].destroyActiveItem()
+          @settings.activate()
+          util.findCurrModalPanel()?.item.closeView?()
+          util.rumAtomCommand('chameleon:login')
+        else
+          params.error(err)
     request params, cb
 
   login: (params) ->

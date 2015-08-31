@@ -6,8 +6,10 @@ ChameleonBox = require '../utils/chameleon-box-view'
 fs = require 'fs-extra'
 client = require '../utils/client'
 UtilExtend = require './../utils/util-extend'
+loadingMask = require '../utils/loadingMask'
 
 class UploadProjectInfoView extends View
+  LoadingMask: loadingMask
   @content: ->
     @div class: "upload_project_view", =>
       @div outlet: "select_upload_project", class:'box-form form_width', =>
@@ -101,6 +103,7 @@ class UploadProjectInfoView extends View
         @moduleList.html(str)
 
   checkModuleNeedUpload: (modulePath, modules, index) ->
+    LoadingMask = new @LoadingMask()
     if modules.length == 0
       # console.log "length = 0"
       @sendBuildMessage()
@@ -197,18 +200,24 @@ class UploadProjectInfoView extends View
                     methodUploadModule()
                 error: =>
                   Util.removeFileDirectory(zipPath)
+                  @.children(".loading-mask").remove()
                   alert "上传文件失败"
               client.uploadFile(fileParams,"module","")
             else
+              @.children(".loading-mask").remove()
               alert "打包#{moduleRealPath}失败"
           else
+            @.children(".loading-mask").remove()
             alert "不存在#{moduleRealPath}"
           # else
           #   console.log "需要上传#{moduleIdentifer}模块,服务器版本为空，本地版本为#{moduleVersion}"
         error : =>
           console.log "获取模板最新版本 的url 调不通"
+          alert "上传失败"
+          @.children(".loading-mask").remove()
+
+      @.append(LoadingMask)
       client.getModuleLastVersion(params,moduleIdentifer)
-    # console.log
 
   sendBuildMessage: ->
     path = pathM.join @selectUploadProject.val(),desc.ProjectConfigFileName
@@ -243,6 +252,9 @@ class UploadProjectInfoView extends View
           error: =>
             console.log  "sendBuildMessage error"
             # @parentView.closeView()
+          complete: () =>
+            @.children(".loading-mask").remove()
+
         client.uploadApp(params)
 
   nextBtnClick: ->
