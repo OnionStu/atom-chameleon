@@ -637,7 +637,7 @@ class BuildProjectInfoView extends View
           else
             console.log "ios is hide"
           if @.find('#android').is(':checked')
-            @andoird_code_view.removeClass('hide')
+            @android_code_view.removeClass('hide')
           else
             console.log "android is hide"
           if !@urlCodeList.is(':visible')
