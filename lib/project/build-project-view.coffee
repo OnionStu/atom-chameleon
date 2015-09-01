@@ -89,27 +89,27 @@ class BuildProjectInfoView extends View
           @div class: "col-sm-12 text-center", =>
             @span "" ,class: "androidTips"
       @div outlet: 'urlCodeList', =>
-        @div class: 'success-tips',  =>
-          @span class: 'success-icon'
-          @span class: 'success-txt', '构建成功'
+        # @div class: 'success-tips',  =>
+        #   @span class: 'success-icon'
+        #   @span class: 'success-txt', '构建成功'
         @div class:'',  =>
           @div class: 'platform-item', outlet: 'ios_code_view' ,=>
-            @div class: '', outlet: 'ios_build_result_tips'
+            @div class: 'build-status text-center', outlet: 'ios_build_result_tips'
             @img class:'codeImg', outlet: 'iOSCode',src: desc.getImgPath 'iphone.png'
             @div class: 'label_pad', =>
               @img src: desc.getImgPath 'icon_apple02.png'
               @label "iOS",class:'iosTips platform_tips_label'
             @div class: 'code-url', =>
-              @a outlet:'iosUrl', 'http://www.baidu.com'
+              @a outlet:'iosUrl'
 
           @div class: 'platform-item', outlet: 'android_code_view', =>
-            @div class: '', outlet: 'android_build_result_tips'
+            @div class: 'build-status text-center', outlet: 'android_build_result_tips'
             @img class:'codeImg',outlet: 'androidCode', src: desc.getImgPath 'android.png'
             @div class: 'label_pad', =>
               @img src: desc.getImgPath 'icon_android02.png'
               @label "Andoird",class:'androidTips platform_tips_label'
             @div class: 'code-url', =>
-              @a outlet:'androidUrl', 'http://www.baidu.com'
+              @a outlet:'androidUrl'
 
 
   clickIcon:(e) ->
@@ -578,7 +578,7 @@ class BuildProjectInfoView extends View
               window.clearTimeout(@checkBuildResultTimer[platform])
             if @ticketTimer[platform]
               window.clearTimeout(@ticketTimer[platform])
-          str = "<img src='"+ desc.getImgPath 'icon_success.png' +"'/>构建成功,开始加载二位码"
+          str = "<img src='"+ desc.getImgPath 'icon_success.png' +"'/><span class='built-span'>构建成功,开始加载二位码</span>"
           if @.find('#ios').is(':checked')
             @ios_code_view.removeClass('hide')
           if @.find('#android').is(':checked')
@@ -593,7 +593,7 @@ class BuildProjectInfoView extends View
             @androidUrl.attr('href',data['url'])
             @androidUrl.html("app下载地址[Android]")
             @android_build_result_tips.html(str)
-          str = "<img src='"+ desc.getImgPath 'icon_success.png' +"'/>构建成功"
+          str = "<img src='"+ desc.getImgPath 'icon_success.png' +"'/><span class='built-span'>构建成功</span>"
           if platform == 'IOS'
             img1 = new Image()
             img1.onload = =>
@@ -645,10 +645,21 @@ class BuildProjectInfoView extends View
             @urlCodeList.removeClass('hide')
             @parentView.nextBtn.hide()
             @parentView.prevBtn.hide()
-          str = "<img src='"+ desc.getImgPath 'btn_close.png' +"'/>构建失败"
+          str = "<img src='"+ desc.getImgPath 'btn_close.png' +"'/><span class='built-span'>构建失败</span>"
           if platform == 'IOS'
+            @.find(".iosTips").html("iOS")
+            @iosUrl.addClass('hide')
+            # @iosUrl.html("app下载地址[IOS]")
             @ios_build_result_tips.html(str)
           else
+            @android_build_result_tips.html(str)
+          if platform == 'IOS'
+
+            @ios_build_result_tips.html(str)
+          else
+            @.find(".androidTips").html("Android")
+            @androidUrl.addClass('hide')
+            # @androidUrl.html("app下载地址[Android]")
             @android_build_result_tips.html(str)
           # alert "#{platform}构建失败"
       error: =>
