@@ -89,28 +89,27 @@ class BuildProjectInfoView extends View
           @div class: "col-sm-12 text-center", =>
             @span "" ,class: "androidTips"
       @div outlet: 'urlCodeList', =>
-        @div class: 'col-sm-12', =>
-          @label "构建成功后返回的二维码"
-        @div class:'col-sm-12 text-center',  =>
-          @div class: 'col-sm-6 text-center', outlet: 'ios_code_view' ,=>
-            @div class: 'col-sm-12', outlet: 'ios_build_result_tips'
-            @div class: 'col-sm-12', =>
-              @img class:'codeImg', outlet: 'iOSCode',src: desc.getImgPath 'iphone.png'
-            @div class: 'col-sm-12 label_pad', =>
+        @div class: 'success-tips',  =>
+          @span class: 'success-icon'
+          @span class: 'success-txt', '构建成功'
+        @div class:'',  =>
+          @div class: 'platform-item', outlet: 'ios_code_view' ,=>
+            @div class: '', outlet: 'ios_build_result_tips'
+            @img class:'codeImg', outlet: 'iOSCode',src: desc.getImgPath 'iphone.png'
+            @div class: 'label_pad', =>
               @img src: desc.getImgPath 'icon_apple02.png'
               @label "iOS",class:'iosTips platform_tips_label'
-            @div class: 'col-sm-12', =>
-              @a outlet:'iosUrl'
+            @div class: 'code-url', =>
+              @a outlet:'iosUrl', 'http://www.baidu.com'
 
-          @div class: 'col-sm-6 text-center', outlet: 'android_code_view', =>
-            @div class: 'col-sm-12', outlet: 'android_build_result_tips'
-            @div class: 'col-sm-12', =>
-              @img class:'codeImg',outlet: 'androidCode', src: desc.getImgPath 'android.png'
-            @div class: 'col-sm-12 label_pad', =>
+          @div class: 'platform-item', outlet: 'android_code_view', =>
+            @div class: '', outlet: 'android_build_result_tips'
+            @img class:'codeImg',outlet: 'androidCode', src: desc.getImgPath 'android.png'
+            @div class: 'label_pad', =>
               @img src: desc.getImgPath 'icon_android02.png'
               @label "Andoird",class:'androidTips platform_tips_label'
-            @div class: 'col-sm-12', =>
-              @a outlet:'androidUrl'
+            @div class: 'code-url', =>
+              @a outlet:'androidUrl', 'http://www.baidu.com'
 
 
   clickIcon:(e) ->

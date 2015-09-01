@@ -886,19 +886,6 @@ atom-panel.modal > .login-box {
     border-radius: 3px;
   }
 }
-.build_project_view{
-  select {
-    color: @font-white;
-    background-clip: content-box;
-    background-color: @input_bgc;
-    border-color: #181a1f;
-    font-size: 1.25em;
-    width: 100%;
-    height: 2em;
-    padding: 0;
-    border-radius: 3px;
-  }
-}
 .settingsPanel {
   .btn-group {
     .btn {
@@ -1014,5 +1001,44 @@ atom-text-editor::shadow .password-lines .line {
       width: 43%;
       margin: 0 5px;
     }
+  }
+}
+.success-tips{
+  margin: 10px 0;
+  text-align: center;
+  .success-icon{
+    display: inline-block;
+    background: url('/Users/xylitol_lin/.atom/packages/chameleon-qdt-atom/images/icon_success.png');
+    width: 22px;
+    height: 22px;
+    vertical-align: middle;
+  }
+  .success-txt{
+    vertical-align: middle;
+    margin-left: 5px;
+  }
+}
+.platform-item{
+  display: inline-block;
+  width: 50%;
+  padding: 10px;
+  .codeImg{
+    display: block;
+    margin: 0 auto;
+    width: 150px;
+    height: 150px;
+  }
+  .label_pad {
+    margin-top: 10px;
+    text-align: center;
+  }
+  .platform_tips_label{
+    vertical-align: bottom;
+    margin-bottom: 0;
+    margin-left: 5px;
+  }
+  .code-url{
+    text-align: center;
+    margin-top: 10px;
   }
 }
