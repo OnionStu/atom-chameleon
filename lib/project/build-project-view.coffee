@@ -35,7 +35,7 @@ class BuildProjectInfoView extends View
         # @div class: 'form-group', =>
         @label '选择构建的应用', class: 'col-sm-3 control-label'
         @div class: 'col-sm-9', =>
-          @select class: '', outlet: 'selectProject'
+          @select class: 'form-control', outlet: 'selectProject'
       @div outlet: 'buildMessage',  =>
         @div class: 'form-horizontal', =>
           @div class: 'form-group', =>
@@ -44,11 +44,11 @@ class BuildProjectInfoView extends View
               @button 'iOS', class: 'btn formBtn', value: 'iOS', outlet: 'iosBtn'
               @button 'Android',class: 'btn formBtn', value: 'Android', outlet: 'androidBtn'
           @div class: 'form-group', =>
-            @label '应用标识' , class: 'col-sm-3 text-align-right'
+            @label '应用标识' , class: 'col-sm-3 control-label'
             # @div class: 'col-sm-9', =>
             @label class: 'col-sm-9 disabled-text',outlet:'identifier'
           @div class: 'form-group', =>
-            @label "构建平台", class: 'col-sm-3 text-align-right'
+            @label "构建平台", class: 'col-sm-3 control-label'
             # @div class: 'col-sm-9', =>
             @label class: 'col-sm-9 disabled-text',outlet:'platform'
         @div class: 'form-horizontal', outlet: 'iosForm', =>
