@@ -4,6 +4,9 @@ LoginView = require '../login/login'
 config = require '../../config/config'
 util = require '../utils/util'
 client = require '../utils/client'
+
+qrCode = require 'qrcode-npm'
+
 module.exports =
 
 class AccountPanel extends View
@@ -16,6 +19,13 @@ class AccountPanel extends View
     shownSection = if account? then new hadAccount(account) else new notFoundAccount()
     @accountMessage.html shownSection
     shownSection = null
+    qr = qrCode.qrcode(4, 'M');
+    qr.addData('text');
+    qr.make();
+
+    console.log qr;
+    # console.log qr.getModuleCount();
+    console.log qr.createImgTag(4);
 
 class notFoundAccount extends View
   @content: ->
