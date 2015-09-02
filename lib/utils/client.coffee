@@ -23,7 +23,7 @@ module.exports =
       if httpResponse.complete
         if typeof params.complete is 'function'
           params.complete()
-          
+
         if !err && httpResponse.statusCode is 200
           headerCookie = if typeof httpResponse.headers['set-cookie'] is 'undefined' then '' else httpResponse.headers['set-cookie'][0]
           params.success(JSON.parse(body), headerCookie)
@@ -82,6 +82,10 @@ module.exports =
     userMail = util.store('chameleon').mail
     params.url = "app/app_plugins/?account=#{userMail}&identifier=#{identifier}&platform=#{platform}"
     # console.log params.url
+    @send params
+
+  getAppAllPlugins:(params,identifier) ->
+    params.url = "app/app_all_plugins?identifier=#{identifier}"
     @send params
 
   buildApp: (params) ->

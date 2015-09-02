@@ -250,63 +250,104 @@ class BuildProjectInfoView extends View
         jsonContent = JSON.parse(strContent)
         @identifier.attr('value',jsonContent['identifier'])
         @identifier.html(jsonContent['identifier'])
-        showBuildMessage = (checkbox) =>
-          # console.log $(checkbox).attr('value')
-          if $(checkbox).attr('value') is 'iOS'
-            hasIos = true
-            # 获取IOS插件信息
-            params =
-              sendCookie: true
-              success: (data) =>
-                # console.log data
-                strContent = ""
-                showPlaugins = (obj) ->
-                  strContent = strContent+" | "+ "#{obj['identifier']} : #{obj['version']}(#{obj['type']})"
-                showPlaugins obj for obj in data
+        #获取插件信息
+        pluginsObj = null
+        params =
+          sendCookie: true
+          success: (data) =>
+            pluginsObj = data
+            console.log pluginsObj
+            showBuildMessage_Mod = (checkbox) =>
+              strContent = ""
+              showPlaugins = (obj) =>
+                strContent = strContent+" | "+ "#{obj['identifier']} : #{obj['version']}(#{obj['type']})"
+              # console.log $(checkbox).attr('value')
+              if $(checkbox).attr('value') is 'iOS'
+                hasIos = true
+                # console.log "ios #{hasIos}"
+                showPlaugins obj for obj in pluginsObj['ios']
+                # console.log 'IOS'
+                # console.log pluginsObj['ios']
                 if strContent == ""
                   @iOSPluginsFormgroup.hide()
                 else
                   @iOSPluginsFormgroup.show()
                 @iOSPlugins.html(strContent)
-              error: =>
-                # console.log "console.error"
-            client.getAppPlugins(params, jsonContent['identifier'], 'IOS')
-          else
-            params =
-              sendCookie: true
-              success: (data) =>
-                # console.log data
-                strContent = ""
-                showPlaugins = (obj) ->
-                  strContent = strContent+" | "+ "#{obj['identifier']} : #{obj['version']}(#{obj['type']})"
-                showPlaugins obj for obj in data
+              else
+                showPlaugins obj for obj in pluginsObj['android']
+                # console.log 'ANDROID'
                 if strContent == ""
                   @androidPluginsFormgroup.hide()
                 else
                   @androidPluginsFormgroup.show()
                 @androidPlugins.html(strContent)
-              error: =>
-                # console.log "console.error"
-            client.getAppPlugins(params, jsonContent['identifier'], 'ANDROID')
-            # 结束获取插件信息
-        showBuildMessage checkbox for checkbox in checkboxList
-        @main.addClass('hide')
-        @buildMessage.removeClass('hide')
+            showBuildMessage_Mod checkbox for checkbox in checkboxList
+            # pluginsObj = null
+            # console.log hasIos
+            if hasIos
+              @androidForm.hide()
+              # console.log "show IOS"
+              @iosForm.show()
+              @platform.html('iOS')
+              @iosBtn.attr( 'disabled', false)
+              @androidBtn.attr( 'disabled', false)
+              if checkboxList.length is 1
+                @androidBtn.attr( 'disabled', true)
+            else
+              @platform.html('Android')
+              @androidBtn.attr( 'disabled', false)
+              @iosBtn.attr( 'disabled', true)
+              @iosForm.hide()
+              @androidForm.show()
+            @main.addClass('hide')
+            @buildMessage.removeClass('hide')
+          error: =>
+            console.log "console.error"
+        client.getAppAllPlugins(params,jsonContent['identifier'])
+        # console.log pluginsObj
+        # showBuildMessage = (checkbox) =>
+        #   # console.log $(checkbox).attr('value')
+        #   if $(checkbox).attr('value') is 'iOS'
+        #     hasIos = true
+        #     # 获取IOS插件信息
+        #     params =
+        #       sendCookie: true
+        #       success: (data) =>
+        #         # console.log data
+        #         strContent = ""
+        #         showPlaugins = (obj) ->
+        #           strContent = strContent+" | "+ "#{obj['identifier']} : #{obj['version']}(#{obj['type']})"
+        #         showPlaugins obj for obj in data
+        #         if strContent == ""
+        #           @iOSPluginsFormgroup.hide()
+        #         else
+        #           @iOSPluginsFormgroup.show()
+        #         @iOSPlugins.html(strContent)
+        #       error: =>
+        #         # console.log "console.error"
+        #     client.getAppPlugins(params, jsonContent['identifier'], 'IOS')
+        #   else
+        #     params =
+        #       sendCookie: true
+        #       success: (data) =>
+        #         # console.log data
+        #         strContent = ""
+        #         showPlaugins = (obj) ->
+        #           strContent = strContent+" | "+ "#{obj['identifier']} : #{obj['version']}(#{obj['type']})"
+        #         showPlaugins obj for obj in data
+        #         if strContent == ""
+        #           @androidPluginsFormgroup.hide()
+        #         else
+        #           @androidPluginsFormgroup.show()
+        #         @androidPlugins.html(strContent)
+        #       error: =>
+        #         # console.log "console.error"
+        #     client.getAppPlugins(params, jsonContent['identifier'], 'ANDROID')
+        #     # 结束获取插件信息
+        # showBuildMessage checkbox for checkbox in checkboxList
+        # @main.addClass('hide')
+        # @buildMessage.removeClass('hide')
         # console.log @androidBtn
-        if hasIos
-          @androidForm.hide()
-          @iosForm.show()
-          @platform.html('iOS')
-          @iosBtn.attr( 'disabled', false)
-          @androidBtn.attr( 'disabled', false)
-          if checkboxList.length is 1
-            @androidBtn.attr( 'disabled', true)
-        else
-          @platform.html('Android')
-          @androidBtn.attr( 'disabled', false)
-          @iosBtn.attr( 'disabled', true)
-          @iosForm.hide()
-          @androidForm.show()
       else
         alert "请选择构建平台"
         return
