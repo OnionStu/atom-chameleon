@@ -7,6 +7,8 @@ fs = require 'fs-extra'
 client = require '../utils/client'
 UtilExtend = require './../utils/util-extend'
 
+qrCode = require 'qrcode-npm'
+
 class BuildProjectInfoView extends View
   checkBuildResultTimer: {}
   ticketTimer:{}
@@ -595,19 +597,21 @@ class BuildProjectInfoView extends View
             @android_build_result_tips.html(str)
           str = "<img src='"+ desc.getImgPath 'icon_success.png' +"'/><span class='built-span'>构建成功</span>"
           if platform == 'IOS'
-            img1 = new Image()
-            img1.onload = =>
-              @iOSCode.attr('src',img1.src)
-              @ios_build_result_tips.html(str)
-              img1 = null
-            img1.src = "http://qr.liantu.com/api.php?text=#{data['url']}"
+            qr1 = qrCode.qrcode(8, 'L')
+            qr1.addData(data['url'])
+            qr1.make()
+            img1 = qr1.createImgTag(4)
+            @ios_build_result_tips.html(str)
+            @iOSCode.attr('src', $(img1).attr('src'))
+            qr1 = null
           else
-            img2 = new Image()
-            img2.onload = =>
-              @androidCode.attr('src',img2.src)
-              @android_build_result_tips.html(str)
-              img2 = null
-            img2.src = "http://qr.liantu.com/api.php?text=#{data['url']}"
+            qr2 = qrCode.qrcode(8, 'L')
+            qr2.addData(data['url'])
+            qr2.make()
+            img2 = qr2.createImgTag(4)
+            @android_build_result_tips.html(str)
+            @androidCode.attr('src', $(img2).attr('src'))
+            qr2 = null
         else if data['status'] == "BUILDING"
           @buildTips.html("正在构建请耐心等待......")
           if platform == "IOS"
