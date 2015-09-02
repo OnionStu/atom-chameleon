@@ -30,11 +30,14 @@ module.exports =
         else if httpResponse.statusCode is 403
           util.removeStore('chameleon-cookie')
           util.removeStore('chameleon')
-          alert '登录超时，请重新登录'
+          if httpResponse.request.path isnt '/qdt-web/api/v1/usermanger/logout'
+            alert '登录超时，请重新登录'
+            util.findCurrModalPanel()?.item.closeView?()
+            util.rumAtomCommand('chameleon:login')
+
           atom.workspace.getPanes()[0].destroyActiveItem()
           @settings.activate()
-          util.findCurrModalPanel()?.item.closeView?()
-          util.rumAtomCommand('chameleon:login')
+          
         else
           params.error(err)
     request params, cb
