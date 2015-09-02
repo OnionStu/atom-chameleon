@@ -529,6 +529,7 @@ class BuildProjectInfoView extends View
     userMail = Util.store('chameleon').mail
     bodyJSON =
       identifier: @identifier.attr("value"),
+      name:contentList["name"],
       platformInfo: platformInfo,
       # account: userMail
       mainModule: contentList["mainModule"]

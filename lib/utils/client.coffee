@@ -37,7 +37,7 @@ module.exports =
 
           atom.workspace.getPanes()[0].destroyActiveItem()
           @settings.activate()
-          
+
         else
           params.error(err)
     request params, cb
