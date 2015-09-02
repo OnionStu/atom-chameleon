@@ -539,6 +539,7 @@ class BuildProjectInfoView extends View
       modules: contentList["modules"]
       releaseNote: contentList["releaseNote"]
     bodyStr = JSON.stringify(bodyJSON)
+    # console.log bodyStr
     params =
       body: bodyStr
       sendCookie: true
@@ -738,18 +739,28 @@ class BuildProjectInfoView extends View
       @parentView.prevBtn.text('上一步')
       @parentView.nextBtn.show()
       console.log "kill timer"
-      if @checkBuildResultTimer["IOS"]
-        window.clearTimeout(@checkBuildResultTimer["IOS"])
-      if @checkBuildResultTimer["ANDROID"]
-        window.clearTimeout(@checkBuildResultTimer["ANDROID"])
-      if @ticketTimer["ANDROID"]
-        window.clearTimeout(@ticketTimer["ANDROID"])
-      if @ticketTimer["IOS"]
-        window.clearTimeout(@ticketTimer["IOS"])
+      @killTimer()
       #检测是否需要取消之前的构建
+  killTimer: ->
+    # console.log "kill timer"
+    if @checkBuildResultTimer["IOS"]
+      window.clearTimeout(@checkBuildResultTimer["IOS"])
+    if @checkBuildResultTimer["ANDROID"]
+      window.clearTimeout(@checkBuildResultTimer["ANDROID"])
+    if @ticketTimer["ANDROID"]
+      window.clearTimeout(@ticketTimer["ANDROID"])
+    if @ticketTimer["IOS"]
+      window.clearTimeout(@ticketTimer["IOS"])
 
 module.exports =
   class BuildProjectView extends ChameleonBox
     options :
       title: desc.buildProjectMainTitle
       subview: new BuildProjectInfoView()
+    killTimer: ->
+      console.log "kill timer"
+      @options.subview.killTimer()
+
+    closeView: ->
+      super()
+      @killTimer()
