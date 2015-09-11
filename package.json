@@ -1,5 +1,5 @@
 {
-  "name": "chameleon",
+  "name": "chameleon-qdt-atom",
   "main": "./lib/chameleon",
   "version": "0.0.0",
   "author": "OnionStu",
