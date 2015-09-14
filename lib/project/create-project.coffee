@@ -12,7 +12,7 @@ fs = require 'fs-extra'
 module.exports = CreateProject =
   chameleonBox: null
   modalPanel: null
-  repoDir: pathM.join desc.chameleonHome,'src','frameworks','butterfly-slim'
+  repoDir: pathM.join desc.chameleonHome,'src','frameworks','butterfly-tiny'
   frameworksDir: pathM.join desc.chameleonHome,'src','frameworks'
   projectTempDir: pathM.join desc.chameleonHome,'src','ProjectTemp'
   templateDir: pathM.join desc.chameleonHome,'src','templates'
@@ -85,6 +85,7 @@ module.exports = CreateProject =
 
   # 带框架应用创建
   newFrameProject: (options) ->
+    console.log options
     info = options.projectInfo
     createSuccess = (err) =>
       if err
@@ -92,8 +93,9 @@ module.exports = CreateProject =
       else
         copySuccess = (err) =>
           throw err if err
-          targetPath = pathM.join info.appPath,'modules','butterfly-slim'
-          Util.copy @repoDir, targetPath, (err) => # 复制成功后，将框架复制到应用的 modules 下
+          targetPath = pathM.join info.appPath,'modules','butterfly-tiny'
+          frameworksPath = pathM.join @frameworksDir,'butterfly-tiny'
+          Util.copy frameworksPath, targetPath, (err) => # 复制成功后，将框架复制到应用的 modules 下
             throw err if err
             alert '应用创建成功'
             packageJson = pathM.join targetPath,'package.json'
@@ -130,10 +132,9 @@ module.exports = CreateProject =
             atom.project.addPath(info.appPath)
             Util.rumAtomCommand 'tree-view:toggle' if $('.tree-view-resizer').length is 0
             @chameleonBox.closeView()
-
-
         Util.copy @projectTempDir, info.appPath, copySuccess # 创建应用根目录成功后 将空白应用的应用内容复制到根目录
 
+    # Util.createDir info.appPath, createSuccess
     # 首先，判断本地是否有框架
     Util.isFileExist pathM.join(@frameworksDir, 'butterfly-slim'), (exists) =>
       if exists

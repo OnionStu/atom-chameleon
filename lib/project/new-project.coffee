@@ -74,6 +74,7 @@ class NewProjectView extends View
     $('.new-item.select').removeClass 'select'
     el.classList.add 'select'
     @newType = el.dataset.type
+    @name = el.dataset.name
     @parentView.enableNext()
 
   onPrevPageClick: (e) ->
@@ -98,7 +99,7 @@ class NewProjectView extends View
     else
       nextStepView = new infoView()
     box.setPrevStep @
-    box.mergeOptions {subview:nextStepView,newType:@newType}
+    box.mergeOptions {subview:nextStepView,newType:@newType,name:@name}
     box.nextStep()
 
   findFrameworks: ->
@@ -107,7 +108,7 @@ class NewProjectView extends View
     Util.readDir fp, (err,files) =>
       return console.error err if err
       files.forEach (file,i) =>
-        unless file is '.githolder' or file is 'butterfly-slim' or file is '.gitkeep'
+        unless file is '.githolder' or file is 'butterfly-tiny' or file is '.gitkeep'
           configPath = Path.join fp,file,desc.moduleConfigFileName
           Util.readJson configPath, (err,json) =>
             # return console.error err if err
