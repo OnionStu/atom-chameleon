@@ -111,7 +111,7 @@ module.exports = Chameleon =
   #   @configureGlobal.openView()
 
   openSourceFolder: ->
-    path = atom.packages.getLoadedPackage('chameleon-qdt-atom').path
+    path = atom.packages.getLoadedPackage('chameleon-qdt-atom-dev').path
     console.log path
     atom.project.setPaths([path])
 
