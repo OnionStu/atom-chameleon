@@ -25,14 +25,14 @@ class CreateModuleInfoView extends View
           @label desc.moduleId, class: 'row-title pull-left'
           @div class: 'row-content pull-left', =>
             @subview 'moduleId', new TextEditorView(mini: true)
+        @div class: 'form-row msg clearfix in-row hide', =>
+          @div '模块标识长度必须在6-32个字符范围内,只能输入数字，字母，下划线', class: 'text-warning', outlet: 'errorMsg2'
         @div class: 'form-row clearfix', =>
           @label desc.moduleName, class: 'row-title pull-left'
           @div class: 'row-content pull-left', =>
             @subview 'moduleName', new TextEditorView(mini: true)
         @div class: 'form-row msg clearfix hide', =>
           @div desc.createModuleErrorMsg, class: 'text-warning', outlet: 'errorMsg'
-        @div class: 'form-row msg clearfix hide', =>
-          @div '模块标识长度必须在6-32个字符范围内,只能输入数字，字母，下划线', class: 'text-warning', outlet: 'errorMsg2'
 
   initialize: ->
     # @modulePath.getModel().onDidChange => @checkPath()
