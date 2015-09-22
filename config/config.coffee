@@ -8,7 +8,7 @@ modeUrl = getModeUrl()
 
 module.exports =
 	repoUri: "https://git.oschina.net/linruheng/butterfly-tiny.git"
-	registerUrl: "http://bsl.foreveross.com/#{modeUrl}/html/account/login.html"
+	registerUrl: "http://bsl.foreveross.com/#{modeUrl}/html/account/register.html"
 	forgetpwdrUrl: "http://bsl.foreveross.com/#{modeUrl}/html/account/forget_pwd.html"
 	serverUrl: "http://bsl.foreveross.com/#{modeUrl}/api/v1/"
 
