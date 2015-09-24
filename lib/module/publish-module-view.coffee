@@ -382,6 +382,8 @@ class ModuleMessageItem extends View
 
   #  upload_module_use_to_application
   actModuleToApp:(e) ->
+    _btn = @.find("button[name=uploadMApp]")
+    _btn.attr("disabled",true)
     # alert "ssss"
     checkboxList = this.find('input[type=checkbox]')
     app_ids = []
@@ -447,9 +449,11 @@ class ModuleMessageItem extends View
                   alert "error"
               client.uploadModuleAndAct(params)
               util.removeFileDirectory(PathM.join zipPath,zipName)
+              _btn.attr("disabled",false)
           else
             util.removeFileDirectory(PathM.join zipPath,zipName)
             console.log "文件不存在#{$(btn2).val()}"
+            _btn.attr("disabled",false)
         iconPath = PathM.join @uploadBtn.val(),"..","icon.png"
         #当存在 icon 时 上传Icon后再上传模块信息
         #否则直接上床模块信息
@@ -468,6 +472,7 @@ class ModuleMessageItem extends View
               fs.exists(@uploadBtn.val(),configFilePathCallBack)
             error: =>
               # console.log iconPath
+              _btn.attr("disabled",false)
               console.log "上传icon失败"
               alert "上传icon失败"
           client.uploadFile(fileParams2,"module","")
