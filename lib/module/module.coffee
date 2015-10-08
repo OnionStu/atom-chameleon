@@ -31,7 +31,15 @@ module.exports = ModuleManager =
       console.log 'CreateModuleView was opened!'
       @modalPanel.show()
 
+
   CreateModule: (options)->
+    switch options.createType
+      when 'empty' then @CreateEmptyModule options
+      when 'simple' then @CreateSimpleModule options
+      when 'template' then @CreateTemplateModule options
+
+
+  CreateEmptyModule: (options) ->
     console.log options
     info = options.moduleInfo
     filePath = pathM.join info.modulePath,info.moduleId
@@ -48,7 +56,6 @@ module.exports = ModuleManager =
         if isSuccess is yes
           configFile.setEncoding('utf8')
           console.log 'CreateModule Success'
-          # configFile.writeSync(configFileContent)
           cb = (err) =>
             console.log err
           Util.writeJson(configFilePath,configFileContent,cb)
@@ -58,21 +65,6 @@ module.exports = ModuleManager =
       .then (isSuccess) =>
         if isSuccess is yes
           entryFile.writeSync(htmlString)
-          # console.log 'begin'
-          if info.isChameleonProject
-            # console.log info.moduleId
-            projectConfigPath = pathM.join info.modulePath,'..','appConfig.json'
-            # console.log projectConfigPath
-            appConfig = new File(projectConfigPath)
-            appConfig.exists().then (resolve,reject) =>
-              if resolve
-                appConfig.read(false).then (content) =>
-                  contentList = JSON.parse(content)
-                  contentList['modules'][info.moduleId] = "0.0.1"
-                  if contentList['mainModule'] == ""
-                    contentList['mainModule'] = info.moduleId
-                  fs.writeJson projectConfigPath,contentList,null
-          # console.log 'end'
           @addProjectModule info
           isInProject = false
           atom.project.getDirectories().forEach (dir) =>
@@ -91,7 +83,16 @@ module.exports = ModuleManager =
       # .finally =>
         # console.log 'CreateModule Success',@
 
-  addProjectModule: (moduleInfo) ->
+  CreateSimpleModule: (options) ->
 
-    if moduleInfo.modulePath.lastIndexOf 'modules' isnt -1
-      console.log moduleInfo.modulePath
+  CreateTemplateModule: (options) ->
+
+  addProjectModule: (moduleInfo) ->
+    console.log moduleInfo
+    if moduleInfo.isChameleonProject is yes
+      projectConfigPath = pathM.join moduleInfo.modulePath, '..', desc.ProjectConfigFileName
+      appConfig = Util.readJsonSync projectConfigPath
+      appConfig.mainModule = moduleInfo.moduleId if appConfig.mainModule is ''
+      appConfig.modules[moduleInfo.moduleId] = desc.minVersion
+      Util.writeJson projectConfigPath,appConfig,(err) ->
+        console.log err
