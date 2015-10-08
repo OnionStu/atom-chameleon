@@ -123,14 +123,14 @@ module.exports = Util =
   writeFile: (file, textContent, cb) ->
     fs.writeFile file, textContent, cb
 
-  writeJson: (file, obj, cb) ->
-    fs.writeJson file, obj, cb
+  writeJson: (filePath, obj, cb) ->
+    fs.writeJson filePath, obj, cb
 
-  readJson: (file,cb) ->
-    fs.readJson file, cb
+  readJson: (filePath,cb) ->
+    fs.readJson filePath, cb
 
-  readJsonSync: (file) ->
-    fs.readJsonSync file, throws: false
+  readJsonSync: (filePath) ->
+    fs.readJsonSync filePath, throws: false
 
   copy: (sourcePath, destinationPath, cb) ->
     fs.copy(sourcePath, destinationPath, cb)
