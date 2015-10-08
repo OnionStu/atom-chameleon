@@ -116,7 +116,7 @@ class CreateModuleInfoView extends View
   checkPath: ->
     path = @moduleId.getText().trim()
     if path isnt ""
-      regEx = /^\w{6,32}$/
+      regEx = /^[a-zA-z]\w{5,31}$/
       if regEx.test path
         @errorMsg2.addClass('hide')
       else
