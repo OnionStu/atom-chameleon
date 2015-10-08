@@ -51,6 +51,8 @@ module.exports = TextDescription =
   projectConfig : '应用配置'
   moduleConfig : '模块配置'
 
+  minVersion : '0.0.1'
+
   # 设置模块
   panelTitle: '设置'
   menuAccount: '开发者账号'
