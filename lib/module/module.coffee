@@ -66,26 +66,49 @@ module.exports = ModuleManager =
         if isSuccess is yes
           entryFile.writeSync(htmlString)
           @addProjectModule info
-          isInProject = false
-          atom.project.getDirectories().forEach (dir) =>
-            # console.log dir,filePath
-            flag = dir.contains filePath
-            # console.log flag
-            if flag
-              isInProject = flag
-
-          console.log isInProject
-          if isInProject is no
-            atom.project.addPath(filePath)
-            Util.rumAtomCommand 'tree-view:toggle' if ChameleonBox.$('.tree-view-resizer').length is 0
+          @openTreeView filePath
           alert "新建模块成功！"
           @chameleonBox.closeView()
       # .finally =>
         # console.log 'CreateModule Success',@
 
   CreateSimpleModule: (options) ->
+    console.log 'SimpleModule'
+    console.log options
+    @chameleonBox.closeView()
+
 
   CreateTemplateModule: (options) ->
+    console.log 'tmp'
+    console.log options
+    info = options.moduleInfo
+    sourcePath = pathM.join desc.getFrameworkPath(),options.source
+    targetPath = pathM.join info.modulePath,info.moduleId
+    copyCallback = (err) =>
+      return console.error err if err
+      console.log 'success'
+      moduleConfigPath = pathM.join targetPath,desc.moduleConfigFileName
+      moduleConfig = Util.readJsonSync moduleConfigPath
+      console.log moduleConfig
+      moduleConfig = @editModuleConfig moduleConfig,info
+      Util.writeJson moduleConfigPath,moduleConfig,(err) ->
+        console.log err
+      @addProjectModule info
+      @openTreeView targetPath
+      alert "新建模块成功！"
+    console.log sourcePath,targetPath
+    Util.copy sourcePath,targetPath,copyCallback
+    @chameleonBox.closeView()
+
+  editModuleConfig: (config,info) ->
+    config.template = config.identifier
+    config.name = info.moduleName
+    config.identifier = info.moduleId
+    config.version = desc.minVersion
+    config.build = 1
+    config.hidden ?= false
+    config.dependencies ?= {}
+    return config
 
   addProjectModule: (moduleInfo) ->
     console.log moduleInfo
@@ -96,3 +119,17 @@ module.exports = ModuleManager =
       appConfig.modules[moduleInfo.moduleId] = desc.minVersion
       Util.writeJson projectConfigPath,appConfig,(err) ->
         console.log err
+
+  openTreeView: (filePath) ->
+    isInProject = false
+    atom.project.getDirectories().forEach (dir) =>
+      # console.log dir,filePath
+      flag = dir.contains filePath
+      # console.log flag
+      if flag
+        isInProject = flag
+
+    console.log isInProject
+    if isInProject is no
+      atom.project.addPath(filePath)
+      Util.rumAtomCommand 'tree-view:toggle' if ChameleonBox.$('.tree-view-resizer').length is 0
