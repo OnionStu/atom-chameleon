@@ -20,6 +20,8 @@ class SelectModuleTmpView extends View
             @img src: desc.getImgPath 'arrow_right.png'
 
   attached: ->
+    @parentView.setNextBtn('finish')
+    @parentView.disableNext()
     @disableNextPage()
     @disablePrevPage()
     @pageIndex = 0;
@@ -27,10 +29,7 @@ class SelectModuleTmpView extends View
     @frameworks = []
     @findFrameworks()
     @addFrameworkItems()
-    @parentView.setNextBtn('finish')
-    @parentView.disableNext()
-
-    $(document).on 'click','.new-item',(e) => @onItemClick(e)
+    $('.new-item').on 'click',(e) => @onItemClick(e)
 
   getElement: ->
     @element
@@ -74,7 +73,7 @@ class SelectModuleTmpView extends View
     @renderListItem item1 if item1?
     @renderListItem item2 if item2?
     @renderListItem item3 if item3?
-    # $('.new-item').on 'click',(e) => @onItemClick(e)
+    $('.new-item').on 'click',(e) => @onItemClick(e)
 
 
   renderListItem: (data) ->

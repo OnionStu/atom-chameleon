@@ -29,8 +29,8 @@ class CreateModuleTypeView extends View
     @frameworks = [];
     @findFrameworks()
     @parentView.disableNext()
-    console.log @parentView
-    $(document).on 'click','.new-item',(e) => @onItemClick(e)
+    $('.new-item').on 'click',(e) => @onItemClick(e)
+
 
 
   getElement: ->
