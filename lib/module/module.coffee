@@ -2,9 +2,11 @@
 Util = require '../utils/util'
 pathM = require 'path'
 desc = require '../utils/text-description'
+config = require '../../config/config'
 ChameleonBox = require '../utils/chameleon-box-view'
 CreateModuleView = require './create-module-view'
-fs = require 'fs-extra'
+LoadingMask = require '../utils/loadingMask'
+# fs = require 'fs-extra'
 
 module.exports = ModuleManager =
   chameleonBox: null
@@ -33,10 +35,12 @@ module.exports = ModuleManager =
 
 
   CreateModule: (options)->
+    loadingMask = new LoadingMask()
     switch options.createType
       when 'empty' then @CreateEmptyModule options
       when 'simple' then @CreateSimpleModule options
       when 'template' then @CreateTemplateModule options
+    @modalPanel.item.append(loadingMask)
 
 
   CreateEmptyModule: (options) ->
@@ -84,8 +88,16 @@ module.exports = ModuleManager =
     info = options.moduleInfo
     sourcePath = pathM.join desc.getFrameworkPath(),options.source
     targetPath = pathM.join info.modulePath,info.moduleId
+
+
+    if options.source is desc.defaultModule and Util.isFileExist(sourcePath) is no
+      @gitCloneDefaultModule options
+      return
+
     copyCallback = (err) =>
-      return console.error err if err
+      if err
+        @modalPanel.item.children(".loading-mask").remove()
+        return console.error err
       console.log 'success'
       moduleConfigPath = pathM.join targetPath,desc.moduleConfigFileName
       moduleConfig = Util.readJsonSync moduleConfigPath
@@ -99,6 +111,16 @@ module.exports = ModuleManager =
     console.log sourcePath,targetPath
     Util.copy sourcePath,targetPath,copyCallback
     @chameleonBox.closeView()
+
+  gitCloneDefaultModule: (options) ->
+    success = (state, appPath) =>
+      if state is 0
+        @CreateTemplateModule options
+      else
+        alert '应用创建失败：git clone失败，请检查网络连接'
+        @modalPanel.item.children(".loading-mask").remove()
+    Util.getRepo(desc.getFrameworkPath(), config.repoUri, success) #没有，执行 git clone，成功后执行第二步
+
 
   editModuleConfig: (config,info) ->
     config.template = config.identifier
