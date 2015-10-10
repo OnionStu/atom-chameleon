@@ -55,7 +55,10 @@ class CreateModuleTypeView extends View
         if @frameworks.length > 1
           @parentView.setNextBtn()
         else
-          el.dataset.src = @frameworks[0].folderName
+          if @frameworks.length is 0
+            el.dataset.src = desc.defaultModule
+          else
+            el.dataset.src = @frameworks[0].folderName
           @parentView.setNextBtn 'finish'
     @parentView.enableNext()
 
