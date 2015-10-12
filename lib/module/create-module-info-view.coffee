@@ -57,11 +57,11 @@ class CreateModuleInfoView extends View
     @parentView.disableNext()
     @parentView.hidePrevBtn()
 
-    projectPaths = atom.project.getPaths()
-    projectNum = projectPaths.length
+    projects = @findProject()
+    projectNum = projects.length
     if projectNum isnt 0
       @selectProject.empty()
-      @setSelectItem path for path in projectPaths
+      @setSelectItem path for path in projects
       @modulePath.parents('.form-row').addClass 'hide'
       @selectProject.parents('.form-row').removeClass 'hide'
       @modulePath.html pathM.join @selectProject.val(),'modules'
@@ -84,6 +84,16 @@ class CreateModuleInfoView extends View
     @element
 
   serialize: ->
+
+  findProject: ->
+    projects = []
+    projectPaths = atom.project.getPaths()
+    projectNum = projectPaths.length
+    if projectNum isnt 0
+      projectPaths.forEach (path,i) ->
+        configPath = pathM.join path,desc.ProjectConfigFileName
+        projects.push path if yes is Util.isFileExist configPath,'sync'
+    return projects
 
   getModuleInfo: ->
     modulePath = @modulePath.html()
