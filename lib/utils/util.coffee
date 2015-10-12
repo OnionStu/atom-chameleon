@@ -198,17 +198,43 @@ module.exports = Util =
   fileCompression: (folderPath) ->
     zip = new JSZip()
     zipPath = pathM.join folderPath,'..',pathM.basename(folderPath)+'.zip'
-    compressionZip= (node,filePath) ->
-      # console.log filePath
+    flag = "root"
+    compressionZip= (node,filePath) =>
+      console.log filePath
       stats = fs.statSync(filePath)
+      str1=node.replace(/\\/g,"/")
+      # console.log str1
+      strs=str1.split("/")
+      console.log strs
+      tmp = zip
+      isroot = false
+      getLast = (filePath) =>
+        tmp = tmp.folder(filePath)
+      if strs isnt null and strs.length isnt 0
+        getLast fileItem for fileItem in strs
+        if strs.length is 1 and strs[0] is "."
+          isroot = true
       if stats.isFile()
+        console.log filePath
         fileName = pathM.basename(filePath)
         # fileZipPath = pathM.join node,fileName
         # zip.file(fileZipPath,fs.readFileSync(filePath))
-        zip.folder(node).file(fileName,fs.readFileSync(filePath))
+        if isroot
+          zip.file(fileName,fs.readFileSync(filePath))
+          console.log "==============>>  strs is null or 0"
+        else
+          tmp.file(fileName,fs.readFileSync(filePath))
+        # console.log pathM.basename(fileName)
       else
-        folderZipPath = pathM.join node,pathM.basename(filePath)
-        zip.folder(folderZipPath)
+        if flag is "root"
+          flag = "children"
+          folderZipPath = node
+        else
+          folderZipPath = pathM.join node,pathM.basename(filePath)
+          if isroot
+            zip.folder(pathM.basename(filePath))
+          else
+            tmp.folder(pathM.basename(filePath))
         fileList = fs.readdirSync(filePath)
         if fileList isnt null and fileList.length isnt 0
           compressionZip folderZipPath,pathM.join filePath,filePathItem for  filePathItem in fileList

@@ -182,6 +182,9 @@ class PublishModuleInfoView extends View
       @parentView.closeView()
 
   attached: ->
+
+    # util.fileCompression("C:\\Users\\dell\\github\\yuzhe.www.mppp")
+    # return
     @appPath.setText("")
     @attached2()
 
