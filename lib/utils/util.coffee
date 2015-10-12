@@ -55,7 +55,7 @@ module.exports = Util =
 
   # 将传递过来的 str 进行判断是否符合文件命名，如果不符合，将不符合的字符改为"-", 并进行去重
   checkProjectName: (str)->
-    regEx5 = /^([A-Za-z]+\w*\.){2,}[A-Za-z]+\w*$/
+    regEx5 = /^([A-Za-z]+\.){2,}[A-Za-z]+\w*$/
     regEx6 = /^.{10,64}$/
     flag5 = regEx5.test str
     flag6 = regEx6.test str
@@ -123,14 +123,14 @@ module.exports = Util =
   writeFile: (file, textContent, cb) ->
     fs.writeFile file, textContent, cb
 
-  writeJson: (file, obj, cb) ->
-    fs.writeJson file, obj, cb
+  writeJson: (filePath, obj, cb) ->
+    fs.writeJson filePath, obj, cb
 
-  readJson: (file,cb) ->
-    fs.readJson file, cb
+  readJson: (filePath,cb) ->
+    fs.readJson filePath, cb
 
-  readJsonSync: (file) ->
-    fs.readJsonSync file, throws: false
+  readJsonSync: (filePath) ->
+    fs.readJsonSync filePath, throws: false
 
   copy: (sourcePath, destinationPath, cb) ->
     fs.copy(sourcePath, destinationPath, cb)

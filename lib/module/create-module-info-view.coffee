@@ -3,6 +3,7 @@ Util = require '../utils/util'
 pathM = require 'path'
 {Directory} = require 'atom'
 {$, TextEditorView, View} = require 'atom-space-pen-views'
+CreateModuleTypeView = require './create-module-type-view'
 
 module.exports =
 class CreateModuleInfoView extends View
@@ -52,7 +53,7 @@ class CreateModuleInfoView extends View
     # @mainEntry.setText desc.mainEntryFileName
     @modulePath.html desc.newProjectDefaultPath
 
-    @parentView.setNextBtn('finish')
+    # @parentView.setNextBtn('finish')
     @parentView.disableNext()
     @parentView.hidePrevBtn()
 
@@ -116,7 +117,7 @@ class CreateModuleInfoView extends View
   checkPath: ->
     path = @moduleId.getText().trim()
     if path isnt ""
-      regEx = /^\w{6,32}$/
+      regEx = /^[a-zA-z]\w{5,31}$/
       if regEx.test path
         @errorMsg2.addClass('hide')
       else
@@ -156,5 +157,5 @@ class CreateModuleInfoView extends View
 
   nextStep: (box)->
     box.setPrevStep @
-    box.mergeOptions {moduleInfo:@getModuleInfo()}
+    box.mergeOptions {moduleInfo:@getModuleInfo(),subview:CreateModuleTypeView}
     box.nextStep()

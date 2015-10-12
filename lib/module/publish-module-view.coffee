@@ -361,11 +361,12 @@ class ModuleMessageItem extends View
           if object is null
             return
           length = length + 1
+          module_id = $(btn2).val()
           if object.name?
             object.name = object.name #+ "(#{object.id})"
           else
             object.name = object.id #+ "(#{object.id})"
-          options = options + "<div class='upload-view-padding'><div class='checkboxFive'><input type='checkbox' class='hide' id='#{object.id}_#{length}' value='#{object.id}' /><label for='#{object.id}_#{length}'></label></div><label for='#{object.id}_#{length}' class='label-empty'>#{object.name}</label></div>"
+          options = options + "<div class='upload-view-padding'><div class='checkboxFive'><input type='checkbox' class='hide' id='#{module_id}_#{object.id}_#{length}' value='#{object.id}' /><label for='#{module_id}_#{object.id}_#{length}'></label></div><label for='#{module_id}_#{object.id}_#{length}' class='label-empty'>#{object.name}</label></div>"
         printAppList object for object in data
         options = options + "<div class='upload-view-padding btngroup'><button name='hideAppListbtn' class='btn'>取消</button><button class='btn' name='uploadMApp'>确认</button><div>"
         if length == 0
@@ -426,7 +427,7 @@ class ModuleMessageItem extends View
               contentList['build'] = parseInt(_version.attr('value'))
               contentList['build'] = contentList['build'] + 1
               params =
-                form:{
+                formData:{
                   module_tag: contentList['identifier'],
                   module_name: contentList['name'],
                   module_desc: "",
@@ -538,7 +539,6 @@ class ModuleMessageItem extends View
                   alert "configFilePathCallBack error"
                 complete: =>
                   @.children(".loading-mask").remove()
-
               client.postModuleMessage(params)
               util.removeFileDirectory(PathM.join zipPath,zipName)
           else

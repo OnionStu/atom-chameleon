@@ -32,12 +32,23 @@ module.exports = TextDescription =
   registerUrl : 'http://www.baidu.com'
 
   chameleonHome: atom.packages.getLoadedPackage('chameleon-qdt-atom-dev').path
+  newProjectDefaultPath: atom.config.get('core').projectHome
+
+  # 获取自带框架存储目录位置
   getFrameworkPath: ->
     Path.join @chameleonHome,'src','frameworks'
-  newProjectDefaultPath: atom.config.get('core').projectHome
-  # iconPath:'atom://chameleon-qdt-atom/images/icon.png'
+
+  # 获取空白模版存储目录位置
+  getProjectTempPath: ->
+    Path.join @chameleonHome,'src','ProjectTemp'
+
+  # 获取业务模板存储目录位置
+  getTemplatePath: ->
+    Path.join @chameleonHome,'src','templates'
+
   getImgPath:(imgName) ->
     Path.join @chameleonHome,'images',imgName
+
   mainEntryFileName: 'index.html'
 
 
@@ -50,6 +61,9 @@ module.exports = TextDescription =
 
   projectConfig : '应用配置'
   moduleConfig : '模块配置'
+
+  defaultModule : 'butterfly-tiny'
+  minVersion : '0.0.1'
 
   # 设置模块
   panelTitle: '设置'
