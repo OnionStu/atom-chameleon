@@ -84,7 +84,7 @@ class PublishModuleInfoView extends View
               if contetnList['identifier']? and contetnList['name']?
                 length = length + 1
                 # console.log "length ++ "
-                _moduleList.append('<div class="col-sm-4"><div class="checkboxFive"><input id="'+path+'" value="'+path+'" type="checkbox" class="hide"><label for="'+path+'"></label></div><label for="'+path+'"class="label-empty">'+contetnList['name']+'</label></div>')
+                _moduleList.append('<div class="checkbox-layout"><div class="checkboxFive"><input id="'+path+'" value="'+path+'" type="checkbox" class="hide"><label for="'+path+'"></label></div><label for="'+path+'"class="label-empty">'+contetnList['name']+'</label></div>')
     if fs.existsSync(appPath)
       stats = fs.statSync(appPath)
       if stats.isDirectory()
@@ -291,7 +291,7 @@ class PublishModuleInfoView extends View
                   console.log "error"
                 else
                   contentList = JSON.parse(data)
-                  _moduleList.append('<div class="col-sm-4"><div class="checkboxFive"><input id="module-upload'+basename+'" value="'+packageFilePath+'" type="checkbox" class="hide" /><label for="module-upload'+basename+'"></label></div><label for="module-upload'+basename+'" class="label-empty">'+contentList['name']+'</label></div>')
+                  _moduleList.append('<div class="checkbox-layout"><div class="checkboxFive"><input id="module-upload'+basename+'" value="'+packageFilePath+'" type="checkbox" class="hide" /><label for="module-upload'+basename+'"></label></div><label for="module-upload'+basename+'" class="label-empty">'+contentList['name']+'</label></div>')
                   # console.log data
               options =
                 encoding: "UTF-8"
