@@ -426,7 +426,7 @@ class ModuleMessageItem extends View
               contentList['build'] = parseInt(_version.attr('value'))
               contentList['build'] = contentList['build'] + 1
               params =
-                form:{
+                formData:{
                   module_tag: contentList['identifier'],
                   module_name: contentList['name'],
                   module_desc: "",
@@ -538,7 +538,6 @@ class ModuleMessageItem extends View
                   alert "configFilePathCallBack error"
                 complete: =>
                   @.children(".loading-mask").remove()
-
               client.postModuleMessage(params)
               util.removeFileDirectory(PathM.join zipPath,zipName)
           else
