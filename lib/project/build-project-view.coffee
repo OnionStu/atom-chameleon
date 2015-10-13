@@ -34,9 +34,9 @@ class BuildProjectInfoView extends View
             @input type: 'checkbox', value: 'Android', id:'android',class:'hide'
             @label "Android", for: "android"
       @div outlet: 'selectApp', class:'form-horizontal form_width',=>
-        @label '选择构建的应用', class: 'col-sm-3 control-label'
-        @div class: 'col-sm-9', =>
-          @select class: 'form-control', outlet: 'selectProject'
+        @label '选择构建的应用', class: 'label-width control-label'
+        @div class: 'input-width', =>
+          @select class: '', outlet: 'selectProject'
       @div outlet: 'buildMessage',  =>
         @div class: 'form-horizontal', =>
           @div class: 'form-group', =>
