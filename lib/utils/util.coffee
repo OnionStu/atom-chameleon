@@ -199,21 +199,27 @@ module.exports = Util =
     zip = new JSZip()
     zipPath = pathM.join folderPath,'..',pathM.basename(folderPath)+'.zip'
     flag = "root"
+    # 递归函数 当遇到文件或者文件夹里面没有文件时结束
     compressionZip= (node,filePath) =>
-      console.log filePath
+      # console.log filePath
+      # windows 和 linux 文件路径兼容处理
       stats = fs.statSync(filePath)
+      # 1、将 windows 文件路径的 \ 转为 linux 文件路径的 /
       str1=node.replace(/\\/g,"/")
       # console.log str1
+      # 2、切割路径
       strs=str1.split("/")
-      console.log strs
+      # console.log strs
       tmp = zip
       isroot = false
+      # 3、以 tmp 保存当前 最外层文件夹
       getLast = (filePath) =>
         tmp = tmp.folder(filePath)
       if strs isnt null and strs.length isnt 0
         getLast fileItem for fileItem in strs
         if strs.length is 1 and strs[0] is "."
           isroot = true
+      # 4、保存文件夹或者文件
       if stats.isFile()
         console.log filePath
         fileName = pathM.basename(filePath)
@@ -221,7 +227,7 @@ module.exports = Util =
         # zip.file(fileZipPath,fs.readFileSync(filePath))
         if isroot
           zip.file(fileName,fs.readFileSync(filePath))
-          console.log "==============>>  strs is null or 0"
+          # console.log "==============>>  strs is null or 0"
         else
           tmp.file(fileName,fs.readFileSync(filePath))
         # console.log pathM.basename(fileName)
@@ -239,6 +245,7 @@ module.exports = Util =
         if fileList isnt null and fileList.length isnt 0
           compressionZip folderZipPath,pathM.join filePath,filePathItem for  filePathItem in fileList
     compressionZip ".",folderPath
+    # 5、保存 zip
     content = zip.generate({type:"nodebuffer"})
     fs.writeFileSync(zipPath,content)
     console.log "打包完了"
