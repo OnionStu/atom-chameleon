@@ -97,6 +97,9 @@ atom-panel.modal.from-top.down {
   .title, .project-name {
     opacity: .6;
   }
+  .project-name{
+    .noWrapEllipsis()
+  }
   .itemIcon img {
     width: 100%;
     height: 100%;
@@ -1080,4 +1083,8 @@ atom-text-editor::shadow .password-lines .line {
     text-align: center;
     margin-top: 10px;
   }
+}
+/* 禁止换行,超出省略号 */
+.noWrapEllipsis{
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
 }
