@@ -11,7 +11,7 @@ class SelectModuleTmpView extends View
 
   @content: (params) ->
     @div class: 'create-module-type', =>
-        @h2 '请选择模块模板:'
+        @h2 "#{desc.selectModuleTemplate}:"
         @div class: 'flex-container', =>
           @button class:'btn btn-lg btn-action', outlet: 'prevPage',click: 'onPrevPageClick', =>
             @img src: desc.getImgPath 'arrow_left.png'

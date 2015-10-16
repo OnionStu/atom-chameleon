@@ -13,7 +13,7 @@ class CreateModuleInfoView extends View
       @h2 desc.CreateModuleTitle, class: 'box-subtitle'
       @div class: 'box-form', =>
         @div class: 'form-row clearfix', =>
-          @label '模块所在应用', class: 'row-title pull-left'
+          @label desc.moduleInApp, class: 'row-title pull-left'
           @div class: 'row-content pull-left', =>
             @select class: 'form-control', outlet: 'selectProject'
         @div class: 'form-row clearfix', =>
@@ -27,7 +27,7 @@ class CreateModuleInfoView extends View
           @div class: 'row-content pull-left', =>
             @subview 'moduleId', new TextEditorView(mini: true)
         @div class: 'form-row msg clearfix in-row', =>
-          @div '模块标识长度必须在6-32个字符范围内,只能输入数字，字母，下划线', class: 'text-warning hide errorMsg', outlet: 'errorMsg2'
+          @div desc.moduleIdErrorMsg, class: 'text-warning hide errorMsg', outlet: 'errorMsg2'
         @div class: 'form-row clearfix', =>
           @label desc.moduleName, class: 'row-title pull-left'
           @div class: 'row-content pull-left', =>

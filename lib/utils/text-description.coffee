@@ -15,21 +15,43 @@ module.exports = TextDescription =
   email : '邮箱'
   pwd : '密码'
   save : '保存'
+  forgetPwd: '忘记密码'
+
   createProject : '创建应用'
+  createAppType: '请选择要创建的应用类型'
+  emptyApp: '空白应用'
+  createLocalAppDesc: '创建一个本地应用'
+  syncAccountAppDesc: '同步已登录帐户中的应用到本地，未登录的用户请登录'
 
   createModule : '创建模块'
   CreateModuleTitle: '请填写要创建的模块信息'
+  createModuleType: '请选择要创建的模块类型'
   modulePath: '模块所在路径'
+  moduleInApp: '模块所在应用'
   moduleId: '模块标识'
   moduleName: '模块名称'
   mainEntry: '模块入口'
+  createModuleSuccess: '创建模块成功！'
+  createModuleError: '模块创建失败'
+
+  emptyModule: '空白模块'
+  simpleMoudle: '快速开发模版'
+  defaultTemplateModule:'自带模板'
+
+  selectModuleTemplate: '请选择模块模板'
+
+
+
   createModuleErrorMsg: '模块或同名目录已存在'
+  moduleIdErrorMsg:'模块标识以字母开头,长度必须在6-32个字符范围内,只能输入数字,字母,下划线'
 
   newProject: '新建应用'
 
   syncProject: '同步账号中的应用'
 
   registerUrl : 'http://www.baidu.com'
+
+  gitCloneError: 'git clone失败，请检查网络连接'
 
   chameleonHome: atom.packages.getLoadedPackage('chameleon-qdt-atom-dev').path
   newProjectDefaultPath: atom.config.get('core').projectHome

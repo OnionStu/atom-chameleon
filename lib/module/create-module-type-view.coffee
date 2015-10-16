@@ -9,21 +9,21 @@ class CreateModuleTypeView extends View
 
   @content: (params) ->
     @div class: 'create-module-type', =>
-        @h2 '请选择要创建的模块类型:'
+        @h2 "#{desc.CreateModuleType}:"
         @div class: 'flex-container', =>
           @div class: 'frameList', outlet:'frameList', =>
             @div class: 'new-item text-center', 'data-type': 'empty',  =>
               @div class: 'itemIcon', =>
                 @img src: desc.getImgPath 'icon_empty.png'
-              @h3 '空白模块',class: 'project-name'
+              @h3 desc.emptyModule,class: 'project-name'
             @div class: 'new-item text-center', 'data-type': 'simple', =>
               @div class: 'itemIcon', =>
                 @img src: desc.getImgPath 'icon_frame.png'
-              @h3 '快速开发模板',class: 'project-name'
+              @h3 desc.simpleMoudle,class: 'project-name'
             @div class: 'new-item text-center', 'data-type': 'template',  =>
               @div class: 'itemIcon', =>
                 @img src: desc.getImgPath 'icon_template.png'
-              @h3 '已有模块模版',class: 'project-name'
+              @h3 desc.defaultTemplateModule,class: 'project-name'
 
   attached: ->
     @frameworks = [];

@@ -71,7 +71,7 @@ module.exports = ModuleManager =
           entryFile.writeSync(htmlString)
           @addProjectModule info
           @openTreeView filePath
-          alert "新建模块成功！"
+          alert desc.createModuleSuccess
           @chameleonBox.closeView()
       # .finally =>
         # console.log 'CreateModule Success',@
@@ -107,7 +107,7 @@ module.exports = ModuleManager =
         console.log err
       @addProjectModule info
       @openTreeView targetPath
-      alert "新建模块成功！"
+      alert desc.createModuleSuccess
     console.log sourcePath,targetPath
     Util.copy sourcePath,targetPath,copyCallback
     @chameleonBox.closeView()
@@ -117,7 +117,7 @@ module.exports = ModuleManager =
       if state is 0
         @CreateTemplateModule options
       else
-        alert '应用创建失败：git clone失败，请检查网络连接'
+        alert "#{desc.createModuleError}:#{desc.gitCloneError}"
         @modalPanel.item.children(".loading-mask").remove()
     Util.getRepo(desc.getFrameworkPath(), config.repoUri, success) #没有，执行 git clone，成功后执行第二步
 
