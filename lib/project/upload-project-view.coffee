@@ -31,7 +31,6 @@ class UploadProjectInfoView extends View
               @div outlet: "moduleList"
 
   attached: ->
-    Util.fileCompression("Q:/test002")
     @parentView.nextBtn.attr('disabled',false)
     projectPaths = atom.project.getPaths()
     projectNum = projectPaths.length
@@ -61,7 +60,6 @@ class UploadProjectInfoView extends View
 
   onSelectChange: (e) ->
     el = e.currentTarget
-    console.log "xxx"
     if el.value is 'other'
       @open()
     else
@@ -100,7 +98,7 @@ class UploadProjectInfoView extends View
         getMessage = (key,value) =>
           str = str + "<label>#{key}&nbsp;:&nbsp;#{value}</label>"
         getMessage key,value for key,value of contentList['modules']
-        console.log str
+        # console.log str
         @moduleList.html(str)
 
   checkModuleNeedUpload: (modulePath, modules, index) ->
@@ -121,9 +119,9 @@ class UploadProjectInfoView extends View
         sendCookie: true
         success: (data) =>
           # console.log "check version success"
-          console.log data
+          # console.log data
           build = data[0]['build']
-          console.log data[0]['version']
+          # console.log data[0]['version']
           if data['version'] != ""
             # uploadVersion = moduleVersion.split('.')
             # version = data['version'].split('.')
@@ -162,9 +160,9 @@ class UploadProjectInfoView extends View
                       else
                         contentList['build'] = 1
                       # alert contentList['build']+"  "+data2['url_id']
-                      console.log "============================================================================="
-                      console.log data2['url_id']
-                      console.log contentList['identifier'],contentList['name'],contentList['version'],data['url_id'],contentList['build'],data2['url_id'],"构建应用时发现本地版本高于服务器版本，所以上传 #{contentList['identifier']} 模块"
+                      # console.log "============================================================================="
+                      # console.log data2['url_id']
+                      # console.log contentList['identifier'],contentList['name'],contentList['version'],data['url_id'],contentList['build'],data2['url_id'],"构建应用时发现本地版本高于服务器版本，所以上传 #{contentList['identifier']} 模块"
                       params =
                         formData:{
                           module_tag: contentList['identifier'],
@@ -185,7 +183,7 @@ class UploadProjectInfoView extends View
                             @checkModuleNeedUpload(modulePath, modules, index+1)
                         error: =>
                           @.children(".loading-mask").remove()
-                          console.log "============================================================================="
+                          # console.log "============================================================================="
                           alert "上传#{moduleRealPath}失败"
                       client.postModuleMessage(params)
                     else
