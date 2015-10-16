@@ -656,6 +656,7 @@ class BuildProjectInfoView extends View
       @parentView.nextBtn.show()
       console.log "kill timer"
       @killTimer()
+      @parentView.closeView()
       #检测是否需要取消之前的构建
   killTimer: ->
     # console.log "kill timer"
