@@ -35,8 +35,8 @@ module.exports = TextDescription =
   createModuleError: '模块创建失败'
 
   emptyModule: '空白模块'
-  simpleMoudle: '快速开发模版'
-  defaultTemplateModule:'自带模板'
+  simpleMoudle: '页面快速搭建'
+  defaultTemplateModule:'自定义框架'
 
   selectModuleTemplate: '请选择模块模板'
 

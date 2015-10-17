@@ -15,7 +15,7 @@ class CreateOrSynchronize extends View
 
   @content: ->
     @div class: 'create-project container', =>
-      @h2 "#{createAppType}:"
+      @h2 "#{desc.createAppType}:"
       @div class: 'row',outlet: 'main', =>
         @div class: 'col-xs-6', =>
           @div class: 'item new-project text-center', 'data-type':'newProject', =>
