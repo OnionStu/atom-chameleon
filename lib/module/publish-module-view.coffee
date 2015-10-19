@@ -10,6 +10,10 @@ client = require '../utils/client'
 loadingMask = require '../utils/loadingMask'
 
 class PublishModuleInfoView extends View
+  moduleConfigFileName: desc.moduleConfigFileName
+  projectConfigFileName: desc.ProjectConfigFileName
+  moduleLogoFileName: desc.moduleLogoFileName
+  moduleLocatFileName: desc.moduleLocatFileName
   @content:() ->
     @div class : "upload-module", =>
       @div outlet : 'first' , =>
@@ -37,7 +41,6 @@ class PublishModuleInfoView extends View
                 @span outlet:'openFolder', class: 'inline-block status-added icon icon-file-directory openFolder right-icon'
 
   open :(e) ->
-    console.log "ssss"
     atom.pickFolder (paths) =>
       if paths?
         console.log paths[0]
@@ -53,13 +56,13 @@ class PublishModuleInfoView extends View
     @parentView.nextBtn.text('下一步')
 
   thirdClickNext: ->
-    console.log @appPath.getText()
+    # console.log @appPath.getText()
     @initFirst(@appPath.getText())
 
 
   initFirst:(appPath) ->
     console.log "init"
-    appPath = PathM.join appPath,'modules'
+    appPath = PathM.join appPath,@moduleLocatFileName
     # directory = new Directory(appPath)
     _moduleList = @moduleList
     length = 0
@@ -73,7 +76,7 @@ class PublishModuleInfoView extends View
         # console.log "exists"
         if stats.isDirectory()
           # console.log "isDirectory"
-          path =PathM.join filePath,"package.json"
+          path =PathM.join filePath,@moduleConfigFileName
           # console.log path
           if fs.existsSync(path)
             # console.log "path exists"
@@ -230,7 +233,7 @@ class PublishModuleInfoView extends View
         projectStats = fs.statSync(project_path)
         #判断是否目录
         if projectStats.isDirectory()
-          configFilePath = PathM.join project_path,"appConfig.json"
+          configFilePath = PathM.join project_path,@projectConfigFileName
           #判断  appConfig.json 是否存在
           if fs.existsSync(configFilePath)
             configFileStats = fs.statSync(configFilePath)
@@ -238,7 +241,7 @@ class PublishModuleInfoView extends View
             file.read(false).then (content) =>
               contentList = JSON.parse(content)
               $('#projectIdentifier').attr('value',contentList['identifier'])
-            project_path = PathM.join project_path,"modules"
+            project_path = PathM.join project_path,@moduleLocatFileName
             if !fs.existsSync(project_path)
               # _parentView.enable = false
               returnMessage = "请选择变色龙应用（不存在modules文件）"
@@ -263,7 +266,7 @@ class PublishModuleInfoView extends View
       if returnStatus
         if isRootNodeIsBSLProject
           project_path = rootPath
-          project_path = PathM.join project_path,"modules"
+          project_path = PathM.join project_path,@moduleLocatFileName
           if !fs.existsSync(project_path)
             _parentView.enable = false
             alert returnMessage
@@ -280,12 +283,12 @@ class PublishModuleInfoView extends View
       modulesCount = 0
       list = fs.readdirSync(project_path)
       fileLength = 0
-      printName = (filePath) ->
+      printName = (filePath) =>
         console.log fileLength
         stats = fs.statSync(filePath)
         if stats.isDirectory()
           basename = PathM.basename filePath
-          packageFilePath = PathM.join filePath,"package.json"
+          packageFilePath = PathM.join filePath,@moduleConfigFileName
           if fs.existsSync(packageFilePath)
             # alert "#{packageFilePath}"
             packageFileStats = fs.statSync(packageFilePath)
@@ -320,6 +323,8 @@ class PublishModuleInfoView extends View
 
 class ModuleMessageItem extends View
   LoadingMask: loadingMask
+  moduleLogoFileName: desc.moduleLogoFileName
+  moduleLocatFileName: desc.moduleLocatFileName
   @content: (obj) ->
     @div class: 'module_item', =>
       @div class: 'upload-view-padding', =>
@@ -460,7 +465,7 @@ class ModuleMessageItem extends View
             util.removeFileDirectory(PathM.join zipPath,zipName)
             console.log "文件不存在#{$(btn2).val()}"
             _btn.attr("disabled",false)
-        iconPath = PathM.join @uploadBtn.val(),"..","icon.png"
+        iconPath = PathM.join @uploadBtn.val(),"..",@moduleLogoFileName
         #当存在 icon 时 上传Icon后再上传模块信息
         #否则直接上床模块信息
         if !fs.existsSync(iconPath)
@@ -481,10 +486,10 @@ class ModuleMessageItem extends View
               _btn.attr("disabled",false)
               console.log "上传icon失败"
               alert "上传icon失败"
-          client.uploadFile(fileParams2,"module","")
+          client.uploadFile(fileParams2,@moduleLocatFileName,"")
       error: =>
         alert "上传文件失败"
-    client.uploadFile(fileParams,"module","")
+    client.uploadFile(fileParams,@moduleLocatFileName,"")
 
   # upload_module
   postModuleMessage:(btn,btn2) =>
@@ -549,7 +554,7 @@ class ModuleMessageItem extends View
           else
             util.removeFileDirectory(PathM.join zipPath,zipName)
             console.log "文件不存在#{$(btn2).val()}"
-        iconPath = PathM.join $(btn2).val(),"..","icon.png"
+        iconPath = PathM.join $(btn2).val(),"..",@moduleLogoFileName
         #当存在 icon 时 上传Icon后再上传模块信息
         #否则直接上床模块信息
         if !fs.existsSync(iconPath)
@@ -573,13 +578,13 @@ class ModuleMessageItem extends View
               # console.log iconPath
               console.log "上传icon失败"
               alert "上传icon失败"
-          client.uploadFile(fileParams2,"module","")
+          client.uploadFile(fileParams2,@moduleLocatFileName,"")
       error: =>
         @.children(".loading-mask").remove()
         alert "上传文件失败"
 
     @.append(LoadingMask)
-    client.uploadFile(fileParams,"module","")
+    client.uploadFile(fileParams,@moduleLocatFileName,"")
 
 module.exports =
 class PublishModuleView extends ChameleonBox

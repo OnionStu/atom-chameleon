@@ -97,3 +97,6 @@ module.exports = TextDescription =
 
   buildProjectMainTitle: "构建应用"
   uploadProjectTitle: "上传应用"
+
+  moduleLogoFileName: 'icon.png'
+  moduleLocatFileName: 'modules'
