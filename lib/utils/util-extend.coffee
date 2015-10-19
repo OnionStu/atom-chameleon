@@ -9,7 +9,7 @@ module.exports = UtilExtend =
 			if stats.isFile()
 				return false
 			else
-				config = pathM.join filePath,'appConfig.json'
+				config = pathM.join filePath,desc.ProjectConfigFileName
 				if fs.existsSync(config)
 					statsConfig = fs.statSync(config)
 					if statsConfig.isFile()

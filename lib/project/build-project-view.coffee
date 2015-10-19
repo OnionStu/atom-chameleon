@@ -13,6 +13,10 @@ class BuildProjectInfoView extends View
   checkBuildResultTimer: {}
   ticketTimer:{}
   buildPlatformId:{}
+  moduleConfigFileName: desc.moduleConfigFileName
+  projectConfigFileName: desc.ProjectConfigFileName
+  moduleLogoFileName: desc.moduleLogoFileName
+  moduleLocatFileName: desc.moduleLocatFileName
 
   @content: ->
     @div class: 'build_project_view', =>
@@ -98,26 +102,26 @@ class BuildProjectInfoView extends View
               @a outlet:'androidUrl'
 
   clickIcon:(e) ->
-    console.log "hinhs"
+
     el = e.currentTarget
-    console.log $(el).attr('value')
+    # console.log $(el).attr('value')
     if $(el).attr('value') is 'ios'
       @.find("#ios").trigger('click')
     else
       @.find("#android").trigger('click')
     if $(el).hasClass('active')
-      console.log "has"
+
       $(el).removeClass('active')
     else
-      console.log "no have"
+
       $(el).addClass('active')
 
   initialize: ->
     @.find('.selectBuildTemplate').on 'click',(e) => @clickIcon(e)
 
   attached: ->
-    if @.find("#ios").is(":checked")
-      console.log "no"
+    # if @.find("#ios").is(":checked")
+    #   console.log "no"
 
     @initializeInput()
       #检测是否需要 清空  timeout
@@ -158,7 +162,7 @@ class BuildProjectInfoView extends View
     @androidName.setText("")
 
   setSelectItem:(path) ->
-    filePath = pathM.join path,desc.ProjectConfigFileName
+    filePath = pathM.join path, @projectConfigFileName
     obj = Util.readJsonSync filePath
     if obj
       projectName = pathM.basename path
@@ -186,7 +190,7 @@ class BuildProjectInfoView extends View
       if paths?
         path = pathM.join paths[0]
         # console.log  path
-        filePath = pathM.join path,desc.ProjectConfigFileName
+        filePath = pathM.join path,@projectConfigFileName
         # console.log filePath
         obj = Util.readJsonSync filePath
         if obj
@@ -209,7 +213,7 @@ class BuildProjectInfoView extends View
       checkboxList = this.find('input[type=checkbox]:checked')
       if checkboxList.length isnt 0
         hasIos = false
-        configPath = pathM.join this.find('select').val(),desc.ProjectConfigFileName
+        configPath = pathM.join this.find('select').val(),@projectConfigFileName
         options =
           encoding: "UTF-8"
         state = fs.statSync(configPath)
@@ -297,14 +301,14 @@ class BuildProjectInfoView extends View
       #模块；
       #   如果不存在则需要上床模块。
       # 2、上传完模块后需要上传应用信息
-      configPath = pathM.join this.find('select').val(),desc.ProjectConfigFileName
+      configPath = pathM.join this.find('select').val(),@projectConfigFileName
       options =
         encoding: "UTF-8"
       strContent = fs.readFileSync(configPath,options)
       jsonContent = JSON.parse(strContent)
       modules = jsonContent['modules']
       @buildTips.html("正在检测模块信息......")
-      projectPath = pathM.join this.find('select').val(), 'modules'
+      projectPath = pathM.join this.find('select').val(), @moduleLocatFileName
       moduleList = []
       @buildTips.html("构建准备......")
       getModuleMessage = (identifier,version) =>
@@ -360,8 +364,8 @@ class BuildProjectInfoView extends View
                   data2 = {}
                   Util.removeFileDirectory(zipPath)
                   methodUploadModule = =>
-                    if fs.existsSync(pathM.join moduleRealPath,'package.json')
-                      packagePath = pathM.join moduleRealPath,'package.json'
+                    if fs.existsSync(pathM.join moduleRealPath,@moduleConfigFileName)
+                      packagePath = pathM.join moduleRealPath,@moduleConfigFileName
                       options =
                         encoding: 'utf-8'
                       contentList = JSON.parse(fs.readFileSync(packagePath,options))
@@ -393,11 +397,11 @@ class BuildProjectInfoView extends View
                           alert "上传#{modulePath}失败"
                       client.postModuleMessage(params)
                     else
-                      console.log "文件不存在#{pathM.join modulePath,'package.json'}"
-                  if fs.existsSync(pathM.join moduleRealPath,'icon.png')
+                      console.log "文件不存在#{pathM.join modulePath,@moduleConfigFileName}"
+                  if fs.existsSync(pathM.join moduleRealPath,@moduleLogoFileName)
                     fileParams2 =
                       formData: {
-                        up_file: fs.createReadStream(pathM.join moduleRealPath,'icon.png')
+                        up_file: fs.createReadStream(pathM.join moduleRealPath,@moduleLogoFileName)
                       }
                       sendCookie: true
                       success: (data) =>

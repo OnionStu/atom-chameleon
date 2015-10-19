@@ -10,6 +10,10 @@ loadingMask = require '../utils/loadingMask'
 
 class UploadProjectInfoView extends View
   LoadingMask: loadingMask
+  moduleConfigFileName: desc.moduleConfigFileName
+  projectConfigFileName: desc.ProjectConfigFileName
+  moduleLogoFileName: desc.moduleLogoFileName
+  moduleLocatFileName: desc.moduleLocatFileName
   @content: ->
     @div class: "upload_project_view", =>
       @div outlet: "select_upload_project", class:'box-form form_width', =>
@@ -47,7 +51,7 @@ class UploadProjectInfoView extends View
       @showProjectMessage(@selectUploadProject.val())
 
   setSelectItem:(path) ->
-    filePath = pathM.join path,desc.ProjectConfigFileName
+    filePath = pathM.join path,@projectConfigFileName
     obj = Util.readJsonSync filePath
     if obj
       projectName = pathM.basename path
@@ -70,7 +74,7 @@ class UploadProjectInfoView extends View
       if paths?
         path = pathM.join paths[0]
         # console.log  path
-        filePath = pathM.join path,desc.ProjectConfigFileName
+        filePath = pathM.join path,@projectConfigFileName
         # console.log filePath
         obj = Util.readJsonSync filePath
         if obj
@@ -86,7 +90,7 @@ class UploadProjectInfoView extends View
         @selectUploadProject.get(0).selectedIndex = 0
 
   showProjectMessage:(configPath) ->
-    path = pathM.join configPath,desc.ProjectConfigFileName
+    path = pathM.join configPath,@projectConfigFileName
     if fs.existsSync(path)
       stats = fs.statSync(path)
       if stats.isFile()
@@ -148,8 +152,8 @@ class UploadProjectInfoView extends View
                   Util.removeFileDirectory(zipPath)
                   data2 = {}
                   methodUploadModule = =>
-                    if fs.existsSync(pathM.join moduleRealPath,'package.json')
-                      packagePath = pathM.join moduleRealPath,'package.json'
+                    if fs.existsSync(pathM.join moduleRealPath,@moduleConfigFileName)
+                      packagePath = pathM.join moduleRealPath,@moduleConfigFileName
                       options =
                         encoding: 'utf-8'
                       contentList = JSON.parse(fs.readFileSync(packagePath,options))
@@ -187,12 +191,12 @@ class UploadProjectInfoView extends View
                           alert "上传#{moduleRealPath}失败"
                       client.postModuleMessage(params)
                     else
-                      console.log "文件不存在#{pathM.join modulePath,'package.json'}"
+                      console.log "文件不存在#{pathM.join modulePath,@moduleConfigFileName}"
                   #判断是否存在  icon
-                  if fs.existsSync(pathM.join moduleRealPath,'icon.png')
+                  if fs.existsSync(pathM.join moduleRealPath,@moduleLogoFileName)
                     fileParams2 =
                       formData: {
-                        up_file: fs.createReadStream(pathM.join moduleRealPath,'icon.png')
+                        up_file: fs.createReadStream(pathM.join moduleRealPath,@moduleLogoFileName)
                       }
                       sendCookie: true
                       success: (data) =>
@@ -205,7 +209,7 @@ class UploadProjectInfoView extends View
                         console.log "上传icon失败"
                         @.children(".loading-mask").remove()
                         alert "上传icon失败"
-                    client.uploadFile(fileParams2,"module","")
+                    client.uploadFile(fileParams2,@moduleLocatFileName,"")
                   else
                     data2["url_id"] = ""
                     methodUploadModule()
@@ -280,7 +284,7 @@ class UploadProjectInfoView extends View
         strContent = fs.readFileSync(path,options)
         jsonContent = JSON.parse(strContent)
         modules = jsonContent['modules']
-        projectPath = pathM.join this.find('select').val(), 'modules'
+        projectPath = pathM.join this.find('select').val(), @moduleLocatFileName
         moduleList = []
         getModuleMessage = (identifier,version) =>
           module =
