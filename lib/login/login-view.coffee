@@ -21,7 +21,7 @@ module.exports =
             @div class: 'input-container', id: 'psw', =>
               @subview 'loginPassword', new TextEditorView(mini: true, placeholderText: 'Password...')
           @div class: 'login-row', =>
-            @a class: 'forgetpsw', href: config.forgetpwdrUrl, "#{forgetPwd}?"
+            @a class: 'forgetpsw', href: config.forgetpwdrUrl, "#{desc.forgetPwd}?"
           @div class: 'login-row', =>
             @button id: 'login', class: 'btn login-btn', desc.login
             @a '注册', class: 'btn login-btn', href: config.registerUrl
