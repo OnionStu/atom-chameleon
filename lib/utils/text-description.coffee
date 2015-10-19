@@ -81,8 +81,8 @@ module.exports = TextDescription =
   publishModulePageOneTitle: '请选择需要发布的模块'
   publishModulePageTwoTitle: '确认发布模块信息'
 
-  moduleConfigFileName: 'package.json'
-  ProjectConfigFileName: 'appConfig.json'
+  moduleConfigFileName: 'module-config.json'
+  ProjectConfigFileName: 'app-config.json'
 
   projectConfig : '应用配置'
   moduleConfig : '模块配置'
