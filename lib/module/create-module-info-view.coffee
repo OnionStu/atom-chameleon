@@ -10,7 +10,7 @@ class CreateModuleInfoView extends View
 
   @content: ->
     @div class: 'create-module', =>
-      @h2 desc.CreateModuleTitle, class: 'box-subtitle'
+      @h2 desc.createModuleTitle, class: 'box-subtitle'
       @div class: 'box-form', =>
         @div class: 'form-row clearfix', =>
           @label desc.moduleInApp, class: 'row-title pull-left'
@@ -19,7 +19,6 @@ class CreateModuleInfoView extends View
         @div class: 'form-row clearfix', =>
           @label desc.modulePath, class: 'row-title pull-left'
           @div class: 'row-content pull-left', =>
-            # @subview 'modulePath', new TextEditorView(mini: true)
             @div class: 'textEditStyle', outlet: 'modulePath'
             @span class: 'inline-block status-added icon icon-file-directory openFolder', click: 'openFolder'
         @div class: 'form-row clearfix', =>
@@ -36,11 +35,6 @@ class CreateModuleInfoView extends View
           @div desc.createModuleErrorMsg, class: 'text-warning hide errorMsg', outlet: 'errorMsg'
 
   initialize: ->
-    # @modulePath.getModel().onDidChange => @checkPath()
-    # @moduleId.getModel().onDidChange => @checkPath()
-    # @moduleName.getModel().onDidChange => @checkInput()
-    # @mainEntry.getModel().onDidChange => @checkInput()
-    # @selectProject.on 'change',(e) => @onSelectChange(e)
 
   attached: ->
     # @modulePath.getModel().onDidChange => @checkPath()

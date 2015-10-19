@@ -9,7 +9,7 @@ class CreateModuleTypeView extends View
 
   @content: (params) ->
     @div class: 'create-module-type', =>
-        @h2 "#{desc.CreateModuleType}:"
+        @h2 "#{desc.createModuleType}:"
         @div class: 'flex-container', =>
           @div class: 'frameList', outlet:'frameList', =>
             @div class: 'new-item text-center', 'data-type': 'empty',  =>

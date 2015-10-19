@@ -26,7 +26,7 @@ module.exports = TextDescription =
   syncAccountAppDesc: '同步已登录帐户中的应用到本地，未登录的用户请登录'
 
   createModule : '创建模块'
-  CreateModuleTitle: '请填写要创建的模块信息'
+  createModuleTitle: '请填写要创建的模块信息'
   createModuleType: '请选择要创建的模块类型'
   modulePath: '独立模块(保存目录)'
   moduleInApp: '基于应用'
