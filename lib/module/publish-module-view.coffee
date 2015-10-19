@@ -61,7 +61,7 @@ class PublishModuleInfoView extends View
 
 
   initFirst:(appPath) ->
-    console.log "init"
+    # console.log "init"
     appPath = PathM.join appPath,@moduleLocatFileName
     # directory = new Directory(appPath)
     _moduleList = @moduleList
