@@ -16,6 +16,8 @@ module.exports = TextDescription =
   pwd : '密码'
   save : '保存'
   forgetPwd: '忘记密码'
+  other: '其他'
+  openFromFolder: '从文件夹打开'
 
   createProject : '创建应用'
   createAppType: '请选择要创建的应用类型'
@@ -26,13 +28,14 @@ module.exports = TextDescription =
   createModule : '创建模块'
   CreateModuleTitle: '请填写要创建的模块信息'
   createModuleType: '请选择要创建的模块类型'
-  modulePath: '模块所在路径'
-  moduleInApp: '模块所在应用'
+  modulePath: '独立模块(保存目录)'
+  moduleInApp: '基于应用'
   moduleId: '模块标识'
   moduleName: '模块名称'
   mainEntry: '模块入口'
   createModuleSuccess: '创建模块成功！'
   createModuleError: '模块创建失败'
+
 
   emptyModule: '空白模块'
   simpleMoudle: '页面快速搭建'
