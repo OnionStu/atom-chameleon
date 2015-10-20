@@ -61,6 +61,7 @@ class CreateModuleTypeView extends View
             el.dataset.src = @frameworks[0].folderName
           @parentView.setNextBtn 'finish'
     @parentView.enableNext()
+    @parentView.disableNext() if @createType is 'simple'
 
   nextStep:(box) ->
     box.setPrevStep @
