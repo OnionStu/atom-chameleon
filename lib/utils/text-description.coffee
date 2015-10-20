@@ -28,6 +28,7 @@ module.exports = TextDescription =
   createModule : '创建模块'
   createModuleTitle: '请填写要创建的模块信息'
   createModuleType: '请选择要创建的模块类型'
+  selectProjectPath: '请选择应用目录'
   modulePath: '独立模块(保存目录)'
   moduleInApp: '基于应用'
   moduleId: '模块标识'
@@ -54,6 +55,7 @@ module.exports = TextDescription =
 
   registerUrl : 'http://www.baidu.com'
 
+  gitFolder: '.git'
   gitCloneError: 'git clone失败，请检查网络连接'
 
   chameleonHome: atom.packages.getLoadedPackage('chameleon-qdt-atom-dev').path
