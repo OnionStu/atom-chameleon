@@ -137,7 +137,7 @@ module.exports = ModuleManager =
     if moduleInfo.isChameleonProject is yes
       projectConfigPath = pathM.join moduleInfo.modulePath, '..', desc.ProjectConfigFileName
       appConfig = Util.readJsonSync projectConfigPath
-      appConfig.mainModule = moduleInfo.moduleId if appConfig.mainModule is ''
+      appConfig.mainModule = moduleInfo.moduleId if appConfig.mainModule
       appConfig.modules[moduleInfo.moduleId] = desc.minVersion
       Util.writeJson projectConfigPath,appConfig,(err) ->
         console.log err
