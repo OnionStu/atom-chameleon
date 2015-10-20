@@ -130,6 +130,9 @@ atom-panel.modal.from-top.down {
     // margin-top: -15px;
     margin-bottom: 0;
   }
+  .form-row.disabled{
+    opacity: .4
+  }
   .row-title {
     position: relative;
     text-align: right;
@@ -337,16 +340,16 @@ atom-panel.modal > .login-box {
     padding: 0;
 
     &:hover {
-      box-shadow: none;
-      background-color: #3a3f4b;
-      border-color: #181a1f;
+      .selectStyle();
     }
     &:focus {
-      box-shadow: none;
-      background-color: #3a3f4b;
-      border-color: #181a1f;
+      .selectStyle();
+    }
+    &:disabled {
+      .selectStyle();
     }
   }
+
 }
 .pic {
   width: @item-logo-size;
@@ -1097,4 +1100,9 @@ atom-text-editor::shadow .password-lines .line {
 /* 禁止换行,超出省略号 */
 .noWrapEllipsis{
   white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.selectStyle{
+  box-shadow: none;
+  background-color: #3a3f4b;
+  border-color: #181a1f;
 }
