@@ -1,6 +1,7 @@
 Path = require 'path'
 desc = require '../utils/text-description'
 Util = require '../utils/util'
+ModuleInfoView = require './create-module-info-view'
 {$, TextEditorView, View} = require 'atom-space-pen-views'
 
 
@@ -41,25 +42,11 @@ class CreateModuleTypeView extends View
     $('.new-item.select').removeClass 'select'
     el.classList.add 'select'
     @createType = el.dataset.type
-    if @createType is 'empty'
-      @parentView.setNextBtn('finish')
-    else
-      @parentView.setNextBtn()
-
-    switch @createType
-      when 'empty' then @parentView.setNextBtn 'finish'
-      when 'simple'
-        @parentView.setNextBtn()
-      when 'template'
-        console.log @frameworks
-        if @frameworks.length > 1
-          @parentView.setNextBtn()
-        else
-          if @frameworks.length is 0
-            el.dataset.src = desc.defaultModule
-          else
-            el.dataset.src = @frameworks[0].folderName
-          @parentView.setNextBtn 'finish'
+    if @createType is 'template'
+      if @frameworks.length is 0
+        el.dataset.src = desc.defaultModule
+      if @frameworks.length is 1
+        el.dataset.src = @frameworks[0].folderName
     @parentView.enableNext()
     @parentView.disableNext() if @createType is 'simple'
 
@@ -68,6 +55,7 @@ class CreateModuleTypeView extends View
     source = $('.select[data-type=template]').attr('data-src')
     params =
       createType:@createType
+      subview:ModuleInfoView
     params.source = source if source?
     if params.createType is 'simple'
       params.subview = null

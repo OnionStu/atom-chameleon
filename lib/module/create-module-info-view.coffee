@@ -3,7 +3,6 @@ Util = require '../utils/util'
 pathM = require 'path'
 {Directory} = require 'atom'
 {$, TextEditorView, View} = require 'atom-space-pen-views'
-CreateModuleTypeView = require './create-module-type-view'
 disabled = 'disabled'
 
 module.exports =
@@ -54,7 +53,7 @@ class CreateModuleInfoView extends View
     # @mainEntry.setText desc.mainEntryFileName
     @modulePath.html desc.newProjectDefaultPath
 
-    # @parentView.setNextBtn('finish')
+    @parentView.setNextBtn('finish')
     @parentView.disableNext()
     @parentView.hidePrevBtn()
 
@@ -162,16 +161,9 @@ class CreateModuleInfoView extends View
               console.log opt,opt.value,path,opt.value is path
               if opt.value is path
                 opt.selected = true
-                console.log '...'
                 return
             @selectProject.find('option[value=""]').remove()
             @setSelectItem path,null,null,true,true
-            console.log '!!!'
-            # optionExists = false
-            # @projects.forEach (projectPath,i) =>
-            #   if projectPath is
-            # if optionExists is no
-            # @selectProject.find("option[value='#{path}]'").prop 'selected',true
           else
             alert desc.selectProjectPath
         else
@@ -182,7 +174,6 @@ class CreateModuleInfoView extends View
     console.log el.value
     if el.value is 'other'
       @openFolder(e)
-    # @modulePath.html el.value
     @checkPath()
 
   checkProjectPath: (path) ->
@@ -231,5 +222,5 @@ class CreateModuleInfoView extends View
 
   nextStep: (box)->
     box.setPrevStep @
-    box.mergeOptions {moduleInfo:@getModuleInfo(),subview:CreateModuleTypeView}
+    box.mergeOptions {moduleInfo:@getModuleInfo()}
     box.nextStep()

@@ -99,10 +99,18 @@ module.exports = ModuleManager =
         @modalPanel.item.children(".loading-mask").remove()
         return console.error err
       console.log 'success'
+      Util.delete pathM.join(targetPath,desc.gitFolder), ->
+        if err
+          console.error err
+        else
+          console.log 'delete .git success'
       moduleConfigPath = pathM.join targetPath,desc.moduleConfigFileName
-      moduleConfig = Util.readJsonSync moduleConfigPath
-      console.log moduleConfig
-      moduleConfig = @editModuleConfig moduleConfig,info
+      if Util.isFileExist moduleConfigPath
+        moduleConfig = Util.readJsonSync moduleConfigPath
+        console.log moduleConfig
+        moduleConfig = @editModuleConfig moduleConfig,info
+      else
+        moduleConfig = Util.formatModuleConfigToObj info
       Util.writeJson moduleConfigPath,moduleConfig,(err) ->
         console.log err
       @addProjectModule info
