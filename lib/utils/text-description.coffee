@@ -78,6 +78,20 @@ module.exports = TextDescription =
 
 
   publishModule: "上传模块"
+  appModule: "应用的模块"
+  uAppModule: "非应用的模块"
+  publishModuleFirstStep: "请选择要上传的模块"
+  publishModuleSecondStep: "请填写模块信息"
+  changeLogoBtn: "更换模块LOGO"
+  moduleNameLabel: "模块名称:"
+  moduleUploadVersionLabel: "上传版本:"
+  uploadMessageLabel: "更新内容"
+  selectModuleErrorTips: "请选择要上传的模块"
+  uploadModuleVersionErrorTips: "上传模块的版本小于等于服务器上的版本"
+  moduleNameIsNullError: "模块名称不能为空"
+  moduleVersionIsNullError: "模块版本不能为空"
+  moduleVersionUnLegelError: "模块版本格式不合法，正确格式如下：10.3.10"
+
   publishModulePageOneTitle: '请选择需要发布的模块'
   publishModulePageTwoTitle: '确认发布模块信息'
 
@@ -100,3 +114,6 @@ module.exports = TextDescription =
 
   moduleLogoFileName: 'icon.png'
   moduleLocatFileName: 'modules'
+
+  uploadAppError: ""
+  uploadAppSuccess: "上传应用成功"

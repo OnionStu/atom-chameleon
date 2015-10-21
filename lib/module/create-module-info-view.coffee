@@ -60,11 +60,11 @@ class CreateModuleInfoView extends View
     projects = @findProject()
     projectNum = projects.length
     if projectNum isnt 0
-      @selectProject.empty()
+      # @selectProject.empty()
       @setSelectItem path for path in projects
       @modulePath.parents('.form-row').addClass 'hide'
       @selectProject.parents('.form-row').removeClass 'hide'
-      @modulePath.html pathM.join @selectProject.val(),'modules'
+      @modulePath.html @selectProject.val()
     else
       @selectProject.parents('.form-row').addClass 'hide'
       @modulePath.parents('.form-row').removeClass 'hide'
@@ -135,6 +135,7 @@ class CreateModuleInfoView extends View
       projectPath = @modulePath.html().trim()
 
       configPath = pathM.join projectPath,desc.ProjectConfigFileName
+      console.log 'asdasdasdasdasdasd',configPath
       isProject = @modulePath.isProject = Util.isFileExist configPath,'sync'
       projectPath = pathM.join projectPath,'modules' if isProject
 
