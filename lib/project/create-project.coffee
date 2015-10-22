@@ -155,6 +155,7 @@ module.exports = CreateProject =
 
     # atom.notifications.addSuccess("Success: This is a notification");
 
+  # 新建业务模板应用
   newTemplateProject: (options) ->
     info = options.projectInfo
     fileName = if options.tmpType is 'news' then 'butter_newstemp' else ''
@@ -185,6 +186,7 @@ module.exports = CreateProject =
                         contentList['mainModule'] = contentJson['name']
                       fs.writeJson appConfigPath,contentList,null
               alert '应用创建成功'
+              @chameleonBox.closeView()
             Util.delete gfp,delSuccess
 
             appConfigPath = pathM.join info.appPath, desc.ProjectConfigFileName
@@ -199,7 +201,6 @@ module.exports = CreateProject =
             @modalPanel.item.children(".loading-mask").remove()
             atom.project.addPath(info.appPath)
             Util.rumAtomCommand 'tree-view:toggle' if $('.tree-view-resizer').length is 0
-            @chameleonBox.closeView()
 
 
         Util.copy @projectTempDir, info.appPath, copySuccess # 创建应用根目录成功后 将空白应用的应用内容复制到根目录
