@@ -116,9 +116,9 @@ module.exports = ModuleManager =
       @addProjectModule info
       @openTreeView targetPath
       alert desc.createModuleSuccess
+      @chameleonBox.closeView()
     console.log sourcePath,targetPath
     Util.copy sourcePath,targetPath,copyCallback
-    @chameleonBox.closeView()
 
   gitCloneDefaultModule: (options) ->
     success = (state, appPath) =>
