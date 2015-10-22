@@ -10,26 +10,25 @@ class NewProjectView extends View
 
   @content: (params) ->
     @div class: 'new-project', =>
-      @h2 '请填写要创建的应用信息:', class: 'box-subtitle'
+      @h2 "#{desc.createAppInfo}:", class: 'box-subtitle'
       @div class: 'box-form', =>
         @div class: 'form-row clearfix', =>
-          @label '请输入应用标识', class: 'row-title pull-left'
+          @label desc.inputAppID, class: 'row-title pull-left'
           @div class: 'row-content pull-left', =>
-            @subview 'appId', new TextEditorView(mini: true, placeholderText: '例如: com.foreveross.myapp')
+            @subview 'appId', new TextEditorView(mini: true, placeholderText: desc.appIDPlaceholder)
         @div class: 'form-row msg clearfix in-row', =>
-          @div '只能输入文字和点，且至少三级目录，例如: com.foreveross.myapp', class: 'text-warning hide errorMsg', outlet: 'errorMsg2'
+          @div desc.appIDError, class: 'text-warning hide errorMsg', outlet: 'errorMsg2'
         @div class: 'form-row clearfix', =>
-          @label '请输入应用名称', class: 'row-title pull-left'
+          @label desc.inputAppName, class: 'row-title pull-left'
           @div class: 'row-content pull-left', =>
-            @subview 'appName', new TextEditorView(mini: true, placeholderText: '应用显示的名称')
+            @subview 'appName', new TextEditorView(mini: true, placeholderText: desc.appNamePlaceholder)
         @div class: 'form-row clearfix', =>
-          @label '应用创建位置', class: 'row-title pull-left'
+          @label dese.inputAppPath, class: 'row-title pull-left'
           @div class: 'row-content pull-left', =>
-            # @subview 'appPath', new TextEditorView(mini: true)
             @div class: 'textEditStyle',outlet: 'appPath'
             @span class: 'inline-block status-added icon icon-file-directory openFolder', click: 'openFolder'
         @div class: 'form-row msg clearfix', =>
-          @div '该应用目录已存在', class: 'text-warning hide errorMsg', outlet: 'errorMsg'
+          @div desc.appPathExist, class: 'text-warning hide errorMsg', outlet: 'errorMsg'
 
   initialize: ->
     @appId.getModel().onDidChange => @checkProjectName()
