@@ -24,7 +24,7 @@ module.exports = TextDescription =
   createAppInfo: '请填写要创建的应用信息'
   inputAppID: '请输入应用标识'
   appIDPlaceholder: '例如: com.foreveross.myapp'
-  appIDError: '只能输入字母和点('.')，且至少三级目录，例如: com.foreveross.myapp'
+  appIDError: '只能输入字母和点，且至少三级目录，例如: com.foreveross.myapp'
   inputAppName: '请输入应用名称'
   appNamePlaceholder: '应用显示的名称'
   inputAppPath: '应用创建位置'
