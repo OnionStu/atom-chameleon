@@ -215,7 +215,7 @@ module.exports = CreateProject =
           if state is 0
             Util.createDir info.appPath, createSuccess
           else
-            alert '应用创建失败：git clone失败，请检查网络连接'
+            alert "#{desc.createAppError}: #{desc.gitCloneError}"
             @modalPanel.item.children(".loading-mask").remove()
 
         Util.getRepo(@templateDir, config.tempList[0].url, success) #没有，执行 git clone，成功后执行第二步

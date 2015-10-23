@@ -32,6 +32,14 @@ module.exports = TextDescription =
   emptyApp: '空白应用'
   createLocalAppDesc: '创建一个本地应用'
   syncAccountAppDesc: '同步已登录帐户中的应用到本地，未登录的用户请登录'
+  createAppSuccess: '创建应用成功！'
+  createAppError: '应用创建失败'
+
+  appFrameworks: '应用框架'
+  appTemplate: '应用模板'
+
+  selectAPPTemplate: '请选择应用模板'
+  selectAPPFrameworks: '请选择开发框架'
 
   createModule : '创建模块'
   createModuleTitle: '请填写要创建的模块信息'
