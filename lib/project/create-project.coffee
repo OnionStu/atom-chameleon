@@ -98,7 +98,7 @@ module.exports = CreateProject =
           Util.copy frameworksPath, targetPath, (err) => # 复制成功后，将框架复制到应用的 modules 下
             throw err if err
             alert '应用创建成功'
-            packageJson = pathM.join targetPath,'package.json'
+            packageJson = pathM.join targetPath,desc.moduleConfigFileName
             appConfigPath = pathM.join info.appPath,desc.ProjectConfigFileName
             gfp = pathM.join targetPath,'.git'
             delSuccess = (err) ->
@@ -168,7 +168,7 @@ module.exports = CreateProject =
           targetPath = pathM.join info.appPath,'modules', fileName
           Util.copy pathM.join(@templateDir, fileName), targetPath, (err) => # 复制成功后，将框架复制到应用的 modules 下
             throw err if err
-            packageJson = pathM.join targetPath,'package.json'
+            packageJson = pathM.join targetPath,desc.moduleConfigFileName
             gfp = pathM.join targetPath,'.git'
             delSuccess = (err) ->
               throw err if err
