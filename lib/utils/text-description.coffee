@@ -91,6 +91,7 @@ module.exports = TextDescription =
   moduleNameIsNullError: "模块名称不能为空"
   moduleVersionIsNullError: "模块版本不能为空"
   moduleVersionUnLegelError: "模块版本格式不合法，正确格式如下：10.3.10"
+  moduleUploadProcessLabel: "上传中"
 
   publishModulePageOneTitle: '请选择需要发布的模块'
   publishModulePageTwoTitle: '确认发布模块信息'

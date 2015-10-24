@@ -8,6 +8,7 @@ Settings = require '../settings/settings'
 module.exports =
   settings: Settings
   send: (params) ->
+    console.log(config.serverUrl)
     defaultsParams =
       baseUrl: config.serverUrl
       method: 'GET'
@@ -18,8 +19,8 @@ module.exports =
     params = $.extend defaultsParams, params
     cb = (err, httpResponse, body) =>
       console.log httpResponse
-      # console.log err
-      # console.log body
+      console.log err
+      console.log body
       if httpResponse.complete
         if typeof params.complete is 'function'
           params.complete()
@@ -116,4 +117,18 @@ module.exports =
   uploadModuleAndAct:(params) ->
     params.url = "module/upload_use_module"
     params.method = "POST"
+    @send params
+
+  #上传模块接口 2015-10-22
+  uploadModuleZip:(params) ->
+    params.url = "module/upload_module_by_file"
+    params.method = "POST"
+    @send params
+  #分页获取 与相应模块关联的 app 列表
+  getAppMessage:(params,moduleIdentifer,pageIndex,showNumber)->
+    params.url = "app_update/get_app_msg/#{moduleIdentifer}/#{pageIndex}/#{showNumber}"
+    console.log params.url
+    @send params
+  applyModuleToApp:(params,appVersionId,moduleId)->
+    params.url = "module_detail/applu_new_module/#{appVersionId}/#{moduleId}"
     @send params
