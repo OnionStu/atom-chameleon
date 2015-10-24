@@ -18,6 +18,7 @@ module.exports = TextDescription =
   forgetPwd: '忘记密码'
   other: '其他'
   openFromFolder: '从文件夹打开'
+  framework: '框架'
 
   createProject: '创建应用'
   createAppType: '请选择要创建的应用类型'
@@ -41,6 +42,9 @@ module.exports = TextDescription =
   selectAPPTemplate: '请选择应用模板'
   selectAPPFrameworks: '请选择开发框架'
 
+  defaultModule: '默认模块'
+
+
   createModule : '创建模块'
   createModuleTitle: '请填写要创建的模块信息'
   createModuleType: '请选择要创建的模块类型'
@@ -55,7 +59,7 @@ module.exports = TextDescription =
 
 
   emptyModule: '空白模块'
-  simpleMoudle: '页面快速搭建'
+  simpleMoudle: '快速开发'
   defaultTemplateModule:'自定义框架'
 
   selectModuleTemplate: '请选择模块模板'
@@ -105,7 +109,7 @@ module.exports = TextDescription =
   projectConfig : '应用配置'
   moduleConfig : '模块配置'
 
-  defaultModule : 'butterfly-tiny'
+  defaultModuleName : 'butterfly-tiny'
   minVersion : '0.0.1'
 
   # 设置模块

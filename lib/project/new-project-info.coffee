@@ -23,7 +23,7 @@ class NewProjectView extends View
           @div class: 'row-content pull-left', =>
             @subview 'appName', new TextEditorView(mini: true, placeholderText: desc.appNamePlaceholder)
         @div class: 'form-row clearfix', =>
-          @label dese.inputAppPath, class: 'row-title pull-left'
+          @label desc.inputAppPath, class: 'row-title pull-left'
           @div class: 'row-content pull-left', =>
             @div class: 'textEditStyle',outlet: 'appPath'
             @span class: 'inline-block status-added icon icon-file-directory openFolder', click: 'openFolder'

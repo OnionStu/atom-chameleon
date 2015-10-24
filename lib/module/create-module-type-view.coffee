@@ -19,7 +19,7 @@ class CreateModuleTypeView extends View
               @h3 desc.emptyModule,class: 'project-name'
             @div class: 'new-item text-center', 'data-type': 'simple', =>
               @div class: 'itemIcon', =>
-                @img src: desc.getImgPath 'icon_frame.png'
+                @img src: desc.getImgPath 'icon_quick.png'
               @h3 desc.simpleMoudle,class: 'project-name'
             @div class: 'new-item text-center', 'data-type': 'template',  =>
               @div class: 'itemIcon', =>
@@ -44,7 +44,7 @@ class CreateModuleTypeView extends View
     @createType = el.dataset.type
     if @createType is 'template'
       if @frameworks.length is 0
-        el.dataset.src = desc.defaultModule
+        el.dataset.src = desc.defaultModuleName
       if @frameworks.length is 1
         el.dataset.src = @frameworks[0].folderName
     @parentView.enableNext()

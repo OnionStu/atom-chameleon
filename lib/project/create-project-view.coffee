@@ -2,7 +2,7 @@
 desc = require '../utils/text-description'
 {$, View} = require 'atom-space-pen-views'
 syncProjectView = require './sync-project'
-newProjectView = require './new-project'
+NewProjectType = require './new-project-type'
 ChameleonBox = require '../utils/chameleon-box-view'
 Util = require '../utils/util'
 
@@ -11,7 +11,7 @@ class CreateOrSynchronize extends View
 
   v:
     syncProject:syncProjectView
-    newProject:newProjectView
+    newProject:NewProjectType
 
   @content: ->
     @div class: 'create-project container', =>

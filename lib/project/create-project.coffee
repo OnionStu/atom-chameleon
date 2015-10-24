@@ -12,7 +12,7 @@ fs = require 'fs-extra'
 module.exports = CreateProject =
   chameleonBox: null
   modalPanel: null
-  repoDir: pathM.join desc.getFrameworkPath(),desc.defaultModule
+  repoDir: pathM.join desc.getFrameworkPath(),desc.defaultModuleName
   frameworksDir: desc.getFrameworkPath()
   projectTempDir: desc.getProjectTempPath()
   templateDir: desc.getTemplatePath()
@@ -93,8 +93,8 @@ module.exports = CreateProject =
       else
         copySuccess = (err) =>
           throw err if err
-          targetPath = pathM.join info.appPath,'modules',desc.defaultModule
-          frameworksPath = pathM.join @frameworksDir,desc.defaultModule
+          targetPath = pathM.join info.appPath,'modules',desc.defaultModuleName
+          frameworksPath = pathM.join @frameworksDir,desc.defaultModuleName
           Util.copy frameworksPath, targetPath, (err) => # 复制成功后，将框架复制到应用的 modules 下
             throw err if err
             alert '应用创建成功'
@@ -136,7 +136,7 @@ module.exports = CreateProject =
 
     # Util.createDir info.appPath, createSuccess
     # 首先，判断本地是否有框架
-    Util.isFileExist pathM.join(@frameworksDir, desc.defaultModule), (exists) =>
+    Util.isFileExist pathM.join(@frameworksDir, desc.defaultModuleName), (exists) =>
       if exists
         Util.createDir info.appPath, createSuccess #有，执行第二步：创建应用根目录
       else

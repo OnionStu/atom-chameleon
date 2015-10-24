@@ -90,7 +90,7 @@ module.exports = ModuleManager =
     targetPath = pathM.join info.modulePath,info.moduleId
 
 
-    if options.source is desc.defaultModule and Util.isFileExist(sourcePath) is no
+    if options.source is desc.defaultModuleName and Util.isFileExist(sourcePath) is no
       @gitCloneDefaultModule options
       return
 
