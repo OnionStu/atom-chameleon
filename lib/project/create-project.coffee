@@ -12,7 +12,7 @@ fs = require 'fs-extra'
 module.exports = CreateProject =
   chameleonBox: null
   modalPanel: null
-  repoDir: pathM.join desc.getFrameworkPath(),desc.defaultModule
+  repoDir: pathM.join desc.getFrameworkPath(),desc.defaultModuleName
   frameworksDir: desc.getFrameworkPath()
   projectTempDir: desc.getProjectTempPath()
   templateDir: desc.getTemplatePath()
@@ -93,12 +93,12 @@ module.exports = CreateProject =
       else
         copySuccess = (err) =>
           throw err if err
-          targetPath = pathM.join info.appPath,'modules',desc.defaultModule
-          frameworksPath = pathM.join @frameworksDir,desc.defaultModule
+          targetPath = pathM.join info.appPath,'modules',desc.defaultModuleName
+          frameworksPath = pathM.join @frameworksDir,desc.defaultModuleName
           Util.copy frameworksPath, targetPath, (err) => # 复制成功后，将框架复制到应用的 modules 下
             throw err if err
             alert '应用创建成功'
-            packageJson = pathM.join targetPath,'package.json'
+            packageJson = pathM.join targetPath,desc.moduleConfigFileName
             appConfigPath = pathM.join info.appPath,desc.ProjectConfigFileName
             gfp = pathM.join targetPath,'.git'
             delSuccess = (err) ->
@@ -136,7 +136,7 @@ module.exports = CreateProject =
 
     # Util.createDir info.appPath, createSuccess
     # 首先，判断本地是否有框架
-    Util.isFileExist pathM.join(@frameworksDir, desc.defaultModule), (exists) =>
+    Util.isFileExist pathM.join(@frameworksDir, desc.defaultModuleName), (exists) =>
       if exists
         Util.createDir info.appPath, createSuccess #有，执行第二步：创建应用根目录
       else
@@ -155,6 +155,7 @@ module.exports = CreateProject =
 
     # atom.notifications.addSuccess("Success: This is a notification");
 
+  # 新建业务模板应用
   newTemplateProject: (options) ->
     info = options.projectInfo
     fileName = if options.tmpType is 'news' then 'butter_newstemp' else ''
@@ -167,7 +168,7 @@ module.exports = CreateProject =
           targetPath = pathM.join info.appPath,'modules', fileName
           Util.copy pathM.join(@templateDir, fileName), targetPath, (err) => # 复制成功后，将框架复制到应用的 modules 下
             throw err if err
-            packageJson = pathM.join targetPath,'package.json'
+            packageJson = pathM.join targetPath,desc.moduleConfigFileName
             gfp = pathM.join targetPath,'.git'
             delSuccess = (err) ->
               throw err if err
@@ -185,6 +186,7 @@ module.exports = CreateProject =
                         contentList['mainModule'] = contentJson['name']
                       fs.writeJson appConfigPath,contentList,null
               alert '应用创建成功'
+              @chameleonBox.closeView()
             Util.delete gfp,delSuccess
 
             appConfigPath = pathM.join info.appPath, desc.ProjectConfigFileName
@@ -199,7 +201,6 @@ module.exports = CreateProject =
             @modalPanel.item.children(".loading-mask").remove()
             atom.project.addPath(info.appPath)
             Util.rumAtomCommand 'tree-view:toggle' if $('.tree-view-resizer').length is 0
-            @chameleonBox.closeView()
 
 
         Util.copy @projectTempDir, info.appPath, copySuccess # 创建应用根目录成功后 将空白应用的应用内容复制到根目录
@@ -214,7 +215,7 @@ module.exports = CreateProject =
           if state is 0
             Util.createDir info.appPath, createSuccess
           else
-            alert '应用创建失败：git clone失败，请检查网络连接'
+            alert "#{desc.createAppError}: #{desc.gitCloneError}"
             @modalPanel.item.children(".loading-mask").remove()
 
         Util.getRepo(@templateDir, config.tempList[0].url, success) #没有，执行 git clone，成功后执行第二步

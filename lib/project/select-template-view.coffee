@@ -7,7 +7,7 @@ module.exports =
 class SelectTemplate extends View
   @content: ->
     @div class: 'new-project template', =>
-      @h2 '请选择业务模板:'
+      @h2 "#{desc.selectAPPTemplate}:"
       @div class: 'flex-container ', =>
         @div class: 'frameList', outlet:'projectList', =>
           @div class: 'new-item text-center', projectId: 'data.identifier', click: 'onItemClick', type: 'news', =>
@@ -70,7 +70,7 @@ class SelectTemplate extends View
   onNextPageClick: () ->
     @currentIndex++
     @renderThumbList()
-    
+
   onPrevPageClick: () ->
     @currentIndex--
     @renderThumbList()

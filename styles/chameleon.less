@@ -130,6 +130,9 @@ atom-panel.modal.from-top.down {
     // margin-top: -15px;
     margin-bottom: 0;
   }
+  .form-row.disabled{
+    opacity: .4
+  }
   .row-title {
     position: relative;
     text-align: right;
@@ -257,7 +260,7 @@ atom-panel.modal > .login-box {
   }
   .openFolder {
     position: absolute;
-    right: 15px;
+    right: 5px;
     top: 5px;
     cursor: pointer;
   }
@@ -322,7 +325,7 @@ atom-panel.modal > .login-box {
 .create-module {
   .openFolder {
     position: absolute;
-    right: 15px;
+    right: 5px;
     top: 5px;
     cursor: pointer;
   }
@@ -337,16 +340,16 @@ atom-panel.modal > .login-box {
     padding: 0;
 
     &:hover {
-      box-shadow: none;
-      background-color: #3a3f4b;
-      border-color: #181a1f;
+      .selectStyle();
     }
     &:focus {
-      box-shadow: none;
-      background-color: #3a3f4b;
-      border-color: #181a1f;
+      .selectStyle();
+    }
+    &:disabled {
+      .selectStyle();
     }
   }
+
 }
 .pic {
   width: @item-logo-size;
@@ -989,13 +992,16 @@ atom-panel.modal > .login-box {
   line-height: 2em;
   max-height: none;
   padding-left: 0.5em;
+  padding-right: 2em;
   border-radius: 3px;
   color: #d7dae0;
   border: 1px solid #181a1f;
   background-color: rgba(0, 0, 0, 0.2);
-  display: -webkit-flex;
+  // display: -webkit-flex;
   width: 100%;
   // cursor: text;
+
+  .noWrapEllipsis();
 
   &::-webkit-input-placeholder {
     color: rgba(157, 165, 180, 0.6);
@@ -1114,7 +1120,15 @@ atom-text-editor::shadow .password-lines .line {
     margin-top: 10px;
   }
 }
+select{
+  .noWrapEllipsis()
+}
 /* 禁止换行,超出省略号 */
 .noWrapEllipsis{
   white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.selectStyle{
+  box-shadow: none;
+  background-color: #3a3f4b;
+  border-color: #181a1f;
 }

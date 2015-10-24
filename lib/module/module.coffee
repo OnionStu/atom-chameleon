@@ -90,7 +90,7 @@ module.exports = ModuleManager =
     targetPath = pathM.join info.modulePath,info.moduleId
 
 
-    if options.source is desc.defaultModule and Util.isFileExist(sourcePath) is no
+    if options.source is desc.defaultModuleName and Util.isFileExist(sourcePath) is no
       @gitCloneDefaultModule options
       return
 
@@ -99,18 +99,26 @@ module.exports = ModuleManager =
         @modalPanel.item.children(".loading-mask").remove()
         return console.error err
       console.log 'success'
+      Util.delete pathM.join(targetPath,desc.gitFolder), ->
+        if err
+          console.error err
+        else
+          console.log 'delete .git success'
       moduleConfigPath = pathM.join targetPath,desc.moduleConfigFileName
-      moduleConfig = Util.readJsonSync moduleConfigPath
-      console.log moduleConfig
-      moduleConfig = @editModuleConfig moduleConfig,info
+      if Util.isFileExist moduleConfigPath
+        moduleConfig = Util.readJsonSync moduleConfigPath
+        console.log moduleConfig
+        moduleConfig = @editModuleConfig moduleConfig,info
+      else
+        moduleConfig = Util.formatModuleConfigToObj info
       Util.writeJson moduleConfigPath,moduleConfig,(err) ->
         console.log err
       @addProjectModule info
       @openTreeView targetPath
       alert desc.createModuleSuccess
+      @chameleonBox.closeView()
     console.log sourcePath,targetPath
     Util.copy sourcePath,targetPath,copyCallback
-    @chameleonBox.closeView()
 
   gitCloneDefaultModule: (options) ->
     success = (state, appPath) =>
@@ -137,7 +145,7 @@ module.exports = ModuleManager =
     if moduleInfo.isChameleonProject is yes
       projectConfigPath = pathM.join moduleInfo.modulePath, '..', desc.ProjectConfigFileName
       appConfig = Util.readJsonSync projectConfigPath
-      appConfig.mainModule = moduleInfo.moduleId if appConfig.mainModule is ''
+      appConfig.mainModule = moduleInfo.moduleId if appConfig.mainModule
       appConfig.modules[moduleInfo.moduleId] = desc.minVersion
       Util.writeJson projectConfigPath,appConfig,(err) ->
         console.log err

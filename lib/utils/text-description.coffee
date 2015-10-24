@@ -18,16 +18,37 @@ module.exports = TextDescription =
   forgetPwd: '忘记密码'
   other: '其他'
   openFromFolder: '从文件夹打开'
+  framework: '框架'
 
-  createProject : '创建应用'
+  createProject: '创建应用'
   createAppType: '请选择要创建的应用类型'
+  createAppInfo: '请填写要创建的应用信息'
+  inputAppID: '请输入应用标识'
+  appIDPlaceholder: '例如: com.foreveross.myapp'
+  appIDError: '只能输入字母和点，且至少三级目录，例如: com.foreveross.myapp'
+  inputAppName: '请输入应用名称'
+  appNamePlaceholder: '应用显示的名称'
+  inputAppPath: '应用创建位置'
+  appPathExist:'该应用目录已存在'
   emptyApp: '空白应用'
   createLocalAppDesc: '创建一个本地应用'
   syncAccountAppDesc: '同步已登录帐户中的应用到本地，未登录的用户请登录'
+  createAppSuccess: '创建应用成功！'
+  createAppError: '应用创建失败'
+
+  appFrameworks: '应用框架'
+  appTemplate: '应用模板'
+
+  selectAPPTemplate: '请选择应用模板'
+  selectAPPFrameworks: '请选择开发框架'
+
+  defaultModule: '默认模块'
+
 
   createModule : '创建模块'
-  CreateModuleTitle: '请填写要创建的模块信息'
+  createModuleTitle: '请填写要创建的模块信息'
   createModuleType: '请选择要创建的模块类型'
+  selectProjectPath: '请选择应用目录'
   modulePath: '独立模块(保存目录)'
   moduleInApp: '基于应用'
   moduleId: '模块标识'
@@ -38,7 +59,7 @@ module.exports = TextDescription =
 
 
   emptyModule: '空白模块'
-  simpleMoudle: '页面快速搭建'
+  simpleMoudle: '快速开发'
   defaultTemplateModule:'自定义框架'
 
   selectModuleTemplate: '请选择模块模板'
@@ -54,6 +75,7 @@ module.exports = TextDescription =
 
   registerUrl : 'http://www.baidu.com'
 
+  gitFolder: '.git'
   gitCloneError: 'git clone失败，请检查网络连接'
 
   chameleonHome: atom.packages.getLoadedPackage('chameleon-qdt-atom-dev').path
@@ -96,13 +118,13 @@ module.exports = TextDescription =
   publishModulePageOneTitle: '请选择需要发布的模块'
   publishModulePageTwoTitle: '确认发布模块信息'
 
-  moduleConfigFileName: 'package.json'
-  ProjectConfigFileName: 'appConfig.json'
+  moduleConfigFileName: 'module-config.json'
+  ProjectConfigFileName: 'app-config.json'
 
   projectConfig : '应用配置'
   moduleConfig : '模块配置'
 
-  defaultModule : 'butterfly-tiny'
+  defaultModuleName : 'butterfly-tiny'
   minVersion : '0.0.1'
 
   # 设置模块
