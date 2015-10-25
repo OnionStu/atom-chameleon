@@ -113,8 +113,10 @@ class CreateModuleInfoView extends View
 
   getPath: ->
     if @selectAppPath[0].checked
+      @isChameleonProject = true
       pathM.join @selectProject.val().trim(),'modules'
     else
+      @isChameleonProject = false
       @modulePath.html().trim()
 
   serialize: ->
@@ -131,19 +133,12 @@ class CreateModuleInfoView extends View
 
   getModuleInfo: ->
     modulePath = @getPath()
-    if @modulePath.isProject
-      modulePath = pathM.join modulePath,'modules'
-      isProject = true
-    else
-      isProject = false
-
     info =
       mainEntry: desc.mainEntryFileName
       moduleId: @moduleId.getText()
       moduleName: @moduleName.getText()
       modulePath: modulePath
-      isChameleonProject:isProject
-    info
+      isChameleonProject:@isChameleonProject
 
   openFolder: (e) ->
     console.log 'openFolder'
