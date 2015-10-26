@@ -36,7 +36,7 @@ class SelectTemplate extends View
   nextStep:(box) ->
     nextStepView = new infoView()
     box.setPrevStep @
-    box.mergeOptions {subview:nextStepView, tmpType: @createType}
+    box.mergeOptions {subview:nextStepView, tmpType: @createType, newType:'template'}
     box.nextStep()
 
   renderThumbList: () ->
