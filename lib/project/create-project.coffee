@@ -64,15 +64,31 @@ module.exports = CreateProject =
         copySuccess = (err) =>
           throw err if err
           appConfigPath = pathM.join info.appPath,desc.ProjectConfigFileName
+          appConfig = Util.formatAppConfigToObj(info)
           writeCB = (err) =>
             throw err if err
             atom.workspace.open appConfigPath
             aft = =>
               Util.rumAtomCommand('tree-view:reveal-active-file')
             _.debounce(aft,300)
-          Util.writeJson appConfigPath, Util.formatAppConfigToObj(info), writeCB
+          moduleConfig = Util.appConfigToModuleConfig info
+          moduleFolderPath = pathM.join info.appPath, desc.moduleLocatFileName
+          modulePath = pathM.join moduleFolderPath, moduleConfig.identifier
+          indexFilePath = pathM.join modulePath, desc.mainEntryFileName
+          moduleConfigPath = pathM.join modulePath, desc.moduleConfigFileName
+
+          renameCallBack = (err) =>
+            return console.error err if err?
+            moduleCB = (err) ->
+              console.log err
+            Util.writeFile indexFilePath, Util.getIndexHtmlCore(moduleConfig),moduleCB
+            Util.writeJson moduleConfigPath, moduleConfig,moduleCB
+          Util.fsx.rename pathM.join(moduleFolderPath,'empty'), modulePath, renameCallBack
+          appConfig.mainModule = moduleConfig.identifier
+          appConfig.modules[moduleConfig.identifier] = moduleConfig.version
+          Util.writeJson appConfigPath, appConfig, writeCB
           @modalPanel.item.children(".loading-mask").remove()
-          alert '应用创建成功'
+          alert desc.createAppSuccess
           atom.project.addPath(info.appPath)
           Util.rumAtomCommand 'tree-view:toggle' if $('.tree-view-resizer').length is 0
           @chameleonBox.closeView()

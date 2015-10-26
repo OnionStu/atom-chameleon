@@ -489,7 +489,7 @@ class PublishModuleInfoView extends View
         modulePath = PathM.join path,@moduleLocatFileName,id
         console.log moduleConfigFile,obj2
         if obj2
-          str = str + "<option value='#{moduleConfigFile}'>#{id} @#{obj['name']}:#{path}</option>"
+          str = str + "<option value='#{moduleConfigFile}'>#{id} -- #{obj.name} : #{path}</option>"
       addItem id,version for id,version of obj['modules']
       console.log obj['modules']
       # optionStr = "<option value='#{path}'>#{projectName}  -  #{path}</option>"
@@ -503,7 +503,7 @@ class PublishModuleInfoView extends View
       type = desc.uAppModule
       if obj
         if obj['identifier']
-          str = "<option value='#{path}'>#{obj['identifier']} @#{path}</option>"
+          str = "<option value='#{path}'>#{obj.identifier} -- #{path}</option>"
           @selectProject.append str
       return
 

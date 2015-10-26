@@ -9,10 +9,13 @@ dialog = require('remote').require 'dialog'
 request = require 'request'
 module.exports = Util =
 
+  fsx: fs
+
   rumAtomCommand: (command) ->
      atom.views.getView(atom.workspace).dispatchEvent(new CustomEvent(command, bubbles: true, cancelable: true))
 
-  getIndexHtmlCore: ->
+  getIndexHtmlCore: (info) ->
+    info?.name ?= 'Module'
     """
     <!DOCTYPE html>
     <html lang="zh-CN">
@@ -22,10 +25,10 @@ module.exports = Util =
         <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black">
-        <title>Empty Template</title>
+        <title>#{info.name}</title>
       </head>
       <body>
-        <h1>Hello World!</h1>
+        <h1>Hello #{info.name}!</h1>
       </body>
     </html>
     """
@@ -52,6 +55,11 @@ module.exports = Util =
       dependencies: {}
       releaseNote: "app #{options.appName} init"
 
+  appConfigToModuleConfig: (info) ->
+    opt =
+      moduleName: info.appName
+      moduleId: info.appId.split('.').slice(-1)[0]
+    @formatModuleConfigToObj opt
 
   # 将传递过来的 str 进行判断是否符合文件命名，如果不符合，将不符合的字符改为"-", 并进行去重
   checkProjectName: (str)->
