@@ -77,13 +77,14 @@ module.exports = CreateProject =
           indexFilePath = pathM.join modulePath, desc.mainEntryFileName
           moduleConfigPath = pathM.join modulePath, desc.moduleConfigFileName
 
-          renameCallBack = (err) =>
+          moduleCB = (err) ->
+            console.error err
+          createCallBack = (err) =>
             return console.error err if err?
-            moduleCB = (err) ->
-              console.log err
             Util.writeFile indexFilePath, Util.getIndexHtmlCore(moduleConfig),moduleCB
             Util.writeJson moduleConfigPath, moduleConfig,moduleCB
-          Util.fsx.rename pathM.join(moduleFolderPath,'empty'), modulePath, renameCallBack
+          Util.createDir modulePath, createCallBack
+
           appConfig.mainModule = moduleConfig.identifier
           appConfig.modules[moduleConfig.identifier] = moduleConfig.version
           Util.writeJson appConfigPath, appConfig, writeCB
@@ -186,7 +187,7 @@ module.exports = CreateProject =
             throw err if err
             packageJson = pathM.join targetPath,desc.moduleConfigFileName
             gfp = pathM.join targetPath,'.git'
-            delSuccess = (err) ->
+            delSuccess = (err) =>
               throw err if err
               console.log 'deleted!'
               if fs.existsSync(packageJson)
@@ -201,7 +202,7 @@ module.exports = CreateProject =
                       if contentList['mainModule'] == ""
                         contentList['mainModule'] = contentJson['name']
                       fs.writeJson appConfigPath,contentList,null
-              alert '应用创建成功'
+              alert desc.createAppSuccess
               @chameleonBox.closeView()
             Util.delete gfp,delSuccess
 
