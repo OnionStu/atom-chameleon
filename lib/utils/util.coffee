@@ -41,6 +41,7 @@ module.exports = Util =
     build: 1
     # description: ''
     dependencies: {}
+    plugins: []
     releaseNote: "module #{options.moduleName} init"
     hidden: false
 
