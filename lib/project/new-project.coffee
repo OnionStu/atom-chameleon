@@ -41,7 +41,7 @@ class NewProjectView extends View
     @frameworks =
       [
         {
-          icon: desc.getImgPath 'icon_empty.png'
+          icon: desc.getImgPath 'icon_quick.png'
           dataName:''
           displayName: desc.simpleMoudle
           type: 'quick'
@@ -53,9 +53,9 @@ class NewProjectView extends View
           type: 'empty'
         },
         {
-          icon: desc.getImgPath 'icon_template.png'
+          icon: desc.getImgPath 'icon_frame.png'
           dataName: ''
-          displayName: "#{desc.framework}:#{desc.defaultModuleName}"
+          displayName: "#{desc.defaultModuleName}"
           type: 'frame'
         }
       ]

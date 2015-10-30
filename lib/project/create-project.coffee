@@ -78,7 +78,7 @@ module.exports = CreateProject =
           moduleConfigPath = pathM.join modulePath, desc.moduleConfigFileName
 
           moduleCB = (err) ->
-            console.error err
+            return console.error err if err?
           createCallBack = (err) =>
             return console.error err if err?
             Util.writeFile indexFilePath, Util.getIndexHtmlCore(moduleConfig),moduleCB

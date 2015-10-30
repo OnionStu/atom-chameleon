@@ -60,6 +60,7 @@ module.exports = TextDescription =
 
   emptyModule: '空白模块'
   simpleMoudle: '快速开发'
+  rapidDevTitle: '快速开发'
   defaultTemplateModule:'自定义框架'
 
   selectModuleTemplate: '请选择模块模板'
@@ -141,5 +142,9 @@ module.exports = TextDescription =
   uploadAppError: ""
   uploadAppSuccess: "上传应用成功"
 
+
   # builder
   builderPanelTitle: 'QDT-Builder'
+  
+  selectCorrectProject: "请选择变色龙应用"
+
