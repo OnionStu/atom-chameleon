@@ -8,6 +8,7 @@ BuildProject = require './project/build-project'
 UploadProject = require './project/upload-project'
 # ConfigureGlobal = require './configure/global/global'
 Settings = require './settings/settings'
+Builder = require './QDT-Builder/builder'
 util = require './utils/util'
 {CompositeDisposable} = require 'atom'
 
@@ -34,6 +35,7 @@ module.exports = Chameleon =
     # @configureGlobal = ConfigureGlobal
     @createModule = CreateModule
     @settings = Settings
+    @Builder = Builder
     @publishModule = PublishModule
 
     @subscriptions = new CompositeDisposable
@@ -50,11 +52,15 @@ module.exports = Chameleon =
     @subscriptions.add atom.commands.add 'atom-workspace', 'chameleon:configure-application': => @configureAppViewOpen(state)
     # @subscriptions.add atom.commands.add 'atom-workspace', 'chameleon:configure-global' : => @configureGlobalViewOpen(state)
     @subscriptions.add atom.commands.add 'atom-workspace', 'chameleon:openSource' : => @openSourceFolder()
+    @subscriptions.add atom.commands.add 'atom-workspace', 'chameleon:builder': => @openBuilder()
 
   deactivate: ->
     @subscriptions.dispose()
     @createProject.destroy()
     @login.destroy()
+
+  openBuilder: ->
+    @Builder.activate()
 
   openSettings: ->
     @settings.activate()
@@ -63,6 +69,7 @@ module.exports = Chameleon =
     @createProject.serialize()
     @login.serialize()
     @settings.serialize()
+    @Builder.serialize()
 
   toggleCreateProject:(state) ->
     @createProject.activate(state)

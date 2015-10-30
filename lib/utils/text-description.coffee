@@ -140,3 +140,6 @@ module.exports = TextDescription =
 
   uploadAppError: ""
   uploadAppSuccess: "上传应用成功"
+
+  # builder
+  builderPanelTitle: 'QDT-Builder'
