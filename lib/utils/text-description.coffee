@@ -142,4 +142,9 @@ module.exports = TextDescription =
   uploadAppError: ""
   uploadAppSuccess: "上传应用成功"
 
+
+  # builder
+  builderPanelTitle: 'QDT-Builder'
+  
   selectCorrectProject: "请选择变色龙应用"
+
