@@ -1,13 +1,13 @@
-ChameleonSettingsView = null
+ChameleonBuilderView = null
 
-ViewUri = 'atom://ChameleonSettings'
+ViewUri = 'atom://ChameleonBuilder'
 
 createView = (state) ->
-  ChameleonSettingsView ?= require './settings-view'
-  new ChameleonSettingsView(state)
+  ChameleonBuilderView ?= require './builder-view'
+  new ChameleonBuilderView(state)
 
 deserializer =
-  name: 'ChameleonSettingsView'
+  name: 'ChameleonBuilderView'
   deserialize: (state) ->
     createView(state)
 
@@ -16,7 +16,6 @@ atom.deserializers.add(deserializer)
 module.exports =
   activate: ->
     atom.workspace.addOpener (filePath) ->
-      console.log(filePath)
       createView(uri: ViewUri) if filePath is ViewUri
 
     atom.workspace.open(ViewUri)
