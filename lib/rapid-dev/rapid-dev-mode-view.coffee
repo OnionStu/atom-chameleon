@@ -13,7 +13,14 @@ class RapidDevModeView extends ScrollView
         @ul outlet:'projectsList', =>
           @li class: 'settingsItem', outlet: 'other', =>
             @a Desc.other, class: 'icon icon-plus'
-      @div class: 'settingsPanel',outlet: "settingsPanel"
+      @div class: 'settingsPanel',outlet: "settingsPanel", =>
+        @div class: 'code-view', =>
+          @div class: 'frameworkList', =>
+            @header class: 'code-panel-header', =>
+              @h2 '模块', =>
+                @span class: 'icon icon-package'
+              @button class: 'btn icon icon-plus addNewCode',click: 'addNewModule', '添加'
+            @ul outlet: 'codePackList'
 
   getURI: -> @uri
 
@@ -23,20 +30,25 @@ class RapidDevModeView extends ScrollView
     # super
     console.log @uri
     @projectInfos = {}
+
     @addProjectListItem path for path in @findProject()
     @addProjectListItem
     @on 'click', '.settingsItem', (e) =>
       @menuClick(e.currentTarget)
 
+    @codePackList.on 'click', '.editModule', (e) =>
+      @openBuilder(e)
+
   attached: ->
     console.log 'start'
 
   isProject: (path) ->
-    configPath = PathM.join path,Desc.ProjectConfigFileName
+    configPath = PathM.join path,Desc.projectConfigFileName
     Util.isFileExist configPath,'sync'
 
-  readConfig: (path) ->
-    configPath = PathM.join path,Desc.ProjectConfigFileName
+  readConfig: (path,type) ->
+    configFileName = if type is 'module' then Desc.moduleConfigFileName else Desc.projectConfigFileName
+    configPath = PathM.join path,configFileName
     try
       config = Util.readJsonSync configPath
     catch err
@@ -61,12 +73,20 @@ class RapidDevModeView extends ScrollView
     return projects
 
   addProjectListItem: (path) ->
-    config = @readConfig path
+    config = @readConfig path, 'project'
     if config?
       liStr = "<li class='settingsItem' data-projectpath='#{path}' data-id='#{config.identifier}'><a class='icon icon-file-submodule'>#{config.name}</a></li>"
-      # @projectsList.append liStr
       @projectInfos[config.identifier] = config
       @other.before liStr
+
+  addModuleItem: (projectPath,modules) ->
+    htmlStr = ''
+    for module,version of modules
+      modulePath = PathM.join projectPath,Desc.moduleLocatFileName,module
+      moduleConfig = @readConfig modulePath, 'module'
+      htmlStr += @getModuleItemHtmlStr moduleConfig if moduleConfig?
+    htmlStr = "<li><h2>#{Desc.noModules}</h2></li>" if htmlStr is ''
+    @codePackList.append htmlStr
 
   menuClick: (target) ->
     return @openFolder() if target is @other[0]
@@ -76,10 +96,10 @@ class RapidDevModeView extends ScrollView
     target.classList.add "active"
     projectPath = target.dataset.projectpath
     projectID = target.dataset.id
-    console.log projectPath,@projectInfos[projectID]
-    # configPath = PathM.join projectPath,Desc.ProjectConfigFileName
-    # config = Util.readJsonSync configPath
-    # config.modules
+    config = @projectInfos[projectID]
+    console.log projectPath
+    @codePackList.empty()
+    @addModuleItem projectPath,config.modules
 
   openFolder: ->
     console.log 'openFolder'
@@ -88,6 +108,31 @@ class RapidDevModeView extends ScrollView
         path = paths[0]
         console.log "select path:#{path}"
         if @isProject path
-          @addProjectListItem path if @checkProjectExistInList is no
+          @addProjectListItem path if @checkProjectExistInList(path)  is no
         else
           alert Desc.selectCorrectProject
+
+  addNewModule: ->
+    activeItem = document.querySelector('.settingsItem.active')
+    currentProject = activeItem.dataset.id
+    @openBuilder(currentProject)
+
+  openBuilder: (params) ->
+    console.log "open builder",params
+
+  getModuleItemHtmlStr: (module) ->
+    return if !module?
+    description = if module.releaseNote? then module.releaseNote else if module.description? then module.description else ''
+
+    """
+
+    <li class="codePack-card">
+      <h2><a>#{module.name}</a></h2>
+      <p>version: #{module.version}</p>
+      <p>#{description}</p>
+      <div class="btn-group">
+        <button class="btn icon icon-pencil inline-block editModule" data-moduleid='#{module.identifier}'>#{Desc.edit}</button>
+      </div>
+    </li>
+
+    """
