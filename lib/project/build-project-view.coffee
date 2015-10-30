@@ -163,6 +163,8 @@ class BuildProjectInfoView extends View
 
   setSelectItem:(path) ->
     filePath = pathM.join path, @projectConfigFileName
+    if !fs.existsSync(filePath)
+      return
     obj = Util.readJsonSync filePath
     if obj
       projectName = pathM.basename path
@@ -192,6 +194,10 @@ class BuildProjectInfoView extends View
         # console.log  path
         filePath = pathM.join path,@projectConfigFileName
         # console.log filePath
+        if !fs.existsSync(filePath)
+          @.find("select option:first").prop("selected","selected")
+          alert "请选择正确的应用"
+          return
         obj = Util.readJsonSync filePath
         if obj
           projectName = pathM.basename path
