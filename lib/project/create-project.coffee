@@ -63,7 +63,7 @@ module.exports = CreateProject =
       else
         copySuccess = (err) =>
           throw err if err
-          appConfigPath = pathM.join info.appPath,desc.ProjectConfigFileName
+          appConfigPath = pathM.join info.appPath,desc.projectConfigFileName
           appConfig = Util.formatAppConfigToObj(info)
           writeCB = (err) =>
             throw err if err
@@ -116,7 +116,7 @@ module.exports = CreateProject =
             throw err if err
             alert '应用创建成功'
             packageJson = pathM.join targetPath,desc.moduleConfigFileName
-            appConfigPath = pathM.join info.appPath,desc.ProjectConfigFileName
+            appConfigPath = pathM.join info.appPath,desc.projectConfigFileName
             gfp = pathM.join targetPath,'.git'
             delSuccess = (err) ->
               throw err if err
@@ -135,7 +135,7 @@ module.exports = CreateProject =
                       fs.writeJson appConfigPath,contentList,null
             Util.delete gfp,delSuccess
 
-            # appConfigPath = pathM.join info.appPath,desc.ProjectConfigFileName
+            # appConfigPath = pathM.join info.appPath,desc.projectConfigFileName
             writeCB = (err) =>
               throw err if err
               atom.workspace.open appConfigPath
@@ -206,7 +206,7 @@ module.exports = CreateProject =
               @chameleonBox.closeView()
             Util.delete gfp,delSuccess
 
-            appConfigPath = pathM.join info.appPath, desc.ProjectConfigFileName
+            appConfigPath = pathM.join info.appPath, desc.projectConfigFileName
             writeCB = (err) =>
               throw err if err
               atom.workspace.open appConfigPath

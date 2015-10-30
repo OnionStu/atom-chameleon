@@ -14,7 +14,7 @@ class BuildProjectInfoView extends View
   ticketTimer:{}
   buildPlatformId:{}
   moduleConfigFileName: desc.moduleConfigFileName
-  projectConfigFileName: desc.ProjectConfigFileName
+  projectConfigFileName: desc.projectConfigFileName
   moduleLogoFileName: desc.moduleLogoFileName
   moduleLocatFileName: desc.moduleLocatFileName
 
@@ -458,7 +458,7 @@ class BuildProjectInfoView extends View
       platformInfo.push(iosObj)
     if androidObj
       platformInfo.push(androidObj)
-    configPath = pathM.join this.find('select').val(),desc.ProjectConfigFileName
+    configPath = pathM.join this.find('select').val(),desc.projectConfigFileName
     # console.log configPath
     options =
       encoding: "utf-8"

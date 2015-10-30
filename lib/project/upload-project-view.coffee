@@ -11,7 +11,7 @@ loadingMask = require '../utils/loadingMask'
 class UploadProjectInfoView extends View
   LoadingMask: loadingMask
   moduleConfigFileName: desc.moduleConfigFileName
-  projectConfigFileName: desc.ProjectConfigFileName
+  projectConfigFileName: desc.projectConfigFileName
   moduleLogoFileName: desc.moduleLogoFileName
   moduleLocatFileName: desc.moduleLocatFileName
   @content: ->
@@ -236,7 +236,7 @@ class UploadProjectInfoView extends View
 
 
   sendBuildMessage: ->
-    path = pathM.join @selectUploadProject.val(),desc.ProjectConfigFileName
+    path = pathM.join @selectUploadProject.val(),desc.projectConfigFileName
     if fs.existsSync(path)
       stats = fs.statSync(path)
       if stats.isFile()
@@ -275,7 +275,7 @@ class UploadProjectInfoView extends View
 
   nextBtnClick: ->
     # 检查是否需要上传信息
-    path = pathM.join @selectUploadProject.val(),desc.ProjectConfigFileName
+    path = pathM.join @selectUploadProject.val(),desc.projectConfigFileName
     if fs.existsSync(path)
       stats = fs.statSync(path)
       if stats.isFile()
@@ -294,7 +294,7 @@ class UploadProjectInfoView extends View
         # UtilExtend.checkModuleNeedUpload identifier, version, projectPath for identifier, version of modules
         getModuleMessage identifier,version for identifier, version of modules
         @checkModuleNeedUpload projectPath, moduleList, 0
-        # path = pathM.join @selectUploadProject.val(),desc.ProjectConfigFileName
+        # path = pathM.join @selectUploadProject.val(),desc.projectConfigFileName
         # if fs.existsSync(path)
         #   stats = fs.statSync(path)
         #   if stats.isFile()

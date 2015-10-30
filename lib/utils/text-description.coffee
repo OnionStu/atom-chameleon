@@ -8,6 +8,7 @@ module.exports = TextDescription =
   upload : '上传'
   back : '返回'
   finish : '完成'
+  edit: '编辑'
   save : '保存'
   recovery : '还原'
   login : '登录'
@@ -120,7 +121,7 @@ module.exports = TextDescription =
   publishModulePageTwoTitle: '确认发布模块信息'
 
   moduleConfigFileName: 'module-config.json'
-  ProjectConfigFileName: 'app-config.json'
+  projectConfigFileName: 'app-config.json'
 
   projectConfig : '应用配置'
   moduleConfig : '模块配置'
@@ -145,6 +146,5 @@ module.exports = TextDescription =
 
   # builder
   builderPanelTitle: 'QDT-Builder'
-  
-  selectCorrectProject: "请选择变色龙应用"
 
+  selectCorrectProject: "请选择变色龙应用"
