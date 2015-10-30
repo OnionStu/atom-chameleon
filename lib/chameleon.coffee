@@ -8,6 +8,7 @@ BuildProject = require './project/build-project'
 UploadProject = require './project/upload-project'
 # ConfigureGlobal = require './configure/global/global'
 Settings = require './settings/settings'
+RapidDev = require './rapid-dev/rapid-dev-mode'
 util = require './utils/util'
 {CompositeDisposable} = require 'atom'
 
@@ -23,6 +24,7 @@ module.exports = Chameleon =
   createModule:null
   settings: null
   publishModule: null
+  rapidDev: null
 
   activate: (state) ->
     @createProject = CreateProject
@@ -35,9 +37,11 @@ module.exports = Chameleon =
     @createModule = CreateModule
     @settings = Settings
     @publishModule = PublishModule
+    @rapidDev = RapidDev
 
     @subscriptions = new CompositeDisposable
 
+    @subscriptions.add atom.commands.add 'atom-workspace', 'chameleon:rapid-dev': => @openRapidDevMode()
     @subscriptions.add atom.commands.add 'atom-workspace', 'chameleon:settings': => @openSettings()
     @subscriptions.add atom.commands.add 'atom-workspace', 'chameleon:create-project': => @toggleCreateProject(state)
     @subscriptions.add atom.commands.add 'atom-workspace', 'chameleon:create-module' : => @toggleCreateModule(state)
@@ -63,6 +67,9 @@ module.exports = Chameleon =
     @createProject.serialize()
     @login.serialize()
     @settings.serialize()
+
+  openRapidDevMode: ->
+    @rapidDev.activate()
 
   toggleCreateProject:(state) ->
     @createProject.activate(state)

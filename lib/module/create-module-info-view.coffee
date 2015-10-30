@@ -55,7 +55,6 @@ class CreateModuleInfoView extends View
 
     @parentView.setNextBtn('finish')
     @parentView.disableNext()
-    @parentView.hidePrevBtn()
 
     @projects = @findProject()
     projectNum = @projects.length
