@@ -10,7 +10,7 @@ class SelectTemplate extends View
       @h2 "#{desc.selectAPPTemplate}:"
       @div class: 'flex-container ', =>
         @div class: 'frameList', outlet:'projectList', =>
-          @div class: 'new-item text-center', projectId: 'data.identifier', click: 'onItemClick', type: 'news', =>
+          @div class: 'new-item', projectId: 'data.identifier', click: 'onItemClick', type: 'news', =>
             @div class: 'itemIcon', =>
               @img src: desc.getImgPath 'icon.png'
             @h3 config.tempList[0].name, class: 'project-name'

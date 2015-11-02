@@ -24,6 +24,7 @@ module.exports =
             @a class: 'forgetpsw', href: config.forgetpwdrUrl, "#{desc.forgetPwd}?"
           @div class: 'login-row', =>
             @button id: 'login', class: 'btn login-btn', desc.login
+            @button id: 'osclogin', class: 'btn login-btn', desc.osclogin
             @a '注册', class: 'btn login-btn', href: config.registerUrl
 
 

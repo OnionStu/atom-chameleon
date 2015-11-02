@@ -11,6 +11,7 @@ module.exports = TextDescription =
   save : '保存'
   recovery : '还原'
   login : '登录'
+  osclogin: 'osc账号登录'
   logout : '退出登录'
   email : '邮箱'
   pwd : '密码'
@@ -145,6 +146,7 @@ module.exports = TextDescription =
 
   # builder
   builderPanelTitle: 'QDT-Builder'
-  
-  selectCorrectProject: "请选择变色龙应用"
 
+  oscLoginPanelTitle: 'OSChina登录'
+
+  selectCorrectProject: "请选择变色龙应用"

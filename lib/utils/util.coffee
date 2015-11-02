@@ -327,3 +327,14 @@ module.exports = Util =
         console.log "not a file"
     else
       console.log "is not exists"
+
+  getThatPane: (uri) ->
+    panes = atom.workspace.getPanes()[0].items
+    thatPane = _.find panes, (pane) =>
+      if pane.uri and pane.uri is uri
+        return pane
+    return thatPane
+
+  getPanes: () ->
+    return atom.workspace.getPanes()[0]
+

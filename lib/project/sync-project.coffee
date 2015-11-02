@@ -39,9 +39,13 @@ class SyncProjectView extends View
 
     if @projects.length is 0
       @getProjectList 1, (data)=>
-        @projects = @projects.concat(data.data)
-        @totalCount = data.totalCount
-        @renderCurrentList()
+        if data.totalCount > 0
+          @projects = @projects.concat(data.data)
+          @totalCount = data.totalCount
+          @renderCurrentList()
+        else
+          projectItem = new notProjectItem
+          @projectList.append projectItem
         @.children(".loading-mask").remove()
 
   canClick: () =>

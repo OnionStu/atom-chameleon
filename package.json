@@ -20,7 +20,8 @@
       "chameleon:bulid-project",
       "chameleon:upload-project",
       "chameleon:publish-module-select-path",
-      "chameleon:builder"
+      "chameleon:builder",
+      "chameleon:openOschinaLogin"
     ]
   },
   "repository": "https://github.com/OnionStu/atom-chameleon",
