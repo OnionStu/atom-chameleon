@@ -14,7 +14,7 @@ class BuildProjectInfoView extends View
   ticketTimer:{}
   buildPlatformId:{}
   moduleConfigFileName: desc.moduleConfigFileName
-  projectConfigFileName: desc.ProjectConfigFileName
+  projectConfigFileName: desc.projectConfigFileName
   moduleLogoFileName: desc.moduleLogoFileName
   moduleLocatFileName: desc.moduleLocatFileName
 
@@ -163,6 +163,8 @@ class BuildProjectInfoView extends View
 
   setSelectItem:(path) ->
     filePath = pathM.join path, @projectConfigFileName
+    if !fs.existsSync(filePath)
+      return
     obj = Util.readJsonSync filePath
     if obj
       projectName = pathM.basename path
@@ -192,6 +194,10 @@ class BuildProjectInfoView extends View
         # console.log  path
         filePath = pathM.join path,@projectConfigFileName
         # console.log filePath
+        if !fs.existsSync(filePath)
+          @.find("select option:first").prop("selected","selected")
+          alert "请选择正确的应用"
+          return
         obj = Util.readJsonSync filePath
         if obj
           projectName = pathM.basename path
@@ -452,7 +458,7 @@ class BuildProjectInfoView extends View
       platformInfo.push(iosObj)
     if androidObj
       platformInfo.push(androidObj)
-    configPath = pathM.join this.find('select').val(),desc.ProjectConfigFileName
+    configPath = pathM.join this.find('select').val(),desc.projectConfigFileName
     # console.log configPath
     options =
       encoding: "utf-8"

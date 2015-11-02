@@ -11,7 +11,7 @@ loadingMask = require '../utils/loadingMask'
 
 class PublishModuleInfoView extends View
   moduleConfigFileName: desc.moduleConfigFileName
-  projectConfigFileName: desc.ProjectConfigFileName
+  projectConfigFileName: desc.projectConfigFileName
   moduleLogoFileName: desc.moduleLogoFileName
   moduleLocatFileName: desc.moduleLocatFileName
   moduleIdentifer:null#模块标识
@@ -308,133 +308,7 @@ class PublishModuleInfoView extends View
     # 获取 该模块最新版本 和 build
     client.getModuleLastVersion(params)
 
-  # thirdClickNext: ->
-    # console.log @appPath.getText()
-    # @initFirst(@appPath.getText())
 
-
-  # initFirst:(appPath) ->
-    # # console.log "init"
-    # appPath = PathM.join appPath,@moduleLocatFileName
-    # # directory = new Directory(appPath)
-    # _moduleList = @moduleList
-    # length = 0
-    # _parentView = @parentView
-    # printName = (filePath) =>
-    #   # console.log filePath
-    #   if filePath is ".gitHolder" || filePath is ".." || filePath is '.'
-    #     return
-    #   if fs.existsSync(filePath)
-    #     stats = fs.statSync(filePath)
-    #     # console.log "exists"
-    #     if stats.isDirectory()
-    #       # console.log "isDirectory"
-    #       path =PathM.join filePath,@moduleConfigFileName
-    #       # console.log path
-    #       if fs.existsSync(path)
-    #         # console.log "path exists"
-    #         stats = fs.statSync(path)
-    #         if stats.isFile()
-    #           # console.log "is file"
-    #           contetnList = JSON.parse(fs.readFileSync(path))
-    #           # console.log contetnList
-    #           # console.log contetnList['identifier'],contetnList['name']
-    #           if contetnList['identifier']? and contetnList['name']?
-    #             length = length + 1
-    #             # console.log "length ++ "
-    #             _moduleList.append('<div class="checkbox-layout"><div class="checkboxFive"><input id="'+path+'" value="'+path+'" type="checkbox" class="hide"><label for="'+path+'"></label></div><label for="'+path+'"class="label-empty">'+contetnList['name']+'</label></div>')
-    # if fs.existsSync(appPath)
-    #   stats = fs.statSync(appPath)
-    #   if stats.isDirectory()
-    #     list = fs.readdirSync(appPath)
-    #     _moduleList.empty()
-    #     printName PathM.join appPath,file for file in list
-    #     # console.log length
-    #     if length == 0
-    #       _parentView.enable = false
-    #       alert "没有任何模块"
-    #       return
-    #     @third.addClass('hide')
-    #     @first.removeClass('hide')
-    # else
-    #   alert '不存在路径['+appPath+']'
-
-  # nextStep: ->
-  #   _parentView = @parentView
-  #   # console.log 'click next button'
-  #   if @third.hasClass('hide')
-  #     console.log 'third is hide'
-  #   else
-  #     @thirdClickNext()
-  #     return
-  #   if @parentView.prevBtn.hasClass('hide')
-  #     if this.find('input[type=checkbox]').is(':checked')
-  #       console.log '选择了模块'
-  #     else
-  #       alert '你还没有选择模块。'
-  #       return
-  #     checkboxList = this.find('input[type=checkbox]')
-  #     _moduleMessageList = @moduleMessageList
-  #     _moduleMessageList.empty()
-  #     # 输出模块选项
-  #     moduleList = []
-  #     modulePathJson = {}
-  #     printModuleMessage = (checkbox) =>
-  #       if $(checkbox).is(':checked')
-  #         identifer =PathM.basename PathM.join $(checkbox).attr('value'),".."
-  #         moduleList.push(identifer)
-  #         modulePathJson[identifer] = $(checkbox).attr('value')
-  #         _moduleMessageList.css({'width': moduleList.length * 240})
-  #     printModuleMessage checkbox for checkbox in checkboxList
-  #     params =
-  #       formData:{
-  #         identifier:JSON.stringify(moduleList)
-  #       }
-  #       sendCookie: true
-  #       success: (data) =>
-  #         console.log data
-  #         errorMessage = "不存在路径"
-  #         errorCode = 0
-  #         html = ""
-  #         showModuleMessage = (object) =>
-  #           configPath = modulePathJson[object.identifier]
-  #           if !fs.existsSync(configPath)
-  #             errorCode = 1
-  #           else
-  #             stats = fs.statSync(configPath)
-  #             if stats.isFile()
-  #               contentList = JSON.parse(fs.readFileSync(configPath))
-  #               # modulePath = PathM.join configPath,".."
-  #               obj =
-  #                 moduleName: contentList['name']
-  #                 uploadVersion: contentList['version']
-  #                 identifier: contentList['identifier']
-  #                 version: contentList['serviceVersion']
-  #                 modulePath: configPath
-  #               # 获取版本 和 上传次数 ， 并判断和初始化  obj['build'] obj['version']
-  #               if object['build']? and object['build'] != ""
-  #                 obj["build"] = parseInt(object['build'])
-  #               else
-  #                 obj["build"] = 0
-  #               if object['version']? and object['version'] != ""
-  #                 obj['version'] = object['version']
-  #               else
-  #                 obj['version'] = "0.0.0"
-  #               item = new ModuleMessageItem(obj)
-  #               _moduleMessageList.append(item)
-  #         showModuleMessage object for object in data
-  #
-  #       error : =>
-  #         console.log "获取模板最新版本 的url 调不通"
-  #     client.getModuleLastVersion(params)
-  #     console.log moduleList
-  #     console.log modulePathJson
-  #     @second.removeClass('hide')
-  #     @first.addClass('hide')
-  #     @parentView.prevBtn.removeClass('hide')
-  #     @parentView.nextBtn.text('完成')
-  #   else
-  #     @parentView.closeView()
 
   #初始化窗口
   attached: ->
@@ -477,6 +351,8 @@ class PublishModuleInfoView extends View
   setSelectItem:(path) ->
     console.log "setSelectItem",path
     filePath = PathM.join path, @projectConfigFileName
+    if !fs.existsSync(filePath)
+      return
     obj = Util.readJsonSync filePath
     if obj
       str = ""
@@ -521,6 +397,10 @@ class PublishModuleInfoView extends View
         console.log "path = ",path
         filePath = PathM.join path,@moduleConfigFileName
         console.log "filePath = ",filePath
+        if !fs.existsSync(filePath)
+          @.find("select option:first").prop("selected","selected")
+          alert desc.selectModuleErrorTips
+          return
         obj = Util.readJsonSync filePath
         type = desc.uAppModule
         if obj
@@ -535,125 +415,6 @@ class PublishModuleInfoView extends View
         @selectProject.get(0).selectedIndex = 0
 
 
-  # attached2: ->
-  #   $('#tips').fadeOut()
-  #   test = $('.entry.selected span')
-  #   _parentView = @parentView
-  #   _moduleList = @moduleList
-  #   # console.log @flag.val()
-  #   # console.log @parentView.flag
-  #   if @parentView.flag is "select_path"
-  #     # console.log "#{test.length}"
-  #     @first.addClass('hide')
-  #     @third.removeClass('hide')
-  #     if @second.hasClass('hide')
-  #       return
-  #     else
-  #       @second.addClass('hide')
-  #       # @third.addClass('hide')
-  #     return
-  #   else
-  #     project_path = $('.entry.selected span').attr('data-path')
-  #     if @first.hasClass('hide')
-  #       @first.removeClass('hide')
-  #       @third.addClass('hide')
-  #       @second.addClass('hide')
-  #     #这是一个回调函数 的开始
-  #     # console.log "hello"
-  #     projectPaths = atom.project.getPaths()
-  #     isRootNodeIsBSLProject = false
-  #     rootPath = null
-  #     checkContains = (path) =>
-  #       directory = new Directory(path)
-  #       if directory.contains(project_path)
-  #         if UtilExtend.checkIsBSLProject(path)
-  #           isRootNodeIsBSLProject = true
-  #           rootPath = path
-  #     checkContains path for path in projectPaths
-  #     console.log isRootNodeIsBSLProject
-  #     returnMessage = null
-  #     returnStatus = false
-  #     if fs.existsSync(project_path)
-  #       projectStats = fs.statSync(project_path)
-  #       #判断是否目录
-  #       if projectStats.isDirectory()
-  #         configFilePath = PathM.join project_path,@projectConfigFileName
-  #         #判断  appConfig.json 是否存在
-  #         if fs.existsSync(configFilePath)
-  #           configFileStats = fs.statSync(configFilePath)
-  #           file = new File(configFilePath)
-  #           file.read(false).then (content) =>
-  #             contentList = JSON.parse(content)
-  #             $('#projectIdentifier').attr('value',contentList['identifier'])
-  #           project_path = PathM.join project_path,@moduleLocatFileName
-  #           if !fs.existsSync(project_path)
-  #             # _parentView.enable = false
-  #             returnMessage = "请选择变色龙应用（不存在modules文件）"
-  #             returnStatus = true
-  #           modulesStats = fs.statSync(project_path)
-  #           if modulesStats.isFile()
-  #             # _parentView.enable = false
-  #             returnMessage = "请选择变色龙应用（不存在modules文件）"
-  #             returnStatus = true
-  #         else
-  #           # _parentView.enable = false
-  #           returnMessage = "请选择变色龙应用(不存在 appConfig.json)"
-  #           returnStatus = true
-  #       else
-  #         # _parentView.enable = false
-  #         returnMessage = "请选择变色龙应用"
-  #         returnStatus = true
-  #     else
-  #       _parentView.enable = false
-  #       alert "文件不存在"
-  #       return
-  #     if returnStatus
-  #       if isRootNodeIsBSLProject
-  #         project_path = rootPath
-  #         project_path = PathM.join project_path,@moduleLocatFileName
-  #         if !fs.existsSync(project_path)
-  #           _parentView.enable = false
-  #           alert returnMessage
-  #           return
-  #         modulesStats = fs.statSync(project_path)
-  #         if modulesStats.isFile()
-  #           _parentView.enable = false
-  #           alert returnMessage
-  #           return
-  #       else
-  #         _parentView.enable = false
-  #         alert returnMessage
-  #         return
-  #     modulesCount = 0
-  #     list = fs.readdirSync(project_path)
-  #     fileLength = 0
-  #     printName = (filePath) =>
-  #       console.log fileLength
-  #       stats = fs.statSync(filePath)
-  #       if stats.isDirectory()
-  #         basename = PathM.basename filePath
-  #         packageFilePath = PathM.join filePath,@moduleConfigFileName
-  #         if fs.existsSync(packageFilePath)
-  #           # alert "#{packageFilePath}"
-  #           packageFileStats = fs.statSync(packageFilePath)
-  #           if packageFileStats.isFile()
-  #             fileLength = fileLength + 1
-  #             getMessage = (err, data) =>
-  #               if err
-  #                 console.log "error"
-  #               else
-  #                 contentList = JSON.parse(data)
-  #                 _moduleList.append('<div class="checkbox-layout"><div class="checkboxFive"><input id="module-upload'+basename+'" value="'+packageFilePath+'" type="checkbox" class="hide" /><label for="module-upload'+basename+'"></label></div><label for="module-upload'+basename+'" class="label-empty">'+contentList['name']+'</label></div>')
-  #                 # console.log data
-  #             options =
-  #               encoding: "UTF-8"
-  #             fs.readFile(packageFilePath,options,getMessage)
-  #     _moduleList.empty()
-  #     printName PathM.join project_path,fileName for fileName in list
-  #     if fileLength == 0
-  #       _parentView.enable = false
-  #       alert "没有任何模块"
-  #       return
 
   getElement: ->
     @element

@@ -8,6 +8,7 @@ BuildProject = require './project/build-project'
 UploadProject = require './project/upload-project'
 # ConfigureGlobal = require './configure/global/global'
 Settings = require './settings/settings'
+RapidDev = require './rapid-dev/rapid-dev-mode'
 Builder = require './QDT-Builder/builder'
 OSCLogin = require './login/login-osc'
 util = require './utils/util'
@@ -26,6 +27,7 @@ module.exports = Chameleon =
   settings: null
   publishModule: null
   OSCLogin: null
+  rapidDev: null
 
   activate: (state) ->
     @createProject = CreateProject
@@ -40,9 +42,11 @@ module.exports = Chameleon =
     @Builder = Builder
     @OSCLogin = OSCLogin
     @publishModule = PublishModule
+    @rapidDev = RapidDev
 
     @subscriptions = new CompositeDisposable
 
+    @subscriptions.add atom.commands.add 'atom-workspace', 'chameleon:rapid-dev': => @openRapidDevMode()
     @subscriptions.add atom.commands.add 'atom-workspace', 'chameleon:settings': => @openSettings()
     @subscriptions.add atom.commands.add 'atom-workspace', 'chameleon:create-project': => @toggleCreateProject(state)
     @subscriptions.add atom.commands.add 'atom-workspace', 'chameleon:create-module' : => @toggleCreateModule(state)
@@ -77,6 +81,9 @@ module.exports = Chameleon =
     @login.serialize()
     @settings.serialize()
     @Builder.serialize()
+
+  openRapidDevMode: ->
+    @rapidDev.activate()
 
   toggleCreateProject:(state) ->
     @createProject.activate(state)

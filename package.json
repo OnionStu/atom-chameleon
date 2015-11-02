@@ -21,7 +21,8 @@
       "chameleon:upload-project",
       "chameleon:publish-module-select-path",
       "chameleon:builder",
-      "chameleon:openOschinaLogin"
+      "chameleon:openOschinaLogin",
+      "chameleon:rapid-dev"
     ]
   },
   "repository": "https://github.com/OnionStu/atom-chameleon",

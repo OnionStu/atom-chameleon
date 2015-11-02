@@ -10,7 +10,7 @@ _ = ChameleonBox._
 # module.exports =
 class AppView extends View
   moduleConfigFileName: desc.moduleConfigFileName
-  projectConfigFileName: desc.ProjectConfigFileName
+  projectConfigFileName: desc.projectConfigFileName
   moduleLogoFileName: desc.moduleLogoFileName
   @content: ->
     @div class: 'configure_project_vew', =>
