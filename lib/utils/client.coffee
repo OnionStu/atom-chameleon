@@ -132,3 +132,46 @@ module.exports =
   applyModuleToApp:(params,appVersionId,moduleId)->
     params.url = "module_detail/applu_new_module/#{appVersionId}/#{moduleId}"
     @send params
+
+  getAppId:(params,projectIdentifer)->
+    params.url = "#{projectIdentifer}"
+    @send params
+
+  getEngineList:(params,auth_type,platform,page,pagesize) ->
+    params.url = "engine/list?auth_type=#{auth_type}&platform=#{platform}&page=#{page}&pagesize=#{pagesize}"
+    @send params
+
+  getEngineVersionList:(params,engine_id,page,pagesize) ->
+    params.url = "engine_version/list?engine_id=#{engine_id}&page=#{page}&pagesize=#{pagesize}"
+    @send params
+
+  getDefaultEngineMessage:(params,platform) ->
+    params.url = "app/get_default_engine?id=appId&platform=#{platform}"
+    @send params
+
+  getAppIdByAppIndentifer:(params,identifier) ->
+    params.url = "app/app_info_single?identifier=#{identifier}"
+    @send params
+
+  getModuleList:(params,platform,type,exceptModuleIds,page,pagesize) ->
+    params.url = "app_version/module_tree?platform=#{platform}&module_type=#{type}&id_list=#{exceptModuleIds}&page=#{page}&pagesize=#{pagesize}"
+    @send params
+
+  getLastBuildProjectMessage:(params,projectId,platform) ->
+    params.url = "app_version/newest_info/?appId=#{projectId}&platform=#{platform}"
+    @send params
+
+  getPluginList:(params,platform,type,exceptModuleIds,page,pagesize) ->
+    params.url = "app_version/plugin_tree?platform=#{platform}&plugin_type=#{type}&id_list=#{exceptModuleIds}&page=#{page}&pagesize=#{pagesize}"
+    @send params
+
+  uploadFileSync:(params,up_classify,need_file_type) ->
+    userId = util.store('chameleon').account_id
+    params.url = "file/sync_upload/#{up_classify}/#{userId}?need_file_type=#{need_file_type}"
+    params.method = "POST"
+    @send params
+
+  requestBuildApp:(params) ->
+    params.url = "app/upgrade_app"
+    params.method = "POST"
+    @send params

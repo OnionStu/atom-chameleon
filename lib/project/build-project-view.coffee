@@ -17,131 +17,272 @@ class BuildProjectInfoView extends View
   projectConfigFileName: desc.ProjectConfigFileName
   moduleLogoFileName: desc.moduleLogoFileName
   moduleLocatFileName: desc.moduleLocatFileName
+  selectProjectTxt:"请选择变色龙项目"
+  selectModuleTxt:"请选择主模块"
+  projectPath:null #项目的路径
+  engineType:"PUBLIC"
+  buildPlatform:"iOS"   # 对应构建应用的 platform
+  engineVersionList:[]
+  imageList:{}          # 对应构建应用的 images
+  projectConfigContent:null
+  projectLastContent:null
+  projectIdFromServer:null
+  logoImage:null        # 对应构建应用的 logoFileId
+  moduleList :{}        # 对应构建应用的 moduleList 不过需要转一下格式 []
+  pluginList:{}         # 对应构建应用的 pluginList 不过需要转一下格式 []
+  mainModuleId:null     # 对应构建应用的 mainModuleId
+  pageSize:4
+  pageIndex:1
+  engineId:null
+  pageTotal:1
+  projectId:null
+  httpType:"http"
+  engineMessage:null
+  step:1 #1、代表第一步选择应用  2、为选择选择平台 3、为选择引擎 4、为选择引擎的版本 5、为引擎基本信息
+         #6、应用基本信息，上传各个分辨率的封面图片  7、 选择模块 8、选择插件 9、证书管理 10、构建预览
+  #分页都还没做
 
   @content: ->
     @div class: 'build_project_view', =>
-      @div outlet: 'main', =>
+      @div outlet: 'selectProjectView', class:'form-horizontal form_width',=>
+        @label '选择构建的应用', class: 'label-width control-label'
+        @div class: 'input-width', =>
+          @select class: '', outlet: 'selectProject'
+      @div outlet: 'platformSelectView',class:'form-horizontal form_width', =>
         @div class: 'col-xs-12', =>
           @label "选择需要构建的应用平台"
         @div class: 'col-xs-6 text-center padding-top', =>
           @div class: 'col-xs-12 text-center', =>
-            @div class: 'selectBuildTemplate',value:'ios', =>
+            @div class: 'selectBuildTemplate active',value:'iOS', =>
               @img outlet:'iosIcon',src: desc.getImgPath 'icon_apple.png'
-          @div class: 'col-xs-12 padding-top',outlet:"ios_img_checkbox", =>
-            @input type: 'checkbox', value: 'iOS',id:'ios',class:'hide'
-            @label "iOS",for: "ios"
+            @div class: "",=>
+              @label "iOS"
         @div class: 'col-xs-6 text-center padding-top', =>
           @div class: 'col-xs-12 text-center', =>
-            @div class: 'selectBuildTemplate',value:'android', =>
+            @div class: 'selectBuildTemplate',value:'Android', =>
               @img outlet:'androidIcon',src: desc.getImgPath 'icon_android.png'
-          @div class: 'col-xs-12 padding-top',outlet:"android_img_checkbox",=>
-            @input type: 'checkbox', value: 'Android', id:'android',class:'hide'
-            @label "Android", for: "android"
-      @div outlet: 'selectApp', class:'form-horizontal form_width',=>
-        @label '选择构建的应用', class: 'label-width control-label'
-        @div class: 'input-width', =>
-          @select class: '', outlet: 'selectProject'
-      @div outlet: 'buildMessage',  =>
-        @div class: 'form-horizontal', =>
-          @div class: 'form-group', =>
-            @label "应用信息", class: 'col-sm-3 control-label'
-            @div class: 'col-sm-9', =>
-              @button 'iOS', class: 'btn formBtn', value: 'iOS', outlet: 'iosBtn'
-              @button 'Android',class: 'btn formBtn', value: 'Android', outlet: 'androidBtn'
-          @div class: 'form-group', =>
-            @label '应用标识' , class: 'col-sm-3 control-label'
-            @label class: 'col-sm-9 disabled-text',outlet:'identifier'
-          @div class: 'form-group', =>
-            @label "构建平台", class: 'col-sm-3 control-label'
-            @label class: 'col-sm-9 disabled-text',outlet:'platform'
-        @div class: 'form-horizontal', outlet: 'iosForm', =>
-          @div class: 'form-group', =>
-            @label '应用名称' , class: 'col-sm-3 control-label'
-            @div class: 'col-sm-9', =>
-              @subview 'iosName', new TextEditorView(mini: true)
-          @div class: 'form-group', outlet:'iOSPluginsFormgroup', =>
-            @label '所选插件' , class: 'col-sm-3 control-label'
-            @label class: 'col-sm-9 padding-left',outlet: 'iOSPlugins'
-        @div class: 'form-horizontal', outlet: 'androidForm', =>
-          @div class: 'form-group', =>
-            @label '应用名称' , class: 'col-sm-3 control-label'
-            @div class: 'col-sm-9', =>
-              @subview 'androidName', new TextEditorView(mini: true)
-          @div class: 'form-group', outlet:'androidPluginsFormgroup', =>
-            @label '所选插件' , class: 'col-sm-3 control-label'
-            @div class: 'col-sm-9', =>
-              @label outlet: 'androidPlugins'
-      @div outlet: 'buildingTips', =>
-        @div class: 'block', =>
-          @div class: "col-sm-12", =>
-            @span "" ,outlet: "buildTips"
-          @div class: "col-sm-12 text-center", =>
-            @progress class: 'inline-block'
-          @div class: "col-sm-12 text-center", =>
-            @span "" ,class: "iosTips"
-          @div class: "col-sm-12 text-center", =>
-            @span "" ,class: "androidTips"
-      @div outlet: 'urlCodeList', =>
-        @div class:'text-center',  =>
-          @div class: 'platform-item', outlet: 'ios_code_view' ,=>
-            @div class: 'build-status text-center', outlet: 'ios_build_result_tips'
-            @img class:'codeImg', outlet: 'iOSCode',src: desc.getImgPath 'iphone.png'
-            @div class: 'label_pad', =>
-              @img src: desc.getImgPath 'icon_apple02.png'
-              @label "iOS",class:'iosTips platform_tips_label'
-            @div class: 'code-url', =>
-              @a outlet:'iosUrl'
+            @div class: "",=>
+              @label "Android"
+      @div outlet:"engineTableView",class:'form-horizontal form_width', =>
+        @div class: "col-xs-12", =>
+          @label "引擎选择"
+        @div class: "col-xs-12", =>
+          @button "共有引擎", value:"PUBLIC" ,class:"public-view click-platform platformBtn",click:"platformBtnClick"
+          @button "私有引擎", value:"PRIVATE",class:"private-view platformBtn",click:"platformBtnClick"
+          @div class:"div-table-view", =>
+            @table =>
+              @thead =>
+                @tr =>
+                  @th "标识",class:"th-width-90"
+                  @th "平台",class:"th-width-50"
+                  @th "引擎名称",class:"th-width-50"
+                  @th "描述",class:"th-width-90"
+                  # @th "引擎大小",class:"th-width-50"
+                  @th "更新时间",class:"th-width-80"
+                  @th "操作"
+              @tbody outlet:"engineItemShowView" #=>
+                # @tr =>
+                #   @td "com.foreveross.codorva"
+                #   @td "Android"
+                #   @td "app 通用引擎"
+                #   @td "支持Android 5.0 , 内置 codova 4.0"
+                #   @td "10M"
+                #   @td "2015-09-18 13:00:00"
+                #   @td =>
+                #     @button "选择"
+          @div class: "",=>
+            @button "上一页",class:"engineListClass prevPageButton"
+            @button "下一页",class:"engineListClass nextPageButton"
+      @div outlet:"engineVersionView",class:'form-horizontal form_width',=>
+        @div =>
+          @label "引擎名称",outlet:"enginName"
+        @div  =>
+          @table =>
+            @thead =>
+              @tr =>
+                @th "版本"
+                @th "文件大小"
+                @th "发布时间"
+                @th "更新内容"
+                @th "操作"
+            @tbody outlet:"engineVersionItemView" #=>
+              # @tr =>
+              #   @td "1.0.1"
+              #   @td "10M"
+              #   @td "2015-08-15 17:30"
+              #   @td "支持 codorva 5.0"
+              #   @td =>
+              #     @a "选择"
+        @div class: "",=>
+          @button "上一页",class:"engineVersionListClass prevPageButton"
+          @button "下一页",class:"engineVersionListClass nextPageButton"
 
-          @div class: 'platform-item', outlet: 'android_code_view', =>
-            @div class: 'build-status text-center', outlet: 'android_build_result_tips'
-            @img class:'codeImg',outlet: 'androidCode', src: desc.getImgPath 'android.png'
-            @div class: 'label_pad', =>
-              @img src: desc.getImgPath 'icon_android02.png'
-              @label "Andoird",class:'androidTips platform_tips_label'
-            @div class: 'code-url', =>
-              @a outlet:'androidUrl'
+      @div outlet:"engineBasicMessageView",class:"form-horizontal form_width engineBasicMessageView",=>
+        @div class: "col-xs-12", =>
+          @label "引擎配置"
+        @div class:"col-xs-12",=>
+          @label "引擎:"
+          @label outlet:"engineName"
+        @div class:"col-xs-12",=>
+          @label "标识:"
+          @label outlet:"engineIdView"
+        @div class:"col-xs-12",=>
+          @div class:"div-engine-basic",=>
+            @label "平台:"
+            @label outlet:"platform"
+          @div class:"div-engine-basic",=>
+            @label "引擎大小:"
+            @label outlet:"engineSize"
+        @div class:"col-xs-12",=>
+          @label "构建环境:"
+          @label outlet:"buildEnv"
+        @div class:"col-xs-12",=>
+          @label "版本:"
+          @label outlet:"engineVersion"
+        @div class:"col-xs-12",=>
+          @label "横竖屏支持:"
+          @input type:"checkbox" ,value:"scross",class:"showStyle"
+          @label "横屏"
+          @input type:"checkbox" ,value:"vertical",class:"showStyle"
+          @label "竖屏"
+        @div class:"col-xs-12 iOSSupportView",=>
+          @label "硬件支持:"
+          @input type:"checkbox" ,value:"iPhone",class:"supportMobileType"
+          @label "iPhone"
+          @input type:"checkbox" ,value:"iPad",class:"supportMobileType"
+          @label "iPad"
+      @div outlet:"projectBasicMessageView",class:"form-horizontal form_width",=>
+        @div class: "col-xs-12", =>
+          @div class:"" ,=>
+            @label "APP LOGO", class:"label-logo"
+            @img outlet:"logo",class:'pic img-logo', src: desc.getImgPath 'select-logo.png'
+          # @div =>
+          #   @button "上传", outlet:"selectLogo",class:"btn btn-width btn-logo selectImageItem"
+          @div =>
+            @div =>
+              @label
+            @div =>
+              @div class:"verticalModelView",=>
+                @label "竖屏"
+                @div outlet:"verticalModelView"
+              @div class:"scrossModelView",=>
+                @label "横屏"
+                @div outlet:"scrossModelView"
 
+      @div outlet:"selectModuleView",class:"form-horizontal form_width", =>
+        @div =>
+          @label "关联模块"
+        @div =>
+          @label "主模块:"
+          @label outlet:"mainModuleTag"
+        @div =>
+          @label "已选模块:"
+          @label outlet:"modulesTag"
+        @div =>
+          @table =>
+            @thead =>
+              @tr =>
+                @th "名字"
+                @th "版本"
+                @th "操作"
+            @tbody outlet:"modulesShowView",class:"modulesShowView"
+        @div class: "",=>
+          @button "上一页",class:"moduleListClass prevPageButton"
+          @button "下一页",class:"moduleListClass nextPageButton"
+      @div outlet:"selectPluginView",class:"form-horizontal form_width", =>
+        @div =>
+          @label "关联插件"
+        @div =>
+          @label "已关联的插件:"
+          @label outlet:"pluginsTag"
+        @div =>
+          @table =>
+            @thead =>
+              @tr =>
+                @th "名字"
+                @th "版本"
+                @th "操作"
+            @tbody outlet:"pluginsShowView",class:"pluginsShowView"
+        @div class: "",=>
+          @button "上一页",class:"pluginListClass prevPageButton"
+          @button "下一页",class:"pluginListClass nextPageButton"
+      @div outlet:"certSelectView",class:"form-horizontal form_width",=>
+        @div =>
+          @table =>
+            @tr =>
+              @th "Android"
+              @th "iOS发布证书"
+              @th "iOS企业证书"
+        @div outlet:"androidCertSelectView",=>
+          @div class:"col-xs-12",=>
+            @label "Keystore别名" ,class:"certInfo-label"
+            @div class: 'inline-view', =>
+              @subview 'keystoreName', new TextEditorView(mini: true,placeholderText: 'moduleName...')
+          @div class:"col-xs-12", =>
+            @label "Android证书文件",class:"certInfo-label"
+            @div class: 'inline-view', =>
+              @subview 'keystoreName', new TextEditorView(mini: true,placeholderText: 'moduleName...')
+          @div class:"col-xs-12", =>
+            @label "Android证书存储库口令",class:"certInfo-label"
+            @div class: 'inline-view', =>
+              @subview 'keystoreName', new TextEditorView(mini: true,placeholderText: 'moduleName...')
+          @div class:"col-xs-12", =>
+            @label "Android证书密钥库口令",class:"certInfo-label"
+            @div class: 'inline-view', =>
+              @subview 'keystoreName', new TextEditorView(mini: true,placeholderText: 'moduleName...')
+        @div outlet:"iosPersonCertSelectView", =>
+          @div class:"col-xs-12",=>
+            @label "App ID",class:"certInfo-label"
+            @div class: 'inline-view', =>
+              @subview 'keystoreName', new TextEditorView(mini: true,placeholderText: 'moduleName...')
+          @div class:"col-xs-12",=>
+            @label "发布证书",class:"certInfo-label"
+            @div class: 'inline-view', =>
+              @subview 'keystoreName', new TextEditorView(mini: true,placeholderText: 'moduleName...')
+          @div class:"col-xs-12",=>
+            @label "证书密码",class:"certInfo-label"
+            @div class: 'inline-view', =>
+              @subview 'keystoreName', new TextEditorView(mini: true,placeholderText: 'moduleName...')
+          @div class:"col-xs-12",=>
+            @label "证书解释文件",class:"certInfo-label"
+            @div class: 'inline-view', =>
+              @subview 'keystoreName', new TextEditorView(mini: true,placeholderText: 'moduleName...')
+        @div class: "col-xs-12", =>
+          @button "检验证书"
+      @div outlet:"buildReView", =>
+        @button "生成安装包",click:"buildAppMethod"
+
+  # 点击平台图片触发事件
   clickIcon:(e) ->
-
     el = e.currentTarget
-    # console.log $(el).attr('value')
-    if $(el).attr('value') is 'ios'
-      @.find("#ios").trigger('click')
-    else
-      @.find("#android").trigger('click')
-    if $(el).hasClass('active')
+    console.log $(el).attr('value')
+    @buildPlatform = $(el).attr('value')
+    @.find(".selectBuildTemplate").removeClass("active")
+    $(el).addClass("active")
 
-      $(el).removeClass('active')
-    else
+  # 点击平台按钮事件
+  platformBtnClick:(m1,b1) ->
+    @engineType = $(b1).attr("value")
+    console.log $(b1).attr("value"),@engineType
+    @.find(".platformBtn").removeClass("click-platform")
+    $(b1).addClass("click-platform")
+    @initEngineTableView()
 
-      $(el).addClass('active')
-
-  initialize: ->
-    @.find('.selectBuildTemplate').on 'click',(e) => @clickIcon(e)
-
+  # 初始化
   attached: ->
-    # if @.find("#ios").is(":checked")
-    #   console.log "no"
-
-    @initializeInput()
-      #检测是否需要 清空  timeout
-    if @checkBuildResultTimer["IOS"]
-      window.clearTimeout(@checkBuildResultTimer["IOS"])
-    if @checkBuildResultTimer["ANDROID"]
-      window.clearTimeout(@checkBuildResultTimer["ANDROID"])
-    if @ticketTimer["ANDROID"]
-      window.clearTimeout(@ticketTimer["ANDROID"])
-    if @ticketTimer["IOS"]
-      window.clearTimeout(@ticketTimer["IOS"])
-    #检测是否需要取消之前的构建
-    @main.addClass('hide')
-    @buildMessage.addClass('hide')
-    @selectApp.removeClass('hide')
-    @buildingTips.addClass('hide')
-    @urlCodeList.addClass('hide')
-    @ios_code_view.addClass('hide')
-    @android_code_view.addClass('hide')
-    @parentView.nextBtn.attr('disabled',false)
+    # UtilExtend.dateFormat("YYYY-MM-DD HH:mm:ss",new Date())
+    # @selectProjectView.hide()
+    # console.log @getImageUrlMethod("qdt_icon_10hdhsdhjasgf",0)
+    # console.log @getImageUrlMethod("10hdhsdhjasgf")
+    @platformSelectView.hide()
+    @engineTableView.hide()
+    @engineVersionView.hide()
+    @engineBasicMessageView.hide()
+    @projectBasicMessageView.hide()
+    @selectModuleView.hide()
+    @selectPluginView.hide()
+    @certSelectView.hide()
+    @buildReView.hide()
     projectPaths = atom.project.getPaths()
     projectNum = projectPaths.length
     @selectProject.empty()
@@ -154,43 +295,695 @@ class BuildProjectInfoView extends View
     @selectProject.append optionStr
     @selectProject.on 'change',(e) => @onSelectChange(e)
     @.find('.formBtn').on 'click', (e) => @formBtnClick(e)
+    @.find('.selectBuildTemplate').on 'click',(e) => @clickIcon(e)
+    # 绑定点击上一页下一页事件
+    @.find('.prevPageButton').on 'click',(e) => @prevPageClick(e)
+    @.find('.nextPageButton').on 'click',(e) => @nextPageClick(e)
 
-  initializeInput: ->
-    @.find('input[type=checkbox]').attr('checked',false)
-    @.find('.selectBuildTemplate').removeClass('active')
-    @iosName.setText("")
-    @androidName.setText("")
+  # 点击下一步按钮触发事件
+  nextBtnClick:() ->
+    if @step is 1   #1、代表第一步选择应用
+      if @projectPath isnt @selectProject.val()
+        @mainModuleTag.html("")
+        @modulesTag.html("")
+      @projectPath = @selectProject.val()
+      console.log @step,@projectPath
+      @platformSelectView.show()
+      @selectProjectView.hide()
+      @parentView.prevBtn.show()
+      @parentView.prevBtn.attr('disabled',false)
+      # @getProjectId()
+      @step = 2
+    else if @step is 2 #2、为选择选择平台
+      console.log @step,@buildPlatform
+      @platformSelectView.hide()
+      @engineTableView.show()
+      @initEngineTableView()
+      @step = 3
+    else if @step is 4 #4、为选择引擎的版本  这个已经没用了
+      @engineVersionView.hide()
+      @engineBasicMessageView.show()
+      @getBasicMessageView()
+      @step = 5
+    else if @step is 3 #3、为选择引擎
+      console.log "show engin basic message"
+      @engineTableView.hide()
+      @engineBasicMessageView.show()
+      @getBasicMessageView()
+      @step = 5
+    else if @step is 5 # 5、为引擎基本信息
+      if @.find(".showStyle:checked").length is 0
+        alert desc.projectTipsStep5_1
+        return
+      if @buildPlatform is "iOS"
+        if @.find(".supportMobileType:checked").length is 0
+          alert desc.projectTipsStep5_2
+          return
+      @engineBasicMessageView.hide()
+      @projectBasicMessageView.show()
+      @initProjectBasicMessageViewStep5_1()
+      @step = 6
+    else if @step is 6 # 6、模块选择
+      callBack = =>
+        @projectBasicMessageView.hide()
+        @selectModuleView.show()
+        @pageSize = 4
+        @pageIndex = 1
+        @initSelectModuleView([],@pageIndex,@pageSize)
+        @step = 7
+      @uploadFileSync(callBack)
+    else if @step is 7
+      if !@mainModuleId
+        alert @selectModuleTxt
+        return
+      @pageSize = 4
+      @pageIndex = 1
+      @selectModuleView.hide()
+      @selectPluginView.show()
+      @initSelectPluginView([],@pageIndex,@pageSize)
+      @step = 8
+    else if @step is 8
+      @selectPluginView.hide()
+      @certSelectView.show()
+      @step = 9
+    else if @step is 9
+      @certSelectView.hide()
+      @buildReView.show()
+      @step = 10
 
+  #上传logo的图片
+  uploadFileSync:(callBack) ->
+    if fs.existsSync(@logoImage)
+      params =
+        formData: {
+          up_file: fs.createReadStream(@logoImage)
+        }
+        sendCookie:true
+        success:(data) =>
+          # console.log data
+          @logoImage = data["url_id"]
+          keyArray = []
+          getKeyList = (key,path) =>
+            keyArray.push(key)
+          getKeyList key,path for key,path of @imageList
+          console.log callBack
+          @uploadImageFileListSync(keyArray,0,callBack)
+        error:(msg) =>
+          console.log msg
+      client.uploadFileSync(params,"qdt_app",true)
+    else
+      keyArray = []
+      getKeyList = (key,path) =>
+        keyArray.push(key)
+      getKeyList key,path for key,path of @imageList
+      console.log callBack
+      @uploadImageFileListSync(keyArray,0,callBack)
+
+  # 同步上传文件
+  uploadImageFileListSync:(keyArray,index,callBack)->
+    if keyArray.length > index
+      key = keyArray[index]
+      path = @imageList["#{key}"]
+      if fs.existsSync(path)
+        params =
+          formData: {
+            up_file: fs.createReadStream(path)
+          }
+          sendCookie:true
+          success:(data) =>
+            @imageList["#{key}"] = data["url_id"]
+            @uploadImageFileListSync(keyArray,index+1,callBack)
+          error:(msg) =>
+            console.log msg
+        client.uploadFileSync(params,"qdt_app",true)
+      else
+        @uploadImageFileListSync(keyArray,index+1,callBack)
+    else
+      callBack()
+
+  buildAppMethod:() ->
+    data = {}
+    certInfo =
+      "certSystem":@buildPlatform
+      "appId":@projectId
+      "certAlias":""  #ios 与android有区别
+    data["certInfo"] = certInfo
+    data["platform"] = @buildPlatform
+    data["appId"] = @projectId
+    data["identifier"] = @projectConfigContent["identifier"]
+    data["logoFileId"] = @logoImage
+    data["classify"] = "appdisplay" #可不填
+    data["status"] = "OFFLINE" #
+    data["version"] = ""
+    data["createTime"] = UtilExtend.dateFormat("YYYY-MM-DD HH:mm:ss",new Date()) #当前时间
+    data["images"] = @imageList #文件id
+    if !@projectId
+      data["channel"] = "QDT"
+    modules = []
+    formatModuleList = (key,item) =>
+      tmp =
+        "moduleVersionId":item["moduleVersionId"]
+        "moduleId": item["moduleId"]
+        "appVersionId":""
+        "appId":""
+      modules.push(tmp)
+    formatModuleList key,item for key,item of @moduleList
+    plugins = []
+    formatPlugineList = (key,item) =>
+      tmp =
+        "pluginVersionId":item["pluginVersionId"]
+        "pluginId": item["pluginId"]
+        "appVersionId":""
+        "appId":""
+      plugins.push(tmp)
+    formatPluginList key,item for key,item of @pluginList
+    data["moduleList"] =modules
+    data["pluginList"] =plugins
+    data["mainModuleId"] = @mainModuleId
+    data["engineId"] = @engineMessage["engineId"]
+    data["engineVersionId"] = @engineMessage["id"]
+    console.log data
+    params =
+      sendCookie:true
+      form: data
+      success:(data) =>
+        console.log "requestBuildApp data = #{data}"
+      error:(msg) =>
+        console.log msg
+    client.requestBuildApp(params)
+
+  # 初始化插件
+  # array 需要过滤掉的插件数据
+  initSelectPluginView:(array,pageIndex,pageSize) ->
+    console.log "begin to initSelectPluginView"
+    platform = "ANDROID"
+    if @buildPlatform is "iOS"
+      platform = "IOS"
+    exceptModuleArray = array
+    params =
+      sendCookie:true
+      success:(data) =>
+        console.log data
+        if data['totalCount'] <= pageIndex*@pageSize
+          @.find(".engineListClass.nextPageButton").attr("disabled",true)
+        else
+          @.find(".engineListClass.nextPageButton").attr("disabled",false)
+        if data["totalCount"] > 0
+          console.log data["datas"]
+          @initPluginViewTableBody(data["datas"])
+        else
+          console.log "没有任何插件"
+      error:(msg) =>
+        console.log "initSelectPluginView api error = #{msg}"
+    client.getPluginList(params,platform,"PRIVATE",exceptModuleArray.join(","),pageIndex,pageSize)
+
+  initPluginViewTableBody:(data) ->
+    htmlArray = []
+    getHtmlItem = (item) =>
+      selectItem = []
+      getChildOptions = (optionItem) =>
+        optionStr = """
+        <option value="#{optionItem["value"]}">#{optionItem["text"]}</option>
+        """
+        selectItem.push(optionStr)
+      getChildOptions optionItem for optionItem in item["versions"]
+      str = """
+      <tr>
+        <td><span class="#{item["id"]}">#{item["name"]}</span></td>
+        <td>
+            <select class="#{item["id"]}">
+              #{itemArray.join("")}
+            </select>
+        </td>
+        <td>
+        <button value="#{item["id"]}">选择</button>
+        <button value="#{item["id"]}" class="cancelSelect">取消</button>
+        </td>
+      </tr>
+      """
+      htmlArray.push(str)
+    getHtmlItem item for item in data
+    @pluginsShowView.html(htmlArray.join(""))
+  #初始化模块
+  initSelectModuleView:(array,pageIndex,pageSize)->
+    console.log "begin to initSelectModuleView"
+    platform = "ANDROID"
+    if @buildPlatform is "iOS"
+      platform = "IOS"
+    exceptModuleArray = array
+    params =
+      sendCookie:true
+      success:(data)=>
+        # console.log data
+        if data['totalCount'] <= pageIndex*@pageSize
+          @.find(".engineListClass.nextPageButton").attr("disabled",true)
+        else
+          @.find(".engineListClass.nextPageButton").attr("disabled",false)
+        if data["totalCount"] > 0
+          htmlArray = []
+          getHtmlItem = (item) =>
+            itemArray = []
+            # 获取下拉框的选项
+            getChildOptions = (optionItem) =>
+              optionStr = """
+              <option value="#{optionItem["value"]}">#{optionItem["text"]}</option>
+              """
+              itemArray.push(optionStr)
+            getChildOptions optionItem for optionItem in item["versions"]
+            # 拼接tr
+            str = """
+            <tr>
+              <td><span class="#{item["id"]}">#{item["name"]}</span></td>
+              <td>
+                  <select class="#{item["id"]}">
+                    #{itemArray.join("")}
+                  </select>
+              </td>
+              <td>
+              <button value="#{item["id"]}">选择</button>
+              <button value="#{item["id"]}" class="mainModuleTag">主模块</button>
+              <button value="#{item["id"]}" class="cancelSelect">取消</button>
+              </td>
+            </tr>
+            """
+            htmlArray.push(str)
+          getHtmlItem item for item in data["datas"]
+          @modulesShowView.html(htmlArray.join(""))
+          # 点击模块button按钮触发事件
+          clickModuleShowViewBtn = (e) =>
+            el = e.target
+            # ell = e.currentTarget
+            # className = el.attr("value")
+            # console.log el
+            className = $(el).attr("value")
+            moduleName = @.find("span.#{className}").html()
+            moduleVersionId = @.find("td>select.#{className}").val()
+            moduleVersion = @.find("td>select.#{className}>option[value=#{moduleVersionId}]").html()
+            # console.log moduleName+":"+moduleVersion
+            # console.log moduleVersionId
+            @moduleList[moduleName] =
+              "moduleVersionId": moduleVersionId
+              "moduleId":className
+              "appVersionId":""
+              "appId":""
+              "name":moduleName
+              "moduleVersion":moduleVersion
+            # console.log @moduleList
+            if $(el).hasClass("mainModuleTag")
+              @mainModuleId = className
+            else if $(el).hasClass("cancelSelect")
+              delete @moduleList[moduleName]
+            # view
+            mainModuleStr = ""
+            modulesTagArray = []
+            showHtmlView = (key,item) =>
+              # console.log  "item = #{item}"
+              str = """
+              <span> #{item["name"]}:#{item["moduleVersion"]} </span>
+              """
+              modulesTagArray.push(str)
+              if item["moduleId"] is @mainModuleId
+                mainModuleStr = str
+            showHtmlView key,item for key,item of @moduleList
+            if mainModuleStr is ""
+              @mainModuleId = null
+            # console.log @moduleList
+            @mainModuleTag.html(mainModuleStr)
+            @modulesTag.html(modulesTagArray.join(""))
+          @.find(".modulesShowView").on "click","button",(e) => clickModuleShowViewBtn(e)
+        else
+          alert "没有模块"
+      error:(msg) =>
+        console.log "initSelectModuleView api error = #{msg}"
+    client.getModuleList(params,platform,"PRIVATE",exceptModuleArray.join(","),pageIndex,pageSize)
+
+  # 获取上一次构建时的信息
+  getLastBuildMessage:()->
+    params =
+      sendCookie:true
+      success:(data) =>
+        console.log data
+        @projectLastContent = data
+        @initProjectBasicMessageViewStep5_2()
+      error: (msg) =>
+        console.log msg
+        @initProjectBasicMessageViewStep5_2()
+    client.getLastBuildProjectMessage(params,@projectIdFromServer,@buildPlatform)
+
+  # 获取应用ID 如果应用ID不存在则判断为
+  getProjectId: () ->
+    filePath = pathM.join @projectPath,@projectConfigFileName
+    if !fs.existsSync(filePath)
+      alert "本地应用配置文件不存在"
+      return
+    @projectConfigContent = Util.readJsonSync filePath
+    if !@projectConfigContent["identifier"] or typeof(@projectConfigContent["identifier"]) == undefined
+      alert "本地配置文件有缺损"
+      return
+    params =
+      sendCookie: true
+      success: (data) =>
+        console.log data
+        @projectIdFromServer = data["id"]
+        @getLastBuildMessage()
+        # @projectConfigContent["id"] =
+        #如果data存在则从中获取 projectId
+      error:(msg) =>
+        @initProjectBasicMessageViewStep5_2()
+        console.log msg
+    client.getAppIdByAppIndentifer(params,"com.hover.cyz.test")
+
+  #初始化基本信息，也就
+  initProjectBasicMessageViewStep5_1:()->
+    @projectLastContent = null
+    console.log "projectBasicMessageView is show"
+    @getProjectId()
+
+  #显示内容
+  initProjectBasicMessageViewStep5_2:()->
+    showStyleArray = []
+    # 如果获取到了上一次构建时的信息则执行这一步
+    if @projectLastContent
+      @logo.attr("src",@getImageUrlMethod(@projectLastContent["base"]["logoFileId"]))
+    getShowStyle = (item) ->
+      showStyleArray.push(item.value)
+    getShowStyle item for item in @.find(".showStyle:checked")
+    supportMobileTypeArray = []
+    if @buildPlatform is "iOS"
+      getShowStyle = (item) ->
+        supportMobileTypeArray.push(item.value)
+      getShowStyle item for item in @.find(".supportMobileType:checked")
+    else
+      supportMobileTypeArray.push("Android")
+    isNeedHide = 0 # 0表示需要把横竖屏都隐藏，1表示隐藏横屏，2表示隐藏竖屏，3表示不隐藏
+    showView = (item) =>
+      if item is "vertical"
+        if isNeedHide is 0
+          isNeedHide = 1
+        else
+          isNeedHide = 3
+        htmlVerticalArray = []
+        getVerticalStr = (item1) =>
+          if item1 is "iPad"
+            console.log "getIPadVerticalHtml"
+            htmlVerticalArray.push(@getIPadVerticalHtml())
+          else if item1 is "iPhone"
+            console.log "getIPhoneVerticalHtml"
+            htmlVerticalArray.push(@getIPhoneVerticalHtml())
+          else
+            console.log "getAndroidVerticalHtml"
+            htmlVerticalArray.push(@getAndroidVerticalHtml())
+        getVerticalStr item1 for item1 in supportMobileTypeArray
+        @.find(".verticalModelView").show()
+        console.log htmlVerticalArray.join("")
+        @verticalModelView.html(htmlVerticalArray.join(""))
+      else
+        if isNeedHide is 0
+          isNeedHide = 2
+        else
+          isNeedHide = 3
+        htmlScrossArray = []
+        getScrossStr = (item2) =>
+          if item2 is "iPad"
+            console.log "getIPadScrossHtml"
+            htmlScrossArray.push(@getIPadScrossHtml())
+          else if item2 is "iPhone"
+            console.log "getIPhoneScrossHtml"
+            htmlScrossArray.push(@getIPhoneScrossHtml())
+          else
+            console.log "getAndroidScrossHtml"
+            htmlScrossArray.push(@getAndroidScrossHtml())
+        getScrossStr item2 for item2 in supportMobileTypeArray
+        @.find(".scrossModelView").show()
+        console.log htmlScrossArray.join("")
+        @scrossModelView.html(htmlScrossArray.join(""))
+    showView item for item in showStyleArray
+    @.find("img").on "click",(e) => @selectImg(e)
+    # 隐藏不必要的显示
+    if isNeedHide is 0
+      @.find(".verticalModelView").hide()
+      @.find(".scrossModelView").hide()
+    else if isNeedHide is 1
+      @.find(".scrossModelView").hide()
+    else if isNeedHide is 2
+      @.find(".verticalModelView").hide()
+    # @getProjectId()
+
+  # 点击图片,按下一步后就上传图片
+  selectImg:(e) ->
+    options = {}
+    el = e.currentTarget
+    cb = (selectPath) =>
+      if selectPath? and selectPath.length != 0
+        tmp = selectPath[0].substring(selectPath[0].lastIndexOf('.'))
+        console.log tmp
+        if tmp is ".png"
+          $(el).attr("src",selectPath[0])
+          if $(el).hasClass("img-logo")
+            @logoImage = selectPath[0]
+          else
+            @imageList[$(el).attr("value")] = selectPath[0]
+          console.log @imageList
+        else
+          alert desc.projectTipsStep6_selectImg
+    Util.openFile options,cb
+
+  # 点击上一步按钮触发事件
+  prevBtnClick:() ->
+    console.log "prevBtnClick"
+    if @step is 2
+      # console.log "prevBtnClick"
+      @platformSelectView.hide()
+      @selectProjectView.show()
+      @parentView.prevBtn.hide()
+      @step = 1
+    else if @step is 3
+      @engineTableView.hide()
+      @platformSelectView.show()
+      @step = 2
+    else if @step is 4
+      @engineVersionView.hide()
+      @engineTableView.show()
+      @step = 3
+    else if @step is 5
+      @engineBasicMessageView.hide()
+      @engineTableView.show()
+      @step = 3
+    else if @step is 6
+      @projectBasicMessageView.hide()
+      @engineBasicMessageView.show()
+      @step = 5
+    else if @step is 7
+      @selectModuleView.hide()
+      @projectBasicMessageView.show()
+      @step = 6
+    else if @step is 8
+      @selectPluginView.hide()
+      @selectModuleView.show()
+      @step = 7
+    else if @step is 9
+      @certSelectView.hide()
+      @selectPluginView.show()
+      @step = 8
+    else if @step is 10
+      @buildReView.hide()
+      @certSelectView.show()
+      @step = 9
+
+  getList:(el,pageIndex,pageSize) ->
+    if $(el).hasClass("engineListClass")
+      @getApiEngingList(pageIndex,pageSize)
+    else if $(el).hasClass("engineVersionListClass")
+      @getEngineVersionList(pageIndex,pageSize)
+    else if $(el).hasClass("moduleListClass")
+      @initSelectModuleView([],pageIndex,pageSize)
+    else if $(el).hasClass("pluginListClass")
+      @initSelectPluginView([],pageIndex,pageSize)
+  # 点击下一页所触发的事件
+  nextPageClick:(e) ->
+    el = e.currentTarget
+    @pageIndex = @pageIndex + 1
+    console.log @pageIndex
+    @getList(el,@pageIndex,@pageSize)
+  # 点击上一页所触发的事件
+  prevPageClick:(e) ->
+    el = e.currentTarget
+    if @pageIndex > 1
+      @pageIndex = @pageIndex - 1
+    else
+      @pageIndex = 1
+      return
+    console.log @pageIndex
+    @getList(el,@pageIndex,@pageSize)
+
+
+
+
+  # 获取引擎列表
+  getApiEngingList:(pageIndex,pageSize) ->
+    platform = "IOS"
+    if @buildPlatform is "Android"
+      platform = "ANDROID"
+    params =
+      sendCookie: true
+      success:(data) =>
+        # console.log data
+        # 判断是否没有下一页了
+        if data['totalCount'] <= pageIndex*@pageSize
+          @.find(".engineListClass.nextPageButton").attr("disabled",true)
+        else
+          @.find(".engineListClass.nextPageButton").attr("disabled",false)
+        if data['totalCount'] > 0
+          htmlArray = []
+          jointBodyItem = (item) =>
+            if item['platform'] is "android"
+              item['platform'] = "Android"
+            else
+              item['platform'] = "iOS"
+            str = """
+              <tr>
+              <td>#{item['identifier']}</td>
+              <td>#{item['platform']}</td>
+              <td>#{item['name']}</td>
+              <td>#{item['describe']}</td>
+              <td>#{item['updateTime']}</td>
+              <td><a value="#{item['id']}" class="engineSelectA">选择</a></td>
+              </tr>
+            """
+            htmlArray.push(str)
+          jointBodyItem item for item in data["data"]
+          @engineItemShowView.html(htmlArray.join(""))
+          @.find(".engineSelectA").on "click",(e) => @clickEngineSelectA(e)
+        else
+          @engineItemShowView.html("没有引擎...")
+      error:(msg) =>
+        console.log msg
+    client.getEngineList params,@engineType,platform,pageIndex,pageSize
+  # 初始化引擎列表
+  initEngineTableView:() ->
+    @pageIndex = 1
+    @pageSize = 4
+    @getApiEngingList @pageIndex,@pageSize
+
+
+  # 点击选择，直接就获取引擎的版本列表
+  clickEngineSelectA:(e) ->
+    @step = 4
+    @engineTableView.hide()
+    @engineVersionView.show()
+    #初始化分页信息
+    @pageSize = 4
+    @pageIndex = 1
+    @pageTotal = 1
+    el = e.currentTarget
+    @engineId = $(el).attr("value")
+    console.log @engineId
+    @getEngineVersionList(@pageIndex,@pageSize)
+
+  # 根据引擎的Id 获取引擎版本列表并显示出来
+  getEngineVersionList:(pageIndex,pageSize) ->
+    params =
+      sendCookie:true
+      success:(data)=>
+        # console.log data
+        # 判断是否没有下一页了
+        if data['totalCount'] <= pageIndex*@pageSize
+          @.find(".engineVersionListClass.nextPageButton").attr("disabled",true)
+        else
+          @.find(".engineVersionListClass.nextPageButton").attr("disabled",false)
+        if data["totalCount"] > 0
+          htmlArray = []
+          count = 0
+          # @engineVersionList = data["data"]
+          jointBodyItem = (item) =>
+            str = """
+            <tr>
+            <td>#{item["version"]}</td>
+            <td>#{item["fileSize"]}</td>
+            <td>#{item["uploadTime"]}</td>
+            <td>#{item["updateContent"]}</td>
+            <td><a value="#{count}" class="selectEngineVersionA">选择</a></td>
+            </tr>
+            """
+            count = count + 1
+            htmlArray.push(str)
+          jointBodyItem item for item in data["data"]
+          @engineVersionItemView.html(htmlArray.join(""))
+          # 点击选择引擎版本链接所触发的事件
+          selectEngineVersionAClick = (e) =>
+            @engineVersionView.hide()
+            @engineBasicMessageView.show()
+            el = e.currentTarget
+            index = $(el).attr("value")
+            @step = 5
+            # console.log @engineVersionList[index]
+            @initEngineBasicView(data["data"][index])
+          @.find(".selectEngineVersionA").on "click",(e) => selectEngineVersionAClick(e)
+        else
+          @engineVersionItemView.html("没有任何版本...")
+      error: (msg) =>
+        console.log msg
+    client.getEngineVersionList(params,@engineId,pageIndex,pageSize)
+
+  # 获取引擎信息
+  getBasicMessageView:() ->
+    params =
+      sendCookie:true
+      success:(data) =>
+        console.log data
+        @initEngineBasicView(data)
+      error: (msg) =>
+        console.log msg
+    client.getDefaultEngineMessage(params,@buildPlatform)
+
+  # 初始化引擎基本信息
+  initEngineBasicView:(data) ->
+    @engineMessage = data
+    if @buildPlatform is "iOS"
+      @.find(".iOSSupportView").show()
+    else
+      @.find(".iOSSupportView").hide()
+    if data["platform"] is "android"
+      data["platform"] = "Android"
+    else
+      data["platform"] = "iOS"
+    @engineIdView.html(data["identifier"])
+    @engineName.html(data["name"])
+    @platform.html(data["platform"])
+    @engineSize.html(data["fileSize"])
+    @engineVersion.html(data["version"])
+    console.log "env=",data["buildEnvironment"]["name"]
+    @buildEnv.html(data["buildEnvironment"]["name"]+data["buildEnvironment"]["version"])
+
+  # 获取左边文件
   setSelectItem:(path) ->
     filePath = pathM.join path, @projectConfigFileName
+    #判断文件是否存在，不存在则跳出
+    if !fs.existsSync(filePath)
+      return
     obj = Util.readJsonSync filePath
     if obj
       projectName = pathM.basename path
       optionStr = "<option value='#{path}'>#{projectName}  -  #{path}</option>"
       @selectProject.append optionStr
 
-  formBtnClick: (e) ->
-    el = e.currentTarget
-    if el.value is 'iOS'
-      @platform.html('iOS')
-      @iosForm.show()
-      @androidForm.hide()
-    else
-      @platform.html('Android')
-      @iosForm.hide()
-      @androidForm.show()
-
+  # 选择应用下来框选择的选项发生改变时会被触发
   onSelectChange: (e) ->
     el = e.currentTarget
     if el.value == '其他'
       @open()
 
+  # 当选择应用是点击了下拉框中的其他选项时触发
   open: ->
     atom.pickFolder (paths) =>
       if paths?
         path = pathM.join paths[0]
         # console.log  path
         filePath = pathM.join path,@projectConfigFileName
+        if !fs.existsSync(filePath)
+          @.find("select option:first").prop("selected","selected")
+          alert @selectProjectTxt
+          return
         # console.log filePath
         obj = Util.readJsonSync filePath
         if obj
@@ -204,484 +997,286 @@ class BuildProjectInfoView extends View
       else
         @selectProject.get(0).selectedIndex = 0
 
-  nextBtnClick: ->
-    if @selectApp.is(':visible')
-      @selectApp.addClass('hide')
-      @main.removeClass('hide')
-      @parentView.prevBtn.show()
-    else if @main.is(':visible')
-      checkboxList = this.find('input[type=checkbox]:checked')
-      if checkboxList.length isnt 0
-        hasIos = false
-        configPath = pathM.join this.find('select').val(),@projectConfigFileName
-        options =
-          encoding: "UTF-8"
-        state = fs.statSync(configPath)
-        if !state.isFile()
-          alert "文件不存在"
-          return
-        strContent = fs.readFileSync(configPath,options)
-        jsonContent = JSON.parse(strContent)
-        @identifier.attr('value',jsonContent['identifier'])
-        @identifier.html(jsonContent['identifier'])
-        #获取插件信息
-        pluginsObj = null
-        params =
-          sendCookie: true
-          success: (data) =>
-            pluginsObj = data
-            console.log pluginsObj
-            showBuildMessage_Mod = (checkbox) =>
-              strContent = ""
-              showPlaugins = (obj) =>
-                strContent = strContent+" | "+ "#{obj['identifier']} : #{obj['version']}(#{obj['type']})"
-              # console.log $(checkbox).attr('value')
-              if $(checkbox).attr('value') is 'iOS'
-                hasIos = true
-                # console.log "ios #{hasIos}"
-                showPlaugins obj for obj in pluginsObj['ios']
-                # console.log 'IOS'
-                # console.log pluginsObj['ios']
-                if strContent == ""
-                  @iOSPluginsFormgroup.hide()
-                else
-                  @iOSPluginsFormgroup.show()
-                @iOSPlugins.html(strContent)
-              else
-                showPlaugins obj for obj in pluginsObj['android']
-                # console.log 'ANDROID'
-                if strContent == ""
-                  @androidPluginsFormgroup.hide()
-                else
-                  @androidPluginsFormgroup.show()
-                @androidPlugins.html(strContent)
-            showBuildMessage_Mod checkbox for checkbox in checkboxList
-            # pluginsObj = null
-            # console.log hasIos
-            if hasIos
-              @androidForm.hide()
-              # console.log "show IOS"
-              @iosForm.show()
-              @platform.html('iOS')
-              @iosBtn.attr( 'disabled', false)
-              @androidBtn.attr( 'disabled', false)
-              if checkboxList.length is 1
-                @androidBtn.attr( 'disabled', true)
-            else
-              @platform.html('Android')
-              @androidBtn.attr( 'disabled', false)
-              @iosBtn.attr( 'disabled', true)
-              @iosForm.hide()
-              @androidForm.show()
-            @main.addClass('hide')
-            @buildMessage.removeClass('hide')
-          error: =>
-            console.log "console.error"
-        client.getAppAllPlugins(params,jsonContent['identifier'])
-      else
-        alert "请选择构建平台"
-        return
-    else if @buildMessage.is(':visible')
-      if !@iosBtn.attr('disabled')
-        if @iosName.getText() is ""
-          alert 'iOS 的应用 名字 不能为空'
-          return
-      if !@androidBtn.attr('disabled')
-        if @androidName.getText() is ""
-          alert 'android 的应用 名字 不能为空'
-          return
-      @buildingTips.removeClass('hide')
-      @buildMessage.addClass('hide')
-      @parentView.prevBtn.text('取消')
-      @parentView.nextBtn.hide()
-      # @parentView.nextBtn.attr('disabled',true)
-      # 开始构建
-      # 1、检查本地模块信息在服务器是否已经存在
-      #   如果存在则不需
-      #模块；
-      #   如果不存在则需要上床模块。
-      # 2、上传完模块后需要上传应用信息
-      configPath = pathM.join this.find('select').val(),@projectConfigFileName
-      options =
-        encoding: "UTF-8"
-      strContent = fs.readFileSync(configPath,options)
-      jsonContent = JSON.parse(strContent)
-      modules = jsonContent['modules']
-      @buildTips.html("正在检测模块信息......")
-      projectPath = pathM.join this.find('select').val(), @moduleLocatFileName
-      moduleList = []
-      @buildTips.html("构建准备......")
-      getModuleMessage = (identifier,version) =>
-        module =
-          identifier: identifier
-          version: version
-        moduleList.push module
-      getModuleMessage identifier,version for identifier, version of modules
-      @checkModuleNeedUpload projectPath, moduleList, 0
-
-  checkModuleNeedUpload: (modulePath, modules, index) ->
-    if modules.length == 0
-      # console.log "length = 0"
-      @sendBuildMessage()
-      return
+  #获取苹果手机横屏显示类型
+  getIPhoneScrossHtml:() ->
+    if @projectLastContent
+      # console.log  @projectLastContent
+      images = @projectLastContent["base"]["images"]
+      """
+      <li>
+      <div class='iphone-scross-launch' >
+      <img class='iphone-scross-launch-img' src='#{images["iphone960_640"]}' value='iphone960_640'>
+      </div>
+      <p>960&nbsp;X&nbsp;640</p>
+      </li>&nbsp;
+      <li>
+      <div class='iphone-scross-launch'>
+      <img class='iphone-scross-launch-img' src='#{images["iphone1136_640"]}' value='iphone1136_640'>
+      </div>
+      <p>1136&nbsp;X&nbsp;640</p>
+      </li>&nbsp;
+      <li>
+      <div class='iphone-scross-launch'>
+      <img class='iphone-scross-launch-img' src='#{images["iphone1334_750"]}' value='iphone1334_750'>
+      </div>
+      <p>1334&nbsp;X&nbsp;750</p>
+      </li>&nbsp;
+      <li>
+      <div class='iphone-scross-launch'>
+      <img class='iphone-scross-launch-img' src='#{images["iphone2208_1242"]}' value='iphone2208_1242'>
+      </div>
+      <p>2208&nbsp;X&nbsp;1242</p>
+      </li>&nbsp;
+      """
     else
-      moduleIdentifer = modules[index]['identifier']
-      moduleVersion = modules[index]['version']
-      moduleRealPath = pathM.join modulePath, moduleIdentifer
-      moduleList = [moduleIdentifer]
-      params =
-        formData:{
-          identifier:JSON.stringify(moduleList)
-        }
-        sendCookie: true
-        success: (data) =>
-          # console.log "check version success"
-          build = data[0]['build']
-          if data[0]['version'] != ""
-            # uploadVersion = moduleVersion.split('.')
-            # version = data['version'].split('.')
-            # 判断是否需要上传模块
-            result = UtilExtend.checkUploadModuleVersion(moduleVersion,data[0]['version'])
-            if result['error']
-              console.log "无需更新#{moduleIdentifer} 本地版本为#{moduleVersion},服务器版本为：#{data[0]['version']}"
-              if modules.length == index+1
-                @sendBuildMessage()
-              else
-                @checkModuleNeedUpload(modulePath, modules, index+1)
-              return
+      iphoneSrc = desc.getImgPath "default_app_iphone_scross_logo.png"
+      """
+      <li>
+      <div class='iphone-scross-launch' >
+      <img class='iphone-scross-launch-img' src='#{iphoneSrc}' value='iphone960_640'>
+      </div>
+      <p>960&nbsp;X&nbsp;640</p>
+      </li>&nbsp;
+      <li>
+      <div class='iphone-scross-launch'>
+      <img class='iphone-scross-launch-img' src='#{iphoneSrc}' value='iphone1136_640'>
+      </div>
+      <p>1136&nbsp;X&nbsp;640</p>
+      </li>&nbsp;
+      <li>
+      <div class='iphone-scross-launch'>
+      <img class='iphone-scross-launch-img' src='#{iphoneSrc}' value='iphone1334_750'>
+      </div>
+      <p>1334&nbsp;X&nbsp;750</p>
+      </li>&nbsp;
+      <li>
+      <div class='iphone-scross-launch'>
+      <img class='iphone-scross-launch-img' src='#{iphoneSrc}' value='iphone2208_1242'>
+      </div>
+      <p>2208&nbsp;X&nbsp;1242</p>
+      </li>&nbsp;
+      """
 
-          if fs.existsSync(moduleRealPath)
-            Util.fileCompression(moduleRealPath)
-            zipPath = moduleRealPath+'.zip'
-            if fs.existsSync(zipPath)
-              # console.log zipPath
-              fileParams =
-                formData: {
-                  up_file: fs.createReadStream(zipPath)
-                }
-                sendCookie: true
-                success: (data) =>
-                  data2 = {}
-                  Util.removeFileDirectory(zipPath)
-                  methodUploadModule = =>
-                    if fs.existsSync(pathM.join moduleRealPath,@moduleConfigFileName)
-                      packagePath = pathM.join moduleRealPath,@moduleConfigFileName
-                      options =
-                        encoding: 'utf-8'
-                      contentList = JSON.parse(fs.readFileSync(packagePath,options))
-                      # 当  配置信息中不存在build字段时，新建字段 初始化为 1
-                      #否则  +1
-                      if build? and build != ""
-                        contentList['build'] = parseInt(build) + 1
-                      else
-                        contentList['build'] = 1
-                      # alert contentList['build']+"  "+data2['url_id']
-                      params =
-                        formData:{
-                          module_tag: contentList['identifier'],
-                          module_name: contentList['name'],
-                          module_desc: "",#contentList['description']
-                          version: contentList['version'],
-                          url_id: data['url_id'],
-                          build:contentList['build'].toString(),
-                          logo_url_id: data2['url_id'],
-                          update_log: "构建应用时发现本地版本高于服务器版本，所以上传 #{contentList['identifier']} 模块"
-                        }
-                        sendCookie: true
-                        success: (data) =>
-                          if modules.length == index+1
-                            @sendBuildMessage()
-                          else
-                            @checkModuleNeedUpload(modulePath, modules, index+1)
-                        error: =>
-                          alert "上传#{modulePath}失败"
-                      client.postModuleMessage(params)
-                    else
-                      console.log "文件不存在#{pathM.join modulePath,@moduleConfigFileName}"
-                  if fs.existsSync(pathM.join moduleRealPath,@moduleLogoFileName)
-                    fileParams2 =
-                      formData: {
-                        up_file: fs.createReadStream(pathM.join moduleRealPath,@moduleLogoFileName)
-                      }
-                      sendCookie: true
-                      success: (data) =>
-                        #给 data2 初始化
-                        data2 = data
-                        # console.log data2
-                        methodUploadModule()
-                      error: =>
-                        # console.log iconPath
-                        console.log "上传icon失败"
-                        alert "上传icon失败"
-                    client.uploadFile(fileParams2,"module","")
-                  else
-                    data2["url_id"] = ""
-                    methodUploadModule()
-                error: =>
-                  Util.removeFileDirectory(zipPath)
-                  alert "上传文件失败"
-              client.uploadFile(fileParams,"module","")
-            else
-              alert "打包#{moduleRealPath}失败"
-          else
-            alert "不存在#{moduleRealPath}"
-        error : =>
-          console.log "获取模板最新版本 的url 调不通"
-      client.getModuleLastVersion(params)
-    # console.log
+  # 获取苹果手机竖屏显示类型
+  getIPhoneVerticalHtml:() ->
+    if @projectLastContent
+      # console.log  @projectLastContent
+      images = @projectLastContent["base"]["images"]
+      """
+      <li>
+      <div class='iphone-launch' >
+      <img class='iphone-launch-img' src='#{images["iphone640_960"]}' value='iphone640_960'>
+      </div>
+      <p>640&nbsp;X&nbsp;960</p>
+      </li>&nbsp;
+      <li>
+      <div class='iphone-launch'>
+      <img class='iphone-launch-img' src='#{images["iphone640_960"]}' value='iphone640_1136'>
+      </div>
+      <p>640&nbsp;X&nbsp;1136</p>
+      </li>&nbsp;
+      <li>
+      <div class='iphone-launch'>
+      <img class='iphone-launch-img' src='#{images["iphone640_960"]}' value='iphone750_1334'>
+      </div>
+      <p>750&nbsp;X&nbsp;1334</p>
+      </li>&nbsp;
+      <li>
+      <div class='iphone-launch'>
+      <img class='iphone-launch-img' src='#{iphone1242_2208}' value='iphone1242_2208'>
+      </div>
+      <p>1242&nbsp;X&nbsp;2208</p>
+      </li>&nbsp;
+      """
+    else
+      iphoneSrc = desc.getImgPath "default_app_iphone_logo.png"
+      """
+      <li>
+      <div class='iphone-launch' >
+      <img class='iphone-launch-img' src='#{iphoneSrc}' value='iphone640_960'>
+      </div>
+      <p>640&nbsp;X&nbsp;960</p>
+      </li>&nbsp;
+      <li>
+      <div class='iphone-launch'>
+      <img class='iphone-launch-img' src='#{iphoneSrc}' value='iphone640_1136'>
+      </div>
+      <p>640&nbsp;X&nbsp;1136</p>
+      </li>&nbsp;
+      <li>
+      <div class='iphone-launch'>
+      <img class='iphone-launch-img' src='#{iphoneSrc}' value='iphone750_1334'>
+      </div>
+      <p>750&nbsp;X&nbsp;1334</p>
+      </li>&nbsp;
+      <li>
+      <div class='iphone-launch'>
+      <img class='iphone-launch-img' src='#{iphoneSrc}' value='iphone1242_2208'>
+      </div>
+      <p>1242&nbsp;X&nbsp;2208</p>
+      </li>&nbsp;
+      """
 
-  sendBuildMessage: ->
-    # console.log "finish send"
-    checkboxList = this.find('input[type=checkbox]:checked')  # param 1
-    platformInfo = []
-    iosObj = null
-    androidObj = null
-    postAppBuildMessage = (checkbox) =>
-      if $(checkbox).attr('value') is 'iOS'
-        iosObj =
-          logoFileId: ""
-          platform: "IOS"
-          pkgName: @iosName.getText()
-      else
-        androidObj =
-          logoFileId: ""
-          platform: "ANDROID"
-          pkgName: @androidName.getText()
-    postAppBuildMessage checkbox for checkbox in checkboxList
-    if iosObj
-      platformInfo.push(iosObj)
-    if androidObj
-      platformInfo.push(androidObj)
-    configPath = pathM.join this.find('select').val(),desc.ProjectConfigFileName
-    # console.log configPath
-    options =
-      encoding: "utf-8"
-    contentList = JSON.parse(fs.readFileSync(configPath,options))
-    userMail = Util.store('chameleon').mail
-    bodyJSON =
-      identifier: @identifier.attr("value"),
-      name:contentList["name"],
-      platformInfo: platformInfo,
-      # account: userMail
-      mainModule: contentList["mainModule"]
-      classify: "",
-      version: contentList["version"],
-      describe: contentList["description"],
-      modules: contentList["modules"]
-      releaseNote: contentList["releaseNote"]
-    bodyStr = JSON.stringify(bodyJSON)
-    # console.log bodyStr
-    params =
-      body: bodyStr
-      sendCookie: true
-      success: (data) =>
-        # console.log JSON.stringify(data)
-        if data["status"] is "success"
-          @buildTips.html("正在排队构建请耐心等待......")
-          # if data["IOS"]
-          #在这里需要不断的查构建结果
-          showObject = (obj) =>
-            if obj.status != 'success'
-              console.log "上传#{obj.platform}不成功！"
-            else
-              console.log "上传#{obj.platform}成功！"
-              @buildPlatformId[obj.platform] = obj.id
-              @checkBuildResult obj.id,obj.platform,0
-          if data['data'].length > 0
-            showObject obj for obj in data['data']
-      error: =>
-        console.log "error"
-    client.buildApp(params)
-    # console.log params
+  #获取苹果平板横屏显示类型
+  getIPadScrossHtml:() ->
+    if @projectLastContent
+      images = @projectLastContent["base"]["images"]
+      """
+      <li>
+      <div class='ipad-scross-launch' >
+      <img class='ipad-scross-launch-img' src='#{images["ipad2208_1242"]}' value='ipad2208_1242'>
+      </div>
+      <p>2208 X 1242</p>
+      </li>&nbsp;
+      """
+    else
+      ipadSrc = desc.getImgPath "default_app_ipad_scross_logo.png"
+      """
+      <li>
+      <div class='ipad-scross-launch' >
+      <img class='ipad-scross-launch-img' src='#{ipadSrc}' value='ipad2208_1242'>
+      </div>
+      <p>2208 X 1242</p>
+      </li>&nbsp;
+      """
 
-  checkBuildResult: (id,platform,time) ->
-    params =
-      sendCookie: true
-      success: (data) =>
-        # data['status'] = "SUCCESS"
-        # data['url'] = "http://baidu.com"
-        console.log data
-        icon_success = desc.getImgPath 'icon_success.png'
-        btn_close = desc.getImgPath 'btn_close.png'
-        if data['code'] == -1
-          alert "#{platform}构建不存在！"
+  #获取苹果平板竖屏显示类型
+  getIPadVerticalHtml:() ->
+    if @projectLastContent
+      images = @projectLastContent["base"]["images"]
+      """
+      <li>
+      <div class='ipad-launch' >
+      <img class='ipad-launch-img' src='#{images["ipad1242_2208"]}' value='ipad1242_2208'>
+      </div>
+      <p>1242 X 2208</p>
+      </li>&nbsp;
+      """
+    else
+      ipadSrc = desc.getImgPath "default_app_ipad_logo.png"
+      """
+      <li>
+      <div class='ipad-launch' >
+      <img class='ipad-launch-img' src='#{ipadSrc}' value='ipad1242_2208'>
+      </div>
+      <p>1242 X 2208</p>
+      </li>&nbsp;
+      """
+
+  #获取安卓手机横屏显示类型
+  getAndroidScrossHtml:() ->
+    if @projectLastContent
+      images = @projectLastContent["base"]["images"]
+      """
+      <li>
+      <div class='ipad-scross-launch' >
+      <img class='ipad-scross-launch-img' src='#{images["android960_640"]}' value='android960_640'>
+      </div>
+      <p>960 X 640</p>
+      </li>&nbsp;
+      <li>
+      <div class='ipad-scross-launch' >
+      <img class='ipad-scross-launch-img' src='#{images["android1136_640"]}' value='android1136_640'>
+      </div>
+      <p>1136 X 640</p>
+      </li>&nbsp;
+      """
+    else
+      androidSrc = desc.getImgPath "default_app_android_scross_logo.png"
+      """
+      <li>
+      <div class='ipad-scross-launch' >
+      <img class='ipad-scross-launch-img' src='#{androidSrc}' value='android960_640'>
+      </div>
+      <p>960 X 640</p>
+      </li>&nbsp;
+      <li>
+      <div class='ipad-scross-launch' >
+      <img class='ipad-scross-launch-img' src='#{androidSrc}' value='android1136_640'>
+      </div>
+      <p>1136 X 640</p>
+      </li>&nbsp;
+      """
+
+  #获取安卓手机竖屏显示类型
+  getAndroidVerticalHtml:() ->
+    if @projectLastContent
+      images = @projectLastContent["base"]["images"]
+      """
+      <li>
+      <div class='android-launch' >
+      <img class='android-launch-img' src='#{images["android640_960"]}' value='android640_960'>
+      </div>
+      <p>640 X 960</p>
+      </li>&nbsp;
+      <li>
+      <div class='android-launch' >
+      <img class='android-launch-img' src='#{images["android640_1136"]}' value='android640_1136'>
+      </div>
+      <p>640 X 1136</p>
+      </li>&nbsp;
+      """
+    else
+      androidSrc = desc.getImgPath "default_app_android_logo.png"
+      """
+      <li>
+      <div class='android-launch' >
+      <img class='android-launch-img' src='#{androidSrc}' value='android640_960'>
+      </div>
+      <p>640 X 960</p>
+      </li>&nbsp;
+      <li>
+      <div class='android-launch' >
+      <img class='android-launch-img' src='#{androidSrc}' value='android640_1136'>
+      </div>
+      <p>640 X 1136</p>
+      </li>&nbsp;
+      """
+
+  # 获取图片的url
+  getImageUrlMethod:(fileId, pixel) ->
+    if !fileId
+      return fileId
+    if !pixel
+      pixel = ''
+    QINIU_URL = null
+    HEX_RADIX = ['0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f']
+    QINIU_HTTP = 'http://7xl047.com2.z0.glb.qiniucdn.com/'
+    WEB_CONTEXT = @httpType+'://bsl.foreveross.com/qdt-web-dev/images/'
+    QINIU_HTTPS = 'https://dn-qdt-web.qbox.me/'
+    if @httpType is 'http'
+      QINIU_URL = QINIU_HTTP
+    else if @httpType is 'https'
+      QINIU_URL = QINIU_HTTPS
+    else
+      QINIU_URL = ''
+    console.log "QINIU_URL = #{QINIU_URL}"
+    if fileId.indexOf("qdt_icon_") is 0
+      return  WEB_CONTEXT + fileId
+    else
+      start = fileId.toLowerCase().charAt(0)
+      console.log "start = #{start}"
+      index = 0
+      returnUrl = null
+      methodFor = (item) =>
+        if start is HEX_RADIX[index]
+          returnUrl = QINIU_URL + fileId + pixel
           return
-        if data['status'] == "WAITING"
-          # setTimeout("checkBuildResult(#{id},#{platform})", 1000*60)
-          if platform == "IOS"
-            timeTips = ".iosWaitTime"
-            if data['waitingTime'] == 0
-              @.find(".iosTips").html("IOS 准备开始构建")
-            else
-              @.find(".iosTips").html("IOS 还需等待构建<span class='iosWaitTime'>#{data['waitingTime']}</span>秒")
-          else
-            timeTips = ".androidWaitTime"
-            if data['waitingTime'] == 0
-              @.find(".androidTips").html("ANDOIRD 准备开始构建")
-            else
-              @.find(".androidTips").html("ANDOIRD 还需等待构建<span class='androidWaitTime'>#{data['waitingTime']}</span>秒")
-          loopTime = 25 # 调服务器时间 的时间间隔
-          loopTime2 = 25  # 倒计时循环次数
-          if data['waitingTime'] < 25
-            loopTime = data['waitingTime']
-            loopTime2 = data['waitingTime']
-            if data['waitingTime'] == 0
-              loopTime = loopTime + 2
-          @checkBuildResultTimer[platform] = setTimeout =>
-            @checkBuildResult id,platform,time+1
-          ,1000*loopTime
-          @ticketTimer[platform] = setTimeout =>
-            @ticket timeTips,loopTime2,data['waitingTime'],platform
-          ,1000
-        else if data['status'] == "SUCCESS"
-          if !@urlCodeList.is(':visible')
-            @buildingTips.addClass('hide')
-            @urlCodeList.removeClass('hide')
-            @parentView.nextBtn.hide()
-            @parentView.prevBtn.hide()
-            if @checkBuildResultTimer[platform]
-              window.clearTimeout(@checkBuildResultTimer[platform])
-            if @ticketTimer[platform]
-              window.clearTimeout(@ticketTimer[platform])
-          str = "<img src='#{icon_success}'/><span class='built-span'>构建成功,开始加载二位码</span>"
-          if @.find('#ios').is(':checked')
-            @ios_code_view.removeClass('hide')
-          if @.find('#android').is(':checked')
-            @android_code_view.removeClass('hide')
-          if platform == 'IOS'
-            @.find(".iosTips").html("iOS")
-            @iosUrl.attr('href',data['url'])
-            @iosUrl.html("app下载地址[IOS]")
-            @ios_build_result_tips.html(str)
-          else
-            @.find(".androidTips").html("Android")
-            @androidUrl.attr('href',data['url'])
-            @androidUrl.html("app下载地址[Android]")
-            @android_build_result_tips.html(str)
-          str = "<img src='#{icon_success}'/><span class='built-span'>构建成功</span>"
-          if platform == 'IOS'
-            qr1 = qrCode.qrcode(8, 'L')
-            qr1.addData(data['url'])
-            qr1.make()
-            img1 = qr1.createImgTag(4)
-            @ios_build_result_tips.html(str)
-            @iOSCode.attr('src', $(img1).attr('src'))
-            qr1 = null
-          else
-            qr2 = qrCode.qrcode(8, 'L')
-            qr2.addData(data['url'])
-            qr2.make()
-            img2 = qr2.createImgTag(4)
-            @android_build_result_tips.html(str)
-            @androidCode.attr('src', $(img2).attr('src'))
-            qr2 = null
-        else if data['status'] == "BUILDING"
-          @buildTips.html("正在构建请耐心等待......")
-          if platform == "IOS"
-            timeTips = ".iosWaitTime"
-            @.find(".iosTips").html("IOS 正在构建<span class='iosWaitTime'>#{data['remainTime']}</span>秒")
-          else
-            timeTips = ".androidWaitTime"
-            @.find(".androidTips").html("ANDOIRD 正在构建<span class='androidWaitTime'>#{data['remainTime']}</span>秒")
-          loopTime = 25 # 调服务器时间 的时间间隔
-          loopTime2 = 25# 倒计时循环次数
-          if data['remainTime'] < 25
-            loopTime = data['remainTime']
-            loopTime2 = data['remainTime']
-          @checkBuildResultTimer[platform] = setTimeout =>
-            @checkBuildResult id,platform,time+1
-          ,1000*loopTime
-          @ticketTimer[platform] = setTimeout =>
-            @ticket timeTips,loopTime2,data['remainTime'],platform
-          ,1000
-        else
-          if @checkBuildResultTimer[platform]
-            window.clearTimeout(@checkBuildResultTimer[platform])
-          if @ticketTimer[platform]
-            window.clearTimeout(@ticketTimer[platform])
-          if @.find('#ios').is(':checked')
-            @ios_code_view.removeClass('hide')
-          else
-            console.log "ios is hide"
-          if @.find('#android').is(':checked')
-            @android_code_view.removeClass('hide')
-          else
-            console.log "android is hide"
-          if !@urlCodeList.is(':visible')
-            @buildingTips.addClass('hide')
-            @urlCodeList.removeClass('hide')
-            @parentView.nextBtn.hide()
-            @parentView.prevBtn.hide()
-          str = "<img src='#{btn_close}'/><span class='built-span'>构建失败</span>"
-          if platform == 'IOS'
-            @.find(".iosTips").html("iOS")
-            @iosUrl.addClass('hide')
-            # @iosUrl.html("app下载地址[IOS]")
-            @ios_build_result_tips.html(str)
-          else
-            @android_build_result_tips.html(str)
-          if platform == 'IOS'
-
-            @ios_build_result_tips.html(str)
-          else
-            @.find(".androidTips").html("Android")
-            @androidUrl.addClass('hide')
-            # @androidUrl.html("app下载地址[Android]")
-            @android_build_result_tips.html(str)
-          # alert "#{platform}构建失败"
-      error: =>
-        console.log  "error"
-    client.getBuildUrl(params,id)
-
-  ticket: (timeTips,loopTime,waitTime,platform) ->
-    # console.log timeTips,loopTime
-    if loopTime <= 1
-      return
-    loopTime = loopTime - 1
-    num = waitTime - 1
-    @.find(timeTips).html(num)
-    # console.log timeTips,num,@.find(timeTips).html(num),waitTime
-    @ticketTimer[platform] = setTimeout =>
-      @ticket timeTips,loopTime,num,platform
-    ,1000
-
-  prevBtnClick: ->
-    if @main.is(':visible')
-      @main.addClass('hide')
-      @selectApp.removeClass('hide')
-      @parentView.prevBtn.hide()
-    else if @buildMessage.is(':visible')
-      @buildMessage.addClass('hide')
-      @main.removeClass('hide')
-    else if @buildingTips.is(':visible')
-      @buildingTips.addClass('hide')
-      @buildMessage.removeClass('hide')
-      @parentView.prevBtn.text('上一步')
-      @parentView.nextBtn.show()
-      console.log "kill timer"
-      @killTimer()
-      @parentView.closeView()
-      #检测是否需要取消之前的构建
-  killTimer: ->
-    # console.log "kill timer"
-    if @checkBuildResultTimer["IOS"]
-      window.clearTimeout(@checkBuildResultTimer["IOS"])
-    if @checkBuildResultTimer["ANDROID"]
-      window.clearTimeout(@checkBuildResultTimer["ANDROID"])
-    if @ticketTimer["ANDROID"]
-      window.clearTimeout(@ticketTimer["ANDROID"])
-    if @ticketTimer["IOS"]
-      window.clearTimeout(@ticketTimer["IOS"])
+        console.log "item = #{item} , index = #{index}"
+        index = index + 1
+      methodFor item for item in HEX_RADIX
+      if returnUrl
+        return returnUrl
+      if fileId.indexOf(QINIU_URL) is 0
+        return QINIU_URL + fileId.substring(QINIU_URL.length, fileId.length) + pixel
+      else if fileId.indexOf(QINIU_URL) is 0
+        return QINIU_URL + fileId.substring(QINIU_URL.length, fileId.length) + pixel
+      return fileId
 
 module.exports =
   class BuildProjectView extends ChameleonBox
     options :
       title: desc.buildProjectMainTitle
       subview: new BuildProjectInfoView()
-    killTimer: ->
-      console.log "kill timer"
-      @options.subview.killTimer()
-
     closeView: ->
       super()
-      @killTimer()

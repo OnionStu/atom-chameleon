@@ -846,37 +846,149 @@ atom-panel.modal > .login-box {
     border: #181b20;
     // padding-right: 10px;
   }
-  .padding-left {
-    padding-left: 0px;
+  .label-logo{
+    position: absolute;
   }
-  .padding-top {
-    padding-top: 10px;
+  .img-logo{
+    width: 80px;
+    height: 80px;
+    display: inline-block;
+    margin: 0px 90px;
+    display: block;
   }
-  .text-align-left {
-    text-align: left;
+  .btn-logo{
+    margin-left: 90px;
+    width: 80px;
   }
-  .text-align-right {
-    text-align: right;
+  .div-display-inline{
+    display: -webkit-inline-box;
   }
-  .col-sm-12 {
+  .android-launch-img{
+    width: 67px;
+    margin-top: 15px;
+  }
+  .android-scross-launch-img{
+    width: 126px;
+    margin-top: 4px;
+    height: 67px;
+  }
+  .iphone-launch-img{
+    width: 59px;
+    margin-left: 2px;
+    margin-top: 18px;
+  }
+  .iphone-scross-launch-img{
+    width: 104px;
+    margin-top: 5px;
+  }
+  .ipad-launch-img{
+    width: 87px;
+    margin-top: 20px;
+  }
+  .ipad-scross-launch-img{
+    width: 135px;
+    height: 85px;
+    margin-top: 5px;
+    margin-right: 2px;
+  }
+  li{
+    display: inline-block;
+  }
+  p{
+    text-align: center;
+  }
+  .android-scross-launch {
+    text-align: center;
+    display: inline-block;
+    position: relative;
+    background: url('atom://chameleon-qdt-atom/images/android_scross.png');
+    background-size: 100% 100%;
+    width: 155px;
+    height: 75px;
+    cursor: pointer;
+  }
+  .android-launch {
+    text-align: center;
+    display: inline-block;
+      position: relative;
+      background: url('atom://chameleon-qdt-atom/images/android_vertical.png');
+      background-size: 100% 100%;
+      width: 75px;
+      height: 155px;
+      cursor: pointer;
+  }
+
+  .iphone-launch {
+    text-align: center;
+    display: inline-block;
+      position: relative;
+      background: url('atom://chameleon-qdt-atom/images/iphone_vertical.png');
+      background-size: 100% 100%;
+      width: 70px;
+      height: 147px;
+      cursor: pointer;
+  }
+  .ipad-launch {
+    text-align: center;
+    display: inline-block;
+      position: relative;
+      background: url('atom://chameleon-qdt-atom/images/ipad_vertical.png');
+      background-size: 100% 100%;
+      width: 97px;
+      height: 173px;
+      cursor: pointer;
+  }
+  .iphone-scross-launch {
+    text-align: center;
+    display: inline-block;
+      position: relative;
+      background: url('atom://chameleon-qdt-atom/images/iphone_scross.png');
+      background-size: 100% 100%;
+      width: 147px;
+      height: 70px;
+      cursor: pointer;
+  }
+  .ipad-scross-launch {
+    text-align: center;
+    display: inline-block;
+      position: relative;
+      background: url('atom://chameleon-qdt-atom/images/ipad_scross.png');
+      background-size: 100% 100%;
+      width: 173px;
+      height: 97px;
+      cursor: pointer;
+  }
+  .div-table-view{
+    border: 2px solid;
+    text-align: center;
+    border-color: gray;
+    margin: 12px 0px;
+    padding: 20px 10px;
+    height: 300px;
+    overflow-y: scroll;
+  }
+  .click-platform{
+    background-color: black;
+  }
+  .public-view{
+    position: absolute;
+    margin-left: 20px;
+  }
+  .private-view{
+    position: absolute;
+    margin-left: 120px;
+  }
+  table{
     width: 100%;
-    padding-left: 15px;
-    padding-right: 15px;
-    padding-bottom: 10px;
+    border: 1px solid gray;
   }
-  .col-sm-9 {
-    width: 75%;
-    padding-left: 0px;
-    padding-right: 15px;
+  th,td{
+    width: 14%;
+    border: 1px solid gray;
+    padding: 0;
+    text-align: center;
   }
-  .disabled-text{
-    background: #363948;
-    height: 28px;
-    width: 396px;
-    border-radius: 3px;
-    padding-left: 7px;
-    padding-top: 4px;
-  }
+
   .selectBuildTemplate {
     width: 125px;
     height: 125px;
@@ -896,10 +1008,7 @@ atom-panel.modal > .login-box {
     // height: inherit;
     text-align: center;
   }
-  .codeImg {
-    width: 100%;
-    height: inherit;
-  }
+
   select {
     color: #9da5b4;
     background-clip: content-box;
@@ -921,28 +1030,36 @@ atom-panel.modal > .login-box {
     background-image: linear-gradient(-45deg, transparent 33%, #515663 33%, #515663 66%, transparent 66%);
     -webkit-animation: progress-buffering 5s linear infinite;
   }
-  .block span {
-    // padding-left: 10%;
-    // padding-bottom: 5px;
-    font-size: 12px;
+
+  .engineBasicMessageView > label{
+    padding-left: 20px;
   }
-  .platform_tips_label{
+  .engineBasicMessageView > .col-xs-12{
+    padding-top: 10px;
+  }
+  input[type="checkbox"]{
+    margin-left: 25px;
     vertical-align: sub;
   }
-  .built-span{
-    vertical-align: middle;
-    margin-left: 5px;
+  .div-engine-basic{
+    width: 50%;
+    display: inline-block;
   }
 
-  .build-status {
-    margin-bottom: 10px;
-    line-height: 24px;
+  .inline-view{
+    display: inline-block;
+    vertical-align: -webkit-baseline-middle;
+    width: 300px;
   }
-  .platform-item{
-   vertical-align: top;
+
+  .certInfo-label {
+    width: 150px;
+    text-align: right;
+    padding-right: 10px;
   }
 
 }
+
 .upload_project_view {
   .row-content label {
     line-height: 30px;
