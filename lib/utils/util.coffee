@@ -1,4 +1,4 @@
-{BufferedProcess, File, Directory} = require 'atom'
+{BufferedProcess, File, Directory, Emitter} = require 'atom'
 JSZip = require 'jszip'
 zlib = require 'zlib'
 fs = require 'fs-extra'
@@ -10,12 +10,11 @@ portscanner = require 'portscanner'
 http = require 'http'
 desc = require './text-description'
 nodeStatic = require 'node-static'
-EventEmitter = require 'events'
 
 
 
 module.exports = Util =
-
+  emitter: new Emitter()
   fsx: fs
 
   rumAtomCommand: (command) ->
@@ -132,7 +131,7 @@ module.exports = Util =
       a = port
       server.listen(port);
       console.log('ok, http://localhost:' + port)
-      EventEmitter.emit 'server_on', port
+      @eventEmitter().emit 'server_on', 'http://localhost:' + port
       
     return 'http://localhost:' + a
 
@@ -365,4 +364,7 @@ module.exports = Util =
 
   getPanes: () ->
     return atom.workspace.getPanes()[0]
+
+  eventEmitter: () ->
+    @emitter
 
