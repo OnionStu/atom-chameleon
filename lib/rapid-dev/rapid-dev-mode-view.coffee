@@ -19,8 +19,10 @@ class RapidDevModeView extends ScrollView
             @header class: 'code-panel-header', =>
               @h2 '模块', =>
                 @span class: 'icon icon-package'
-              @button class: 'btn icon icon-plus addNewCode',click: 'addNewModule', '添加'
-            @ul outlet: 'codePackList'
+              @button '添加', class: 'btn icon icon-plus addNewCode',click: 'addNewModule',outlet: 'addBtn'
+            @ul outlet: 'codePackList', =>
+              @li '', =>
+                @h2 Desc.noModules
 
   getURI: -> @uri
 
@@ -41,6 +43,13 @@ class RapidDevModeView extends ScrollView
 
   attached: ->
     console.log 'start'
+    @toggleAddBtn()
+
+  toggleAddBtn: ->
+    if yes is $.isEmptyObject @projectInfos
+      @addBtn.hide()
+    else
+      @addBtn.show()
 
   isProject: (path) ->
     configPath = PathM.join path,Desc.projectConfigFileName
@@ -78,6 +87,7 @@ class RapidDevModeView extends ScrollView
       liStr = "<li class='settingsItem' data-projectpath='#{path}' data-id='#{config.identifier}'><a class='icon icon-file-submodule'>#{config.name}</a></li>"
       @projectInfos[config.identifier] = config
       @other.before liStr
+      @toggleAddBtn()
 
   addModuleItem: (projectPath,modules) ->
     htmlStr = ''

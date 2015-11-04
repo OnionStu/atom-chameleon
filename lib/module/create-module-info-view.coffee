@@ -52,8 +52,8 @@ class CreateModuleInfoView extends View
     @moduleId.setText ''
     # @mainEntry.setText desc.mainEntryFileName
     @modulePath.html desc.newProjectDefaultPath
-
-    @parentView.setNextBtn('finish')
+    btnText = if @parentView.options.createType is 'simple' then desc.next else desc.finish
+    @parentView.setNextBtn('finish',btnText)
     @parentView.disableNext()
 
     @projects = @findProject()
