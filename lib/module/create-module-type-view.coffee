@@ -48,7 +48,7 @@ class CreateModuleTypeView extends View
       if @frameworks.length is 1
         el.dataset.src = @frameworks[0].folderName
     @parentView.enableNext()
-    @parentView.disableNext() if @createType is 'simple'
+    # @parentView.disableNext() if @createType is 'simple'
 
   nextStep:(box) ->
     box.setPrevStep @
@@ -57,9 +57,7 @@ class CreateModuleTypeView extends View
       createType:@createType
       subview:ModuleInfoView
     params.source = source if source?
-    if params.createType is 'simple'
-      params.subview = null
-    else if params.createType is 'template' and params.source? is no
+    if params.createType is 'template' and params.source? is no
       params.frameworks = @frameworks
       params.subview = require './select-module-template-view'
     box.mergeOptions params

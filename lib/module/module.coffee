@@ -5,6 +5,7 @@ desc = require '../utils/text-description'
 config = require '../../config/config'
 ChameleonBox = require '../utils/chameleon-box-view'
 CreateModuleView = require './create-module-view'
+Builder = require '../QDT-Builder/builder'
 LoadingMask = require '../utils/loadingMask'
 # fs = require 'fs-extra'
 
@@ -79,6 +80,7 @@ module.exports = ModuleManager =
   CreateSimpleModule: (options) ->
     console.log 'SimpleModule'
     console.log options
+    Builder.activate(options);
     @chameleonBox.closeView()
 
 
