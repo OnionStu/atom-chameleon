@@ -71,7 +71,8 @@ module.exports = Chameleon =
     @OSCLogin.activate()
 
   openBuilder: ->
-    @Builder.activate()
+    @Builder.activate('hi')
+    # util.startServer()
 
   openSettings: ->
     @settings.activate()

@@ -1,12 +1,19 @@
-{BufferedProcess} = require 'atom'
+{BufferedProcess, File, Directory} = require 'atom'
 JSZip = require 'jszip'
 zlib = require 'zlib'
 fs = require 'fs-extra'
 pathM = require 'path'
 _ = require 'underscore-plus'
 dialog = require('remote').require 'dialog'
-{File,Directory} = require 'atom'
 request = require 'request'
+portscanner = require 'portscanner'
+http = require 'http'
+desc = require './text-description'
+nodeStatic = require 'node-static'
+EventEmitter = require 'events'
+
+
+
 module.exports = Util =
 
   fsx: fs
@@ -113,6 +120,27 @@ module.exports = Util =
       else
         cb()
     bp = new BufferedProcess({command, args, options, stdout, stderr, exit})
+
+  startServer: () ->
+    a = 0
+    file = new nodeStatic.Server pathM.join desc.chameleonHome, 'QDT_Builder'
+    server = http.createServer (req, res) =>
+      req.on 'end', () =>
+        file.serve req, res
+      .resume()
+    portscanner.findAPortNotInUse 3000, 3010, '127.0.0.1', (error, port) =>
+      a = port
+      server.listen(port);
+      console.log('ok, http://localhost:' + port)
+      EventEmitter.emit 'server_on', port
+      
+    return 'http://localhost:' + a
+
+  stopServer: (server, cb) ->
+    server.close() =>
+      console.info "http stopped!"
+      server = null
+      if typeof next == "function" then next()
 
   isLogin: () ->
     user = @store('chameleon').account_id

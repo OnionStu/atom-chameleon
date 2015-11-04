@@ -33,7 +33,10 @@
   "dependencies": {
     "atom-space-pen-views": "^2.0.3",
     "fs-extra": "^0.20.1",
+    "http": "0.0.0",
     "jszip": "^2.5.0",
+    "node-static": "^0.7.7",
+    "portscanner": "^1.0.0",
     "qrcode-npm": "0.0.3",
     "request": "^2.58.0",
     "underscore-plus": "^1.0.0"

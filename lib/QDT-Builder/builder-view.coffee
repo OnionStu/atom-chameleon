@@ -1,6 +1,8 @@
 {$, ScrollView} = require 'atom-space-pen-views'
 
 desc = require '../utils/text-description'
+EventEmitter = require 'events'
+util = require '../utils/util'
 
 module.exports =
 class ChameleonBuilderView extends ScrollView
@@ -12,6 +14,9 @@ class ChameleonBuilderView extends ScrollView
   getTitle: -> desc.builderPanelTitle
 
   initialize: ({@uri}) ->
+    EventEmitter.on 'server_on', (e)=>
+      console.log(e)
+    # console.log util.startServer()
     # super
     # @accountPanel = new AccountPanel()
     # @settingsPanel.html @accountPanel
