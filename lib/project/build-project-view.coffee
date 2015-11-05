@@ -1164,12 +1164,20 @@ class BuildProjectInfoView extends View
       images = @projectLastContent["base"]["images"]
       if typeof(images["iphone960_640"]) is "undefined" || images["iphone960_640"] = ""
         images["iphone960_640"] = iphoneSrc
+      else
+        images["iphone960_640"] = @getImageUrlMethod(images["iphone960_640"])
       if typeof(images["iphone1136_640"]) is "undefined" || images["iphone1136_640"] = ""
         images["iphone1136_640"] = iphoneSrc
+      else
+        images["iphone1136_640"] = @getImageUrlMethod(images["iphone1136_640"])
       if typeof(images["iphone1334_750"]) is "undefined" || images["iphone1334_750"] = ""
         images["iphone1334_750"] = iphoneSrc
+      else
+        images["iphone1334_750"] = @getImageUrlMethod(images["iphone1334_750"])
       if typeof(images["iphone2208_1242"]) is "undefined" || images["iphone2208_1242"] = ""
         images["iphone2208_1242"] = iphoneSrc
+      else
+        images["iphone2208_1242"] = @getImageUrlMethod(images["iphone2208_1242"])
       """
       <li>
       <div class='iphone-scross-launch' >
@@ -1232,12 +1240,20 @@ class BuildProjectInfoView extends View
       images = @projectLastContent["base"]["images"]
       if typeof(images["iphone640_960"]) is "undefined" || images["iphone640_960"] = ""
         images["iphone640_960"] = iphoneSrc
-      if typeof(images["iphone640_960"]) is "undefined" || images["iphone640_960"] = ""
-        images["iphone640_960"] = iphoneSrc
-      if typeof(images["iphone640_960"]) is "undefined" || images["iphone640_960"] = ""
-        images["iphone640_960"] = iphoneSrc
+      else
+        images["iphone640_960"] = @getImageUrlMethod(images["iphone640_960"])
+      if typeof(images["iphone640_1136"]) is "undefined" || images["iphone640_1136"] = ""
+        images["iphone640_1136"] = iphoneSrc
+      else
+        images["iphone640_1136"] = @getImageUrlMethod(images["iphone640_1136"])
+      if typeof(images["iphone750_1334"]) is "undefined" || images["iphone750_1334"] = ""
+        images["iphone750_1334"] = iphoneSrc
+      else
+        images["iphone750_1334"] = @getImageUrlMethod(images["iphone750_1334"])
       if typeof(images["iphone1242_2208"]) is "undefined" || images["iphone1242_2208"] = ""
         images["iphone1242_2208"] = iphoneSrc
+      else
+        images["iphone1242_2208"] = @getImageUrlMethod(images["iphone1242_2208"])
       """
       <li>
       <div class='iphone-launch' >
@@ -1247,13 +1263,13 @@ class BuildProjectInfoView extends View
       </li>&nbsp;
       <li>
       <div class='iphone-launch'>
-      <img class='iphone-launch-img' src='#{images["iphone640_960"]}' value='iphone640_1136'>
+      <img class='iphone-launch-img' src='#{images["iphone640_1136"]}' value='iphone640_1136'>
       </div>
       <p>640&nbsp;X&nbsp;1136</p>
       </li>&nbsp;
       <li>
       <div class='iphone-launch'>
-      <img class='iphone-launch-img' src='#{images["iphone640_960"]}' value='iphone750_1334'>
+      <img class='iphone-launch-img' src='#{images["iphone750_1334"]}' value='iphone750_1334'>
       </div>
       <p>750&nbsp;X&nbsp;1334</p>
       </li>&nbsp;
@@ -1299,6 +1315,8 @@ class BuildProjectInfoView extends View
       images = @projectLastContent["base"]["images"]
       if typeof(images["ipad2208_1242"]) is "undefined" || images["ipad2208_1242"] = ""
         images["ipad2208_1242"] = ipadSrc
+      else
+        images["ipad2208_1242"] = @getImageUrlMethod(images["ipad2208_1242"])
       """
       <li>
       <div class='ipad-scross-launch' >
@@ -1324,6 +1342,8 @@ class BuildProjectInfoView extends View
       images = @projectLastContent["base"]["images"]
       if typeof(images["ipad1242_2208"]) is "undefined" || images["ipad1242_2208"] = ""
         images["ipad1242_2208"] = ipadSrc
+      else
+        images["ipad1242_2208"] = @getImageUrlMethod(images["ipad1242_2208"])
       """
       <li>
       <div class='ipad-launch' >
@@ -1349,8 +1369,12 @@ class BuildProjectInfoView extends View
       images = @projectLastContent["base"]["images"]
       if typeof(images["android960_640"]) is "undefined" || images["android960_640"] = ""
         images["android960_640"] = androidSrc
+      else
+        images["android960_640"] = @getImageUrlMethod(images["android960_640"])
       if typeof(images["android1136_640"]) is "undefined" || images["android1136_640"] = ""
         images["android1136_640"] = androidSrc
+      else
+        images["android1136_640"] = @getImageUrlMethod(images["android1136_640"])
       """
       <li>
       <div class='android-scross-launch' >
@@ -1388,8 +1412,12 @@ class BuildProjectInfoView extends View
       images = @projectLastContent["base"]["images"]
       if typeof(images["android640_960"]) is "undefined" || images["android640_960"] = ""
         images["android640_960"] = androidSrc
+      else
+        images["android640_960"] = @getImageUrlMethod(images["android640_960"])
       if typeof(images["android640_1136"]) is "undefined" || images["android640_1136"] = ""
         images["android640_1136"] = androidSrc
+      else
+        images["android640_1136"] = @getImageUrlMethod(images["android640_1136"])
       """
       <li>
       <div class='android-launch' >
