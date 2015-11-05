@@ -74,17 +74,13 @@ class NewProjectView extends View
     el.classList.add 'select'
     @newType = el.dataset.type
     @name = el.dataset.name
-    if @newType is 'quick'
-      @parentView.disableNext()
-    else
-      @parentView.enableNext()
+    @parentView.enableNext()
 
   onPrevPageClick: (e) ->
     @frameList.empty()
     @pageIndex--
     @disablePrevPage() if @pageIndex is 0
     @enableNextPage() if @nextPage.prop('disabled') is yes
-    # console.log @pageIndex*3,@pageIndex,@pageSize,@frameworks,@frameworks[3]
     @addFrameworkItems()
 
   onNextPageClick: (e) ->
@@ -92,7 +88,6 @@ class NewProjectView extends View
     @pageIndex++
     @disableNextPage() if @pageIndex is @pageSize-1
     @enablePrevPage() if @prevPage.prop('disabled') is yes
-    # console.log @pageIndex*3,@pageIndex,@pageSize,@frameworks,@frameworks[3]
     @addFrameworkItems()
 
   nextStep:(box) ->
@@ -105,7 +100,6 @@ class NewProjectView extends View
     box.nextStep()
 
   findFrameworks: ->
-    # fp = Path.join desc.chameleonHome,'empty'
     fp = desc.getFrameworkPath()
     Util.readDir fp, (err,files) =>
       return console.error err if err
@@ -113,7 +107,6 @@ class NewProjectView extends View
         unless file is '.githolder' or file is desc.defaultModuleName or file is '.gitkeep'
           configPath = Path.join fp,file,desc.moduleConfigFileName
           Util.readJson configPath, (err,json) =>
-            # return console.error err if err
             unless err
               obj =
                 dataName: json.name

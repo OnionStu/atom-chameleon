@@ -3,6 +3,8 @@ Util = require '../utils/util'
 desc = require '../utils/text-description'
 _ = require 'underscore-plus'
 CreateProjectView = require './create-project-view'
+Builder = require '../QDT-Builder/builder'
+
 $ = CreateProjectView.$
 loadingMask = require '../utils/loadingMask'
 client = require '../utils/client'
@@ -50,6 +52,13 @@ module.exports = CreateProject =
       when "frame" then @newFrameProject options
       when "template" then @newTemplateProject options
       when "syncProject" then @syncProject options
+      when "quick" then @openBuilder options
+
+  openBuilder: (options) ->
+    options.builderConfig?=[]
+    Builder.activate(options)
+    @chameleonBox.closeView()
+
 
   # 空白应用创建
   newEmptyProject: (options) ->

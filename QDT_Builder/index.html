@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <link rel="stylesheet" href="assets/bower_components/normalize-css/normalize.css">
+  <link rel="stylesheet" href="assets/styles/app.css">
+  <script>
+    var getMessage = function(e) {
+      window.message = e;
+      window.removeEventListener('message', getMessage, false);
+    }
+    window.addEventListener('message', getMessage, false);
+  </script>
+</head>
+<body>
+  <div class="app-header">
+    <img class="app-logo" src="assets/images/logo.png" alt="logo">
+    <div class="btn-group">
+      <a href="#"><span class="icon menu" ></span></a>
+      <a href="#"><span class="icon help" ></span></a>
+      <a href="#"><span class="icon ring" ></span></a>
+      <a href="#"><span class="icon qrcode" ></span></a>
+      <a href="#"><span class="icon project" ></span><span class="description">这是一首简单的小情歌</span></a>
+      <a href="#"><span class="icon preview" ></span><span class="description">预览</span></a>
+      <a href="#" id="publish"><span class="icon publish" ></span><span class="description">发布</span></a>
+    </div>
+  </div>
+  <div id="app">
+    <div id="left-container">
+      <div class="left-nav">
+        <ul>
+          <li class="nav-item pages active" data-for="pages">
+            <a class="anchor"><span class="icon pages"></span><span class="description">页面</span></a>
+          </li>
+          <li class="nav-item components" data-for="components">
+            <a class="anchor"><span class="icon components"></span><span class="description">组件</span></a>
+          </li>
+        </ul>
+      </div>
+      <div id="pages-panel" class="left-panel active">
+        <div class="left-panel-header">页面<span class="create-page icon create"></span></div>
+        <ul class="left-panel-list"></ul>
+      </div>
+      <div id="components-panel" class="left-panel">
+        <div class="left-panel-header">组件</div>
+        <ul class="left-panel-list"></ul>
+      </div>
+    </div>
+    <div id="right-container">
+      <div id="customapp-container">
+        <div class="device-container">
+          <div class="device-status"></div>
+          <div class="device-content">
+            <iframe id="iframe-container" src="iframe.html"></iframe> 
+          </div>
+          <div class="setting-bar">
+            <button><span class="icon setting-menu"></span></button>
+          </div>
+        </div>
+        <div id="component-setting"></div>
+      </div>
+    </div>
+  </div>
+  <div class="app-footer">
+    <p>COPYRIGHT ALL RIGHTS RESERVED <a href="#">变色龙开发团队</a></p>
+  </div>  
+  <div class="modal"></div>
+  <script data-main="assets/main.js" src="assets/bower_components/requirejs/require.js"></script>
+</body>
+</html>

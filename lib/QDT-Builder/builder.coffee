@@ -1,6 +1,7 @@
 ChameleonBuilderView = null
 
 ViewUri = 'atom://ChameleonBuilder'
+util = require '../utils/util'
 
 createView = (state) ->
   ChameleonBuilderView ?= require './builder-view'
@@ -14,11 +15,14 @@ deserializer =
 atom.deserializers.add(deserializer)
 
 module.exports =
-  activate: ->
+  activate: (options)->
+    console.log options
+    ViewUri = "atom://#{options.moduleInfo.moduleId}"
     atom.workspace.addOpener (filePath) ->
-      createView(uri: ViewUri) if filePath is ViewUri
+      createView({uri: ViewUri, appConfig: options}) if filePath is ViewUri
 
     atom.workspace.open(ViewUri)
+    util.startServer()
 
   serialize: ->
     deserializer: @constructor.name

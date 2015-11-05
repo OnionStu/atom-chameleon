@@ -1,0 +1,23 @@
+<div class="setting-form-header">
+  <%= title %>
+</div>
+<div class="setting-form-content">
+  <form id="setting-form">
+    <div class="controls">
+      <% var compiled = _.reduce(items, function(str, v, k) { %>
+        <% v['name'] = k; %>
+        <% if(popoverTemplates[v['type']]) { %>
+          <% return str + popoverTemplates[v['type']](v) %>
+        <% } else { %>
+          <% return str %>
+        <% } %>
+      <% }, "") %>
+      <%= compiled %>
+    </div>
+    <div class="setting-btn-group">
+      <button id="cancel" class="btn">取消</button>
+      <button id="delete" class="btn">删除</button>
+      <button id="save" class="btn">保存</button>
+    </div>
+  </form>
+</div>

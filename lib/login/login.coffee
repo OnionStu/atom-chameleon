@@ -67,7 +67,7 @@ module.exports = Login =
             @closeView()
             util.getPanes().destroyItem(util.getThatPane("atom://ChameleonSettings"))
             @settings.activate()
-          when 'unactive'
+          when 'unactivation'
             alert "登录失败：用户未激活"
           when 'forbidden'
             alert "登录失败：用户被禁用"

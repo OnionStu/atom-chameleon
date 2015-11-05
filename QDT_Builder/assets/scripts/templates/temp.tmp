@@ -1,0 +1,68 @@
+<li class="component-item">
+  <span class="icon title"></span>
+  <p>标题栏</p>
+</li>
+<li class="component-item">
+  <span class="icon menu"></span>
+  <p>菜单</p>
+</li>
+<li class="component-item">
+  <span class="icon carousel"></span>
+  <p>图片轮播</p>
+</li>
+<li class="component-item">
+  <span class="icon content-list"></span>
+  <p>内容列表</p>
+</li>
+<li class="component-item">
+  <span class="icon paragraph"></span>
+  <p>段落</p>
+</li>
+<li class="component-item">
+  <span class="icon footer"></span>
+  <p>页脚</p>
+</li>
+<li class="component-item">
+  <span class="icon tool-bar"></span>
+  <p>工具栏</p>
+</li>
+<li class="component-item">
+  <span class="icon gallery"></span>
+  <p>图片画廊</p>
+</li>
+<li class="component-item">
+  <span class="icon tab"></span>
+  <p>选项卡</p>
+</li>
+<li class="component-item">
+  <span class="icon collapse"></span>
+  <p>折叠面板</p>
+</li>
+<li class="component-item">
+  <span class="icon abstract"></span>
+  <p>简介</p>
+</li>
+<li class="component-item">
+  <span class="icon pagination"></span>
+  <p>分页</p>
+</li>
+<li class="component-item">
+  <span class="icon single-photo"></span>
+  <p>单张图片</p>
+</li>
+<li class="component-item">
+  <span class="icon line"></span>
+  <p>分割线</p>
+</li>
+<li class="component-item">
+  <span class="icon totop"></span>
+  <p>回顶部</p>
+</li>
+<li class="component-item">
+  <span class="icon header"></span>
+  <p>页头</p>
+</li>
+<li class="component-item">
+  <span class="icon custom-code"></span>
+  <p>自定义代码</p>
+</li>

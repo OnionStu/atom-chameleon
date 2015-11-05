@@ -1,21 +1,29 @@
-{BufferedProcess} = require 'atom'
+{BufferedProcess, File, Directory, Emitter} = require 'atom'
 JSZip = require 'jszip'
 zlib = require 'zlib'
 fs = require 'fs-extra'
 pathM = require 'path'
 _ = require 'underscore-plus'
 dialog = require('remote').require 'dialog'
-{File,Directory} = require 'atom'
 request = require 'request'
-module.exports = Util =
+portscanner = require 'portscanner'
+http = require 'http'
+desc = require './text-description'
+nodeStatic = require 'node-static'
 
+
+
+module.exports = Util =
+  emitter: new Emitter()
   fsx: fs
 
   rumAtomCommand: (command) ->
      atom.views.getView(atom.workspace).dispatchEvent(new CustomEvent(command, bubbles: true, cancelable: true))
 
   getIndexHtmlCore: (info) ->
-    info?.name ?= 'Module'
+    info ?=
+      name: 'Module'
+    info.name ?= 'Module'
     """
     <!DOCTYPE html>
     <html lang="zh-CN">
@@ -113,6 +121,27 @@ module.exports = Util =
       else
         cb()
     bp = new BufferedProcess({command, args, options, stdout, stderr, exit})
+
+  startServer: () ->
+    a = 0
+    file = new nodeStatic.Server pathM.join desc.chameleonHome, 'QDT_Builder'
+    server = http.createServer (req, res) =>
+      req.on 'end', () =>
+        file.serve req, res
+      .resume()
+    portscanner.findAPortNotInUse 3000, 3010, '127.0.0.1', (error, port) =>
+      a = port
+      server.listen(port);
+      console.log('ok, http://localhost:' + port)
+      @eventEmitter().emit 'server_on', 'http://localhost:' + port
+
+    return 'http://localhost:' + a
+
+  stopServer: (server, cb) ->
+    server.close() =>
+      console.info "http stopped!"
+      server = null
+      if typeof next == "function" then next()
 
   isLogin: () ->
     user = @store('chameleon').account_id
@@ -338,3 +367,5 @@ module.exports = Util =
   getPanes: () ->
     return atom.workspace.getPanes()[0]
 
+  eventEmitter: () ->
+    @emitter

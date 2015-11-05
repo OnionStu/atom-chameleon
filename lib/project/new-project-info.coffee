@@ -39,7 +39,8 @@ class NewProjectView extends View
     console.log @parentView.options
     @type = @parentView.options.newType
     # if @type isnt 'template'
-    @parentView.setNextBtn('finish')
+    btnText = if @parentView.options.newType is 'quick' then desc.next else desc.finish
+    @parentView.setNextBtn('finish',btnText)
     @parentView.disableNext()
     @appPath.html desc.newProjectDefaultPath
 
