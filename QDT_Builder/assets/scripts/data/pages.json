@@ -1,0 +1,58 @@
+[
+  {
+    "name": "index",
+    "components": [
+      {
+        "title": "header",
+        "title_zh": "页头",
+        "unique": true,
+        "fixed": "top",
+        "fields": {
+          "id": {
+            "label": "ID:",
+            "type": "input",
+            "value": "header"
+          },
+          "text": {
+            "label": "标题:",
+            "type": "input",
+            "value": "文字标题"
+          },
+          "type": {
+            "label": "类型:",
+            "type": "select",
+            "value": [
+              {
+                "value": "whitbutton",
+                "label": "带有按钮",
+                "selected": false
+              },
+              {
+                "value": "default",
+                "label": "默认",
+                "selected": true
+              }
+            ]
+          },
+          "options": {
+            "type": "options",
+            "value": {
+              "leftbtn": {
+                "label": "左按钮描述",
+                "type": "input",
+                "value": "文字描述",
+                "require": false
+              },
+              "rightbtn": {
+                "label": "右按钮描述",
+                "type": "input",
+                "value": "文字描述",
+                "require":false 
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+]

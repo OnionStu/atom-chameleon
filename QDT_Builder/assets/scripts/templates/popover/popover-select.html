@@ -1,0 +1,10 @@
+<div class="form-row">
+  <label for="<%- name %>"><%= label %></label>
+  <select class="field" name="<%- name %>" id="<%- name %>" data-type="<%- type %>">
+    <% _.each(value, function(v, k) { %>
+      <option value="<%- v['value'] %>" <% if (v['selected']) { %> selected <% } %>>
+        <%= v['label'] %>
+      </option>
+    <% }) %>
+  </select>
+</div>

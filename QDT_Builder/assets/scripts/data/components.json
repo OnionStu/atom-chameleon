@@ -1,0 +1,89 @@
+[
+  {
+    "title": "header",
+    "title_zh": "页头",
+    "unique": true,
+    "fixed": "top",
+    "fields": {
+      "id": {
+        "label": "ID:",
+        "type": "input",
+        "value": "header"
+      },
+      "text": {
+        "label": "标题:",
+        "type": "input",
+        "value": "文字标题"
+      },
+      "type": {
+        "label": "类型:",
+        "type": "select",
+        "value": [
+          {
+            "value": "whitbutton",
+            "label": "带有按钮",
+            "selected": false
+          },
+          {
+            "value": "default",
+            "label": "默认",
+            "selected": true
+          }
+        ]
+      },
+      "options": {
+        "type": "options",
+        "value": {
+          "leftbtn": {
+            "label": "左按钮描述",
+            "type": "input",
+            "value": "文字描述",
+            "require": false
+          },
+          "rightbtn": {
+            "label": "右按钮描述",
+            "type": "input",
+            "value": "文字描述",
+            "require":false 
+          }
+        }
+      }
+    }
+  },
+  {
+    "title": "tab",
+    "title_zh": "选项卡",
+    "unique": false,
+    "fixed": false,
+    "fields": {
+      "id": {
+        "label": "ID:",
+        "type": "input",
+        "value": "tab"
+      },
+      "text": {
+        "label": "标题:",
+        "type": "input",
+        "value": "文字标题"
+      }
+    }
+  },
+  {
+    "title": "content-list",
+    "title_zh": "内容列表",
+    "unique": false,
+    "fixed": false,
+    "fields": {
+      "id": {
+        "label": "ID:",
+        "type": "input",
+        "value": "content-list"
+      },
+      "sourceURL": {
+        "label": "数据源:",
+        "type": "input",
+        "value": "http://localhost:3000/list"
+      }
+    }
+  }
+]

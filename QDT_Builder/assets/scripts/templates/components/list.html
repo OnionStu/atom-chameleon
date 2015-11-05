@@ -1,0 +1,28 @@
+<div class="list-block media-list <%= fields.id.value %>">
+  <ul class="list-container">
+  </ul>
+</div>
+<script>
+  function getList(url) {
+    $.ajax({
+      url: url,
+      success: function(data) {
+        $.each(data, function(){
+          var itemTemp = '<li>' + 
+                            '<a href="#" class="item-link item-content">'+
+                              '<div class="item-media"><img src="http://gqianniu.alicdn.com/bao/uploaded/i4//tfscom/i3/TB10LfcHFXXXXXKXpXXXXXXXXXX_!!0-item_pic.jpg_250x250q60.jpg" style="width: 2.2rem;"></div>'+
+                              '<div class="item-inner">'+
+                                '<div class="item-title-row">'+
+                                  '<div class="item-title">' + this.title + '</div>'+
+                                '</div>'+
+                                '<div class="item-subtitle">' + this.subtitle + '</div>'+
+                              '</div>'+
+                            '</a>'+
+                          '</li>';
+          $('.<%= fields.id.value %> .list-container').append(itemTemp)
+        })
+      }
+    }) 
+  }
+  getList('<%= fields.sourceURL.value %>');
+</script>
