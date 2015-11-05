@@ -21,7 +21,9 @@ module.exports = Util =
      atom.views.getView(atom.workspace).dispatchEvent(new CustomEvent(command, bubbles: true, cancelable: true))
 
   getIndexHtmlCore: (info) ->
-    info?.name ?= 'Module'
+    info ?=
+      name: 'Module'
+    info.name ?= 'Module'
     """
     <!DOCTYPE html>
     <html lang="zh-CN">
@@ -132,7 +134,7 @@ module.exports = Util =
       server.listen(port);
       console.log('ok, http://localhost:' + port)
       @eventEmitter().emit 'server_on', 'http://localhost:' + port
-      
+
     return 'http://localhost:' + a
 
   stopServer: (server, cb) ->
@@ -367,4 +369,3 @@ module.exports = Util =
 
   eventEmitter: () ->
     @emitter
-

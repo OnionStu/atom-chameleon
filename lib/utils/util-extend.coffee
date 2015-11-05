@@ -41,3 +41,22 @@ module.exports = UtilExtend =
 		else
 			object['error'] = false
 		return object
+
+	dateFormat:(formatStr,dateObject) ->
+		str = formatStr
+		week = ["日","一","二","三","四","五","六"]
+		str=str.replace(/yyyy|YYYY/,dateObject.getFullYear())
+		str=str.replace(/yy|YY/,if (dateObject.getYear() % 100) > 9 then (dateObject.getYear() % 100).toString() else '0' + (dateObject.getYear() % 100))
+		str=str.replace(/MM/,if dateObject.getMonth()>9 then dateObject.getMonth().toString() else '0' + dateObject.getMonth())
+		str=str.replace(/M/g,dateObject.getMonth())
+		str=str.replace(/w|W/g,week[dateObject.getDay()])
+		str=str.replace(/dd|DD/,if dateObject.getDate()>9 then dateObject.getDate().toString() else '0' + dateObject.getDate())
+		str=str.replace(/d|D/g,dateObject.getDate())
+		str=str.replace(/hh|HH/,if dateObject.getHours()>9 then dateObject.getHours().toString() else '0' + dateObject.getHours())
+		str=str.replace(/h|H/g,dateObject.getHours())
+		str=str.replace(/mm/,if dateObject.getMinutes()>9 then dateObject.getMinutes().toString() else '0' + dateObject.getMinutes())
+		str=str.replace(/m/g,dateObject.getMinutes())
+		str=str.replace(/ss|SS/,if dateObject.getSeconds()>9 then dateObject.getSeconds().toString() else '0' + dateObject.getSeconds())
+		str=str.replace(/s|S/g,dateObject.getSeconds())
+		console.log str
+		str

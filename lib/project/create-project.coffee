@@ -55,7 +55,7 @@ module.exports = CreateProject =
       when "quick" then @openBuilder options
 
   openBuilder: (options) ->
-    options.builderConfig=[]
+    options.builderConfig?=[]
     Builder.activate(options)
     @chameleonBox.closeView()
 

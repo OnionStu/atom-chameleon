@@ -79,8 +79,9 @@ module.exports = ModuleManager =
 
   CreateSimpleModule: (options) ->
     console.log 'SimpleModule'
-    options.builderConfig=[]
-    Builder.activate(options)
+    options.builderConfig?=[]
+    console.log options
+    Builder.activate(options);
     @chameleonBox.closeView()
 
   CreateTemplateModule: (options) ->
