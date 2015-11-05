@@ -34,12 +34,12 @@ class RapidDevModeView extends ScrollView
     @projectInfos = {}
 
     @addProjectListItem path for path in @findProject()
-    @addProjectListItem
     @on 'click', '.settingsItem', (e) =>
       @menuClick(e.currentTarget)
 
     @codePackList.on 'click', '.editModule', (e) =>
       @openBuilder(e)
+
 
   attached: ->
     console.log 'start'
@@ -87,7 +87,6 @@ class RapidDevModeView extends ScrollView
       liStr = "<li class='settingsItem' data-projectpath='#{path}' data-id='#{config.identifier}'><a class='icon icon-file-submodule'>#{config.name}</a></li>"
       @projectInfos[config.identifier] = config
       @other.before liStr
-      @toggleAddBtn()
 
   addModuleItem: (projectPath,modules) ->
     htmlStr = ''
@@ -108,6 +107,7 @@ class RapidDevModeView extends ScrollView
     projectID = target.dataset.id
     config = @projectInfos[projectID]
     console.log projectPath
+    @toggleAddBtn()
     @codePackList.empty()
     @addModuleItem projectPath,config.modules
 
