@@ -8,6 +8,7 @@
   <script>
     var getMessage = function(e) {
       window.message = e;
+      console.log(window.message)
       window.removeEventListener('message', getMessage, false);
     }
     window.addEventListener('message', getMessage, false);
@@ -17,13 +18,7 @@
   <div class="app-header">
     <img class="app-logo" src="assets/images/logo.png" alt="logo">
     <div class="btn-group">
-      <a href="#"><span class="icon menu" ></span></a>
-      <a href="#"><span class="icon help" ></span></a>
-      <a href="#"><span class="icon ring" ></span></a>
-      <a href="#"><span class="icon qrcode" ></span></a>
-      <a href="#"><span class="icon project" ></span><span class="description">这是一首简单的小情歌</span></a>
-      <a href="#"><span class="icon preview" ></span><span class="description">预览</span></a>
-      <a href="#" id="publish"><span class="icon publish" ></span><span class="description">发布</span></a>
+      <a id="publish"><span class="icon publish" ></span><span class="description">保存</span></a>
     </div>
   </div>
   <div id="app">
