@@ -11,7 +11,7 @@ loadingMask = require '../utils/loadingMask'
 
 class PublishModuleInfoView extends View
   moduleConfigFileName: desc.moduleConfigFileName
-  projectConfigFileName: desc.ProjectConfigFileName
+  projectConfigFileName: desc.projectConfigFileName
   moduleLogoFileName: desc.moduleLogoFileName
   moduleLocatFileName: desc.moduleLocatFileName
   moduleIdentifer:null#模块标识

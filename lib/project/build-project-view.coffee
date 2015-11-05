@@ -14,7 +14,7 @@ class BuildProjectInfoView extends View
   ticketTimer:{}
   buildPlatformId:{}
   moduleConfigFileName: desc.moduleConfigFileName
-  projectConfigFileName: desc.ProjectConfigFileName
+  projectConfigFileName: desc.projectConfigFileName
   moduleLogoFileName: desc.moduleLogoFileName
   moduleLocatFileName: desc.moduleLocatFileName
   selectProjectTxt:"请选择变色龙项目"
@@ -38,6 +38,9 @@ class BuildProjectInfoView extends View
   projectId:null
   httpType:"http"
   engineMessage:null
+  buildingId:null
+  timer:null
+  buildStep:1 #1、表示上传图片 2、表示调构建接口 3、表示见识构建结果 4、表示显示结果
   step:1 #1、代表第一步选择应用  2、为选择选择平台 3、为选择引擎 4、为选择引擎的版本 5、为引擎基本信息
          #6、应用基本信息，上传各个分辨率的封面图片  7、 选择模块 8、选择插件 9、证书管理 10、构建预览
   #分页都还没做
@@ -50,7 +53,7 @@ class BuildProjectInfoView extends View
           @select class: '', outlet: 'selectProject'
       @div outlet: 'platformSelectView',class:'form-horizontal form_width', =>
         @div class: 'col-xs-12', =>
-          @label "选择需要构建的应用平台"
+          @label "选择需要构建的应用平台",class:"title-2-level"
         @div class: 'col-xs-6 text-center padding-top', =>
           @div class: 'col-xs-12 text-center', =>
             @div class: 'selectBuildTemplate active',value:'iOS', =>
@@ -65,20 +68,20 @@ class BuildProjectInfoView extends View
               @label "Android"
       @div outlet:"engineTableView",class:'form-horizontal form_width', =>
         @div class: "col-xs-12", =>
-          @label "引擎选择"
+          @label "引擎选择",class:"title-2-level"
         @div class: "col-xs-12", =>
-          @button "共有引擎", value:"PUBLIC" ,class:"public-view click-platform platformBtn",click:"platformBtnClick"
-          @button "私有引擎", value:"PRIVATE",class:"private-view platformBtn",click:"platformBtnClick"
+          @label "共有引擎", value:"PUBLIC" ,class:"public-view click-platform platformBtn",click:"platformBtnClick"
+          @label "私有引擎", value:"PRIVATE",class:"private-view platformBtn",click:"platformBtnClick"
           @div class:"div-table-view", =>
             @table =>
               @thead =>
                 @tr =>
-                  @th "标识",class:"th-width-90"
-                  @th "平台",class:"th-width-50"
-                  @th "引擎名称",class:"th-width-50"
-                  @th "描述",class:"th-width-90"
+                  @th "标识",class:"th-identify"
+                  @th "平台",class:"th-platform"
+                  @th "引擎名称",class:"th-engine"
+                  @th "描述",class:"th-desc"
                   # @th "引擎大小",class:"th-width-50"
-                  @th "更新时间",class:"th-width-80"
+                  @th "更新时间",class:"th-update-time"
                   @th "操作"
               @tbody outlet:"engineItemShowView" #=>
                 # @tr =>
@@ -91,19 +94,20 @@ class BuildProjectInfoView extends View
                 #   @td =>
                 #     @button "选择"
           @div class: "",=>
-            @button "上一页",class:"engineListClass prevPageButton"
-            @button "下一页",class:"engineListClass nextPageButton"
+            @button "上一页",class:"btn engineListClass prevPageButton"
+            @button "下一页",class:"btn engineListClass nextPageButton"
       @div outlet:"engineVersionView",class:'form-horizontal form_width',=>
         @div =>
-          @label "引擎名称",outlet:"enginName"
+          @label "引擎版本选择:"
+          @label outlet:"enginName"
         @div  =>
           @table =>
             @thead =>
               @tr =>
-                @th "版本"
-                @th "文件大小"
-                @th "发布时间"
-                @th "更新内容"
+                @th "版本",class:"th-engine"
+                @th "文件大小",class:"th-engine"
+                @th "发布时间",class:"th-desc"
+                @th "更新内容",class:"th-desc"
                 @th "操作"
             @tbody outlet:"engineVersionItemView" #=>
               # @tr =>
@@ -114,8 +118,8 @@ class BuildProjectInfoView extends View
               #   @td =>
               #     @a "选择"
         @div class: "",=>
-          @button "上一页",class:"engineVersionListClass prevPageButton"
-          @button "下一页",class:"engineVersionListClass nextPageButton"
+          @button "上一页",class:"btn engineVersionListClass prevPageButton"
+          @button "下一页",class:"btn engineVersionListClass nextPageButton"
 
       @div outlet:"engineBasicMessageView",class:"form-horizontal form_width engineBasicMessageView",=>
         @div class: "col-xs-12", =>
@@ -171,27 +175,28 @@ class BuildProjectInfoView extends View
 
       @div outlet:"selectModuleView",class:"form-horizontal form_width", =>
         @div =>
-          @label "关联模块"
+          @label "关联模块",class:"title-2-level"
         @div =>
-          @label "主模块:"
-          @label outlet:"mainModuleTag"
-        @div =>
-          @label "已选模块:"
-          @label outlet:"modulesTag"
+          @div =>
+            @label "主模块:"
+            @label outlet:"mainModuleTag"
+          @div =>
+            @label "已选模块:"
+            @label outlet:"modulesTag"
         @div =>
           @table =>
             @thead =>
               @tr =>
-                @th "名字"
-                @th "版本"
+                @th "名字",class:"th-desc"
+                @th "版本",class:"th-desc"
                 @th "操作"
             @tbody outlet:"modulesShowView",class:"modulesShowView"
         @div class: "",=>
-          @button "上一页",class:"moduleListClass prevPageButton"
-          @button "下一页",class:"moduleListClass nextPageButton"
+          @button "上一页",class:"btn moduleListClass prevPageButton"
+          @button "下一页",class:"btn moduleListClass nextPageButton"
       @div outlet:"selectPluginView",class:"form-horizontal form_width", =>
         @div =>
-          @label "关联插件"
+          @label "关联插件",class:"title-2-level"
         @div =>
           @label "已关联的插件:"
           @label outlet:"pluginsTag"
@@ -204,53 +209,70 @@ class BuildProjectInfoView extends View
                 @th "操作"
             @tbody outlet:"pluginsShowView",class:"pluginsShowView"
         @div class: "",=>
-          @button "上一页",class:"pluginListClass prevPageButton"
-          @button "下一页",class:"pluginListClass nextPageButton"
+          @button "上一页",class:"btn pluginListClass prevPageButton"
+          @button "下一页",class:"btn pluginListClass nextPageButton"
       @div outlet:"certSelectView",class:"form-horizontal form_width",=>
         @div =>
-          @table =>
-            @tr =>
-              @th "Android"
-              @th "iOS发布证书"
-              @th "iOS企业证书"
-        @div outlet:"androidCertSelectView",=>
-          @div class:"col-xs-12",=>
-            @label "Keystore别名" ,class:"certInfo-label"
-            @div class: 'inline-view', =>
-              @subview 'keystoreName', new TextEditorView(mini: true,placeholderText: 'moduleName...')
-          @div class:"col-xs-12", =>
-            @label "Android证书文件",class:"certInfo-label"
-            @div class: 'inline-view', =>
-              @subview 'keystoreName', new TextEditorView(mini: true,placeholderText: 'moduleName...')
-          @div class:"col-xs-12", =>
-            @label "Android证书存储库口令",class:"certInfo-label"
-            @div class: 'inline-view', =>
-              @subview 'keystoreName', new TextEditorView(mini: true,placeholderText: 'moduleName...')
-          @div class:"col-xs-12", =>
-            @label "Android证书密钥库口令",class:"certInfo-label"
-            @div class: 'inline-view', =>
-              @subview 'keystoreName', new TextEditorView(mini: true,placeholderText: 'moduleName...')
-        @div outlet:"iosPersonCertSelectView", =>
-          @div class:"col-xs-12",=>
-            @label "App ID",class:"certInfo-label"
-            @div class: 'inline-view', =>
-              @subview 'keystoreName', new TextEditorView(mini: true,placeholderText: 'moduleName...')
-          @div class:"col-xs-12",=>
-            @label "发布证书",class:"certInfo-label"
-            @div class: 'inline-view', =>
-              @subview 'keystoreName', new TextEditorView(mini: true,placeholderText: 'moduleName...')
-          @div class:"col-xs-12",=>
-            @label "证书密码",class:"certInfo-label"
-            @div class: 'inline-view', =>
-              @subview 'keystoreName', new TextEditorView(mini: true,placeholderText: 'moduleName...')
-          @div class:"col-xs-12",=>
-            @label "证书解释文件",class:"certInfo-label"
-            @div class: 'inline-view', =>
-              @subview 'keystoreName', new TextEditorView(mini: true,placeholderText: 'moduleName...')
-        @div class: "col-xs-12", =>
-          @button "检验证书"
+          @label "证书管理",class:"title-2-level"
+        @div outlet:"androidCertSelectView", =>
+          @div class:"", =>
+            @label "Android证书"
+          @div class:"border-style",=>
+            @div class:"col-xs-12",=>
+              @label "Keystore别名" ,class:"certInfo-label"
+              @div class: 'inline-view', =>
+                @subview 'keystoreName', new TextEditorView(mini: true,placeholderText: 'moduleName...')
+            @div class:"col-xs-12", =>
+              @label "Android证书文件",class:"certInfo-label"
+              @div class: 'inline-view', =>
+                @subview 'keystoreName', new TextEditorView(mini: true,placeholderText: 'moduleName...')
+            @div class:"col-xs-12", =>
+              @label "Android证书存储库口令",class:"certInfo-label"
+              @div class: 'inline-view', =>
+                @subview 'keystoreName', new TextEditorView(mini: true,placeholderText: 'moduleName...')
+            @div class:"col-xs-12", =>
+              @label "Android证书密钥库口令",class:"certInfo-label"
+              @div class: 'inline-view', =>
+                @subview 'keystoreName', new TextEditorView(mini: true,placeholderText: 'moduleName...')
+            @div class:"col-xs-12 text-right-align",=>
+              @button "检验证书",class:"btn"
+        @div outlet:"iosCertSelectView", =>
+          @div =>
+            @label "iOS发布证书",class:"iOSPersonCert iOSCertTh "
+            @label "iOS企业证书",class:"companyPersonCert iOSCertTh "
+          @div class:"border-style", =>
+            @div class:"col-xs-12",=>
+              @label "App ID",class:"certInfo-label"
+              @div class: 'inline-view', =>
+                @subview 'keystoreName', new TextEditorView(mini: true,placeholderText: 'moduleName...')
+            @div class:"col-xs-12",=>
+              @label "发布证书",class:"certInfo-label"
+              @div class: 'inline-view', =>
+                @subview 'keystoreName', new TextEditorView(mini: true,placeholderText: 'moduleName...')
+            @div class:"col-xs-12",=>
+              @label "证书密码",class:"certInfo-label"
+              @div class: 'inline-view', =>
+                @subview 'keystoreName', new TextEditorView(mini: true,placeholderText: 'moduleName...')
+            @div class:"col-xs-12",=>
+              @label "证书解释文件",class:"certInfo-label"
+              @div class: 'inline-view', =>
+                @subview 'keystoreName', new TextEditorView(mini: true,placeholderText: 'moduleName...')
+            @div class:"col-xs-12 text-right-align",=>
+              @button "检验证书",class:"btn"
       @div outlet:"buildReView", =>
         @button "生成安装包",click:"buildAppMethod"
+      @div outlet:"buildAppView", =>
+        @div outlet:"uploadImageStepView" ,=>
+          @label "正在上传图片..."
+        @div outlet:"sendBuildRequestView", =>
+          @label "正在请求构建,请耐心等待..."
+        @div outlet:"waitingBuildResultView", =>
+          @label outlet:"buildingTips"
+          # @label outlet:"needTime"
+        @div outlet:"buildResultView" , =>
+          @div =>
+            @img outlet:"imgForDownloadApp"
+            @a outlet:"urlForDownloadApp"
 
   # 点击平台图片触发事件
   clickIcon:(e) ->
@@ -283,6 +305,7 @@ class BuildProjectInfoView extends View
     @selectPluginView.hide()
     @certSelectView.hide()
     @buildReView.hide()
+    @buildAppView.hide()
     projectPaths = atom.project.getPaths()
     projectNum = projectPaths.length
     @selectProject.empty()
@@ -299,6 +322,7 @@ class BuildProjectInfoView extends View
     # 绑定点击上一页下一页事件
     @.find('.prevPageButton').on 'click',(e) => @prevPageClick(e)
     @.find('.nextPageButton').on 'click',(e) => @nextPageClick(e)
+    @.find('.iOSCertTh').on 'click',(e) => @clickIosCert(e)
 
   # 点击下一步按钮触发事件
   nextBtnClick:() ->
@@ -344,15 +368,15 @@ class BuildProjectInfoView extends View
       @initProjectBasicMessageViewStep5_1()
       @step = 6
     else if @step is 6 # 6、模块选择
-      callBack = =>
-        @projectBasicMessageView.hide()
-        @selectModuleView.show()
-        @pageSize = 4
-        @pageIndex = 1
-        @initSelectModuleView([],@pageIndex,@pageSize)
-        @step = 7
-      @uploadFileSync(callBack)
-    else if @step is 7
+      # callBack = =>
+      @projectBasicMessageView.hide()
+      @selectModuleView.show()
+      @pageSize = 4
+      @pageIndex = 1
+      @initSelectModuleView([],@pageIndex,@pageSize)
+      @step = 7
+      # @uploadFileSync(callBack)
+    else if @step is 7 # 7、插件选择
       if !@mainModuleId
         alert @selectModuleTxt
         return
@@ -362,17 +386,42 @@ class BuildProjectInfoView extends View
       @selectPluginView.show()
       @initSelectPluginView([],@pageIndex,@pageSize)
       @step = 8
-    else if @step is 8
+    else if @step is 8 # 8、
       @selectPluginView.hide()
+      @initCertView()
       @certSelectView.show()
       @step = 9
     else if @step is 9
       @certSelectView.hide()
       @buildReView.show()
       @step = 10
+      @parentView.nextBtn.hide()
+
+  #初始化证书选择
+  initCertView:() ->
+    if @buildPlatform is "iOS"
+      @androidCertSelectView.hide()
+      @iosCertSelectView.show()
+      @.find(".companyPersonCert").addClass("click-cert-label")
+    else
+      @iosCertSelectView.hide()
+      @androidCertSelectView.show()
+
+  clickIosCert:(e) ->
+    console.log "xss"
+    el = e.currentTarget
+    if $(el).hasClass("click-cert-label")
+      @.find('.iOSCertTh').addClass("click-cert-label")
+      $(el).removeClass("click-cert-label")
 
   #上传logo的图片
   uploadFileSync:(callBack) ->
+    @buildReView.hide()
+    @uploadImageStepView.show()
+    @sendBuildRequestView.hide()
+    @waitingBuildResultView.hide()
+    @buildResultView.hide()
+    @buildAppView.show()
     if fs.existsSync(@logoImage)
       params =
         formData: {
@@ -422,55 +471,123 @@ class BuildProjectInfoView extends View
       callBack()
 
   buildAppMethod:() ->
-    data = {}
-    certInfo =
-      "certSystem":@buildPlatform
-      "appId":@projectId
-      "certAlias":""  #ios 与android有区别
-    data["certInfo"] = certInfo
-    data["platform"] = @buildPlatform
-    data["appId"] = @projectId
-    data["identifier"] = @projectConfigContent["identifier"]
-    data["logoFileId"] = @logoImage
-    data["classify"] = "appdisplay" #可不填
-    data["status"] = "OFFLINE" #
-    data["version"] = ""
-    data["createTime"] = UtilExtend.dateFormat("YYYY-MM-DD HH:mm:ss",new Date()) #当前时间
-    data["images"] = @imageList #文件id
-    if !@projectId
-      data["channel"] = "QDT"
-    modules = []
-    formatModuleList = (key,item) =>
-      tmp =
-        "moduleVersionId":item["moduleVersionId"]
-        "moduleId": item["moduleId"]
-        "appVersionId":""
-        "appId":""
-      modules.push(tmp)
-    formatModuleList key,item for key,item of @moduleList
-    plugins = []
-    formatPlugineList = (key,item) =>
-      tmp =
-        "pluginVersionId":item["pluginVersionId"]
-        "pluginId": item["pluginId"]
-        "appVersionId":""
-        "appId":""
-      plugins.push(tmp)
-    formatPluginList key,item for key,item of @pluginList
-    data["moduleList"] =modules
-    data["pluginList"] =plugins
-    data["mainModuleId"] = @mainModuleId
-    data["engineId"] = @engineMessage["engineId"]
-    data["engineVersionId"] = @engineMessage["id"]
-    console.log data
+    callBack = =>
+      @uploadImageStepView.hide()
+      @sendBuildRequestView.show()
+      platform = "IOS"
+      if @buildPlatform is "Android"
+        platform = "ANDROID"
+      data = {}
+      certInfo =
+        "certSystem":platform
+        "appId":@projectId
+        "certAlias":""  #ios 与android有区别
+      data["certInfo"] = certInfo
+      data["platform"] = platform
+      data["appId"] = @projectId
+      data["identifier"] = @projectConfigContent["identifier"]
+      data["logoFileId"] = @logoImage
+      data["classify"] = "appdisplay" #可不填
+      data["status"] = "OFFLINE" #
+      data["appName"] = @projectConfigContent["name"]
+      data["version"] = "3.0.0"
+      data["createTime"] = UtilExtend.dateFormat("YYYY-MM-DD HH:mm:ss",new Date()) #当前时间
+      data["images"] = @imageList #文件id
+      modules = []
+      formatModuleList = (key,item) =>
+        tmp =
+          "moduleVersionId":item["moduleVersionId"]
+          "moduleId": item["moduleId"]
+          "appVersionId":""
+          "appId":""
+        modules.push(tmp)
+      formatModuleList key,item for key,item of @moduleList
+      plugins = []
+      formatPlugineList = (key,item) =>
+        tmp =
+          "pluginVersionId":item["pluginVersionId"]
+          "pluginId": item["pluginId"]
+          "appVersionId":""
+          "appId":""
+        plugins.push(tmp)
+      formatPluginList key,item for key,item of @pluginList
+      data["moduleList"] = modules
+      data["pluginList"] = plugins
+      data["mainModuleId"] = @mainModuleId
+      data["engineId"] = @engineMessage["engineId"]
+      data["engineVersionId"] = @engineMessage["id"]
+      console.log data
+      params =
+        sendCookie:true
+        body: JSON.stringify(data)
+        success:(data) =>
+          console.log "requestBuildApp data = #{data}"
+          @buildingId = data["buildId"]
+          # TODO: 监听构建结果
+          @sendBuildRequestView.hide()
+          @waitingBuildResultView.show()
+          @checkBuildStatusByBuildId(@buildingId)
+        error:(msg) =>
+          console.log msg
+      client.requestBuildApp(params)
+    @uploadFileSync(callBack)
+
+  checkBuildStatusByBuildId:(buildingId)->
     params =
       sendCookie:true
-      form: data
       success:(data) =>
-        console.log "requestBuildApp data = #{data}"
+        console.log data
+        waitTime = 0
+        if data["code"] == -1
+          alert "构建不存在"
+          return
+        if data["status"] == "WAITING"
+          waitTime = data["waitingTime"]
+          if waitTime == 0
+            @buildingTips.html("准备开始构建...")
+          else
+            @buildingTips.html("还需等待构建<span class='waitTime'>#{waitTime}</span>秒")
+          loopTime = 25 # 调服务器时间 的时间间隔
+          if waitTime < loopTime
+            loopTime = waitTime
+            if waitTime == 0
+              loopTime = loopTime + 2
+        else if data["status"] == "BUILDING"
+          waitTime = data['remainTime']
+          @buildingTips.html("正在构建<span class='waitTime'>#{waitTime}</span>秒")
+          loopTime = 25
+          if waitTime < loopTime
+            loopTime = waitTime
+        else if data["status"] == "SUCCESS"
+          @waitingBuildResultView.hide()
+          @buildResultView.show()
+          qr1 = qrCode.qrcode(8, 'L')
+          qr1.addData(data['url'])
+          qr1.make()
+          img1 = qr1.createImgTag(4)
+          @imgForDownloadApp.attr("src",$(img1).attr('src'))
+          @urlForDownloadApp.attr('href',data['url'])
+          @urlForDownloadApp.html("app下载地址")
+        else
+          alert "构建失败"
+          return
+        @timer = setTimeout =>
+          @timerMethod buildingId,loopTime
+        ,1000
       error:(msg) =>
         console.log msg
-    client.requestBuildApp(params)
+    client.getBuildUrl(params,buildingId)
+
+  timerMethod: (buildingId,loopTime) ->
+    if loopTime <= 0
+      @checkBuildStatusByBuildId(buildingId)
+    else
+      number = parseInt(@.find(".waitTime").html()) - 1
+      @.find(".waitTime").html(number)
+      loopTime = loopTime - 1
+      @timer = setTimeout =>
+        @timerMethod buildingId,loopTime
+      ,1000
 
   # 初始化插件
   # array 需要过滤掉的插件数据
@@ -560,9 +677,9 @@ class BuildProjectInfoView extends View
                   </select>
               </td>
               <td>
-              <button value="#{item["id"]}">选择</button>
-              <button value="#{item["id"]}" class="mainModuleTag">主模块</button>
-              <button value="#{item["id"]}" class="cancelSelect">取消</button>
+              <a value="#{item["id"]}" class="a-padding">选择</a>
+              <a value="#{item["id"]}" class="mainModuleTag a-padding">主模块</a>
+              <a value="#{item["id"]}" class="cancelSelect a-padding">取消</a>
               </td>
             </tr>
             """
@@ -610,7 +727,7 @@ class BuildProjectInfoView extends View
             # console.log @moduleList
             @mainModuleTag.html(mainModuleStr)
             @modulesTag.html(modulesTagArray.join(""))
-          @.find(".modulesShowView").on "click","button",(e) => clickModuleShowViewBtn(e)
+          @.find(".modulesShowView").on "click","a",(e) => clickModuleShowViewBtn(e)
         else
           alert "没有模块"
       error:(msg) =>
@@ -788,6 +905,7 @@ class BuildProjectInfoView extends View
     else if @step is 10
       @buildReView.hide()
       @certSelectView.show()
+      @parentView.nextBtn.show()
       @step = 9
 
   getList:(el,pageIndex,pageSize) ->
@@ -815,9 +933,6 @@ class BuildProjectInfoView extends View
       return
     console.log @pageIndex
     @getList(el,@pageIndex,@pageSize)
-
-
-
 
   # 获取引擎列表
   getApiEngingList:(pageIndex,pageSize) ->
@@ -847,7 +962,7 @@ class BuildProjectInfoView extends View
               <td>#{item['name']}</td>
               <td>#{item['describe']}</td>
               <td>#{item['updateTime']}</td>
-              <td><a value="#{item['id']}" class="engineSelectA">选择</a></td>
+              <td><a value="#{item['id']}" text="#{item['name']}" class="engineSelectA">选择</a></td>
               </tr>
             """
             htmlArray.push(str)
@@ -871,12 +986,14 @@ class BuildProjectInfoView extends View
     @step = 4
     @engineTableView.hide()
     @engineVersionView.show()
+
     #初始化分页信息
     @pageSize = 4
     @pageIndex = 1
     @pageTotal = 1
     el = e.currentTarget
     @engineId = $(el).attr("value")
+    @enginName.html("&nbsp;&nbsp;"+$(el).attr("text"))
     console.log @engineId
     @getEngineVersionList(@pageIndex,@pageSize)
 
@@ -985,6 +1102,10 @@ class BuildProjectInfoView extends View
           alert @selectProjectTxt
           return
         # console.log filePath
+        if !fs.existsSync(filePath)
+          @.find("select option:first").prop("selected","selected")
+          alert "请选择正确的应用"
+          return
         obj = Util.readJsonSync filePath
         if obj
           projectName = pathM.basename path
@@ -992,7 +1113,7 @@ class BuildProjectInfoView extends View
           @.find("select option[value=' ']").remove()
           @selectProject.prepend optionStr
         else
-          alert "请选择变色龙应用"
+          alert desc.selectCorrectProject
         @selectProject.get(0).selectedIndex = 0
       else
         @selectProject.get(0).selectedIndex = 0
@@ -1169,14 +1290,14 @@ class BuildProjectInfoView extends View
       images = @projectLastContent["base"]["images"]
       """
       <li>
-      <div class='ipad-scross-launch' >
-      <img class='ipad-scross-launch-img' src='#{images["android960_640"]}' value='android960_640'>
+      <div class='android-scross-launch' >
+      <img class='android-scross-launch-img' src='#{images["android960_640"]}' value='android960_640'>
       </div>
       <p>960 X 640</p>
       </li>&nbsp;
       <li>
-      <div class='ipad-scross-launch' >
-      <img class='ipad-scross-launch-img' src='#{images["android1136_640"]}' value='android1136_640'>
+      <div class='android-scross-launch' >
+      <img class='android-scross-launch-img' src='#{images["android1136_640"]}' value='android1136_640'>
       </div>
       <p>1136 X 640</p>
       </li>&nbsp;
@@ -1185,14 +1306,14 @@ class BuildProjectInfoView extends View
       androidSrc = desc.getImgPath "default_app_android_scross_logo.png"
       """
       <li>
-      <div class='ipad-scross-launch' >
-      <img class='ipad-scross-launch-img' src='#{androidSrc}' value='android960_640'>
+      <div class='android-scross-launch' >
+      <img class='android-scross-launch-img' src='#{androidSrc}' value='android960_640'>
       </div>
       <p>960 X 640</p>
       </li>&nbsp;
       <li>
-      <div class='ipad-scross-launch' >
-      <img class='ipad-scross-launch-img' src='#{androidSrc}' value='android1136_640'>
+      <div class='android-scross-launch' >
+      <img class='android-scross-launch-img' src='#{androidSrc}' value='android1136_640'>
       </div>
       <p>1136 X 640</p>
       </li>&nbsp;

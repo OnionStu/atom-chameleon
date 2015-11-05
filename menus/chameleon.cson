@@ -98,8 +98,16 @@
       #   ]
       # }
       {
+        'label':'快速开发'
+        'command':'chameleon:rapid-dev'
+      }
+      {
         'label':'设置'
         'command':'chameleon:settings'
+      }
+      {
+        'label': 'builder'
+        'command': 'chameleon:builder'
       }
       # {
       #   'label':'登录'

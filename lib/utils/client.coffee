@@ -172,6 +172,6 @@ module.exports =
     @send params
 
   requestBuildApp:(params) ->
-    params.url = "app/upgrade_app"
+    params.url = "app/qdt/build"
     params.method = "POST"
     @send params

@@ -143,7 +143,7 @@ module.exports = ModuleManager =
   addProjectModule: (moduleInfo) ->
     console.log moduleInfo
     if moduleInfo.isChameleonProject is yes
-      projectConfigPath = pathM.join moduleInfo.modulePath, '..', desc.ProjectConfigFileName
+      projectConfigPath = pathM.join moduleInfo.modulePath, '..', desc.projectConfigFileName
       appConfig = Util.readJsonSync projectConfigPath
       appConfig.mainModule = moduleInfo.moduleId if !appConfig.mainModule
       appConfig.modules[moduleInfo.moduleId] = desc.minVersion

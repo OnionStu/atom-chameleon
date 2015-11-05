@@ -8,6 +8,9 @@ BuildProject = require './project/build-project'
 UploadProject = require './project/upload-project'
 # ConfigureGlobal = require './configure/global/global'
 Settings = require './settings/settings'
+RapidDev = require './rapid-dev/rapid-dev-mode'
+Builder = require './QDT-Builder/builder'
+OSCLogin = require './login/login-osc'
 util = require './utils/util'
 {CompositeDisposable} = require 'atom'
 
@@ -23,6 +26,8 @@ module.exports = Chameleon =
   createModule:null
   settings: null
   publishModule: null
+  OSCLogin: null
+  rapidDev: null
 
   activate: (state) ->
     @createProject = CreateProject
@@ -34,10 +39,14 @@ module.exports = Chameleon =
     # @configureGlobal = ConfigureGlobal
     @createModule = CreateModule
     @settings = Settings
+    @Builder = Builder
+    @OSCLogin = OSCLogin
     @publishModule = PublishModule
+    @rapidDev = RapidDev
 
     @subscriptions = new CompositeDisposable
 
+    @subscriptions.add atom.commands.add 'atom-workspace', 'chameleon:rapid-dev': => @openRapidDevMode()
     @subscriptions.add atom.commands.add 'atom-workspace', 'chameleon:settings': => @openSettings()
     @subscriptions.add atom.commands.add 'atom-workspace', 'chameleon:create-project': => @toggleCreateProject(state)
     @subscriptions.add atom.commands.add 'atom-workspace', 'chameleon:create-module' : => @toggleCreateModule(state)
@@ -50,11 +59,19 @@ module.exports = Chameleon =
     @subscriptions.add atom.commands.add 'atom-workspace', 'chameleon:configure-application': => @configureAppViewOpen(state)
     # @subscriptions.add atom.commands.add 'atom-workspace', 'chameleon:configure-global' : => @configureGlobalViewOpen(state)
     @subscriptions.add atom.commands.add 'atom-workspace', 'chameleon:openSource' : => @openSourceFolder()
+    @subscriptions.add atom.commands.add 'atom-workspace', 'chameleon:builder': => @openBuilder()
+    @subscriptions.add atom.commands.add 'atom-workspace', 'chameleon:openOschinaLogin': => @openOschinaLogin()
 
   deactivate: ->
     @subscriptions.dispose()
     @createProject.destroy()
     @login.destroy()
+
+  openOschinaLogin: ->
+    @OSCLogin.activate()
+
+  openBuilder: ->
+    @Builder.activate()
 
   openSettings: ->
     @settings.activate()
@@ -63,6 +80,10 @@ module.exports = Chameleon =
     @createProject.serialize()
     @login.serialize()
     @settings.serialize()
+    @Builder.serialize()
+
+  openRapidDevMode: ->
+    @rapidDev.activate()
 
   toggleCreateProject:(state) ->
     @createProject.activate(state)

@@ -206,12 +206,13 @@ atom-panel.modal > .login-box {
 
       .login-btn {
         .styleBtn();
-        width: 48%;
+        width: 30%;
         border: none;
         line-height: 28px;
-      }
-      .login-btn:last-child {
         margin-left: 10px;
+      }
+      .login-btn:first-child {
+        margin-left: 0;
       }
     }
     .login-row:last-child {
@@ -257,6 +258,7 @@ atom-panel.modal > .login-box {
     padding: 10px;
     display: inline-block;
     cursor: pointer;
+    vertical-align: top;
   }
   .openFolder {
     position: absolute;
@@ -684,6 +686,11 @@ atom-panel.modal > .login-box {
     border-image: linear-gradient(#282c34 10px, #181a1f 200px) 0 1 0 0 stretch;
     background: #282c34;
 
+    .title{
+      padding: 0 15px;
+      font-size: 1.2em;
+    }
+
     ul {
       margin: 0;
       padding: 0;
@@ -826,6 +833,10 @@ atom-panel.modal > .login-box {
   width: 100%;
   label {
     font-size: 12px;
+    color: gainsboro;
+  }
+  .title-2-level{
+    padding-bottom: 10px;
   }
   .label-width{
     width:20%;
@@ -835,16 +846,54 @@ atom-panel.modal > .login-box {
     display: inline-block;
     width: 75%;
   }
+  .platformBtn{
+    background-color: dimgrey;
+    border: 1px solid gray;
+    border-radius: 0px;
+    margin: 0px;
+    padding: 5px 20px;
+  }
+  .div-table-view{
+    border: 1px solid;
+    text-align: center;
+    border-color: gray;
+    padding: 20px 10px;
+    height: 250px;
+    overflow-y: auto;
+  }
   button {
-    border: #181b20;
-    margin-right: 5px;
-    width: 90px;
-    height: 28px;
-    background: #363948;
-    border-radius: 3px;
-    font-size: 12px;
-    border: #181b20;
-    // padding-right: 10px;
+    margin: 10px 5px;
+  }
+  table{
+    width: 100%;
+    border: 1px solid gray;
+  }
+  th,td{
+    word-break: break-all; //强制分行
+    border: 1px solid gray;
+    padding: 5px 5px;
+    text-align: center;
+  }
+  .th-identify{
+    width: 20%;
+  }
+  .th-platform{
+    width: 11%;
+  }
+  .th-engine{
+    width: 15%;
+  }
+  .th-desc{
+    width: 30%;
+  }
+  .th-update-time{
+    width: 14%;
+  }
+  .click-platform{
+    background-color: rgb(47, 51, 53);
+  }
+  .a-padding{
+    padding: 10px;
   }
   .label-logo{
     position: absolute;
@@ -863,34 +912,46 @@ atom-panel.modal > .login-box {
   .div-display-inline{
     display: -webkit-inline-box;
   }
-  .android-launch-img{
-    width: 67px;
-    margin-top: 15px;
+  // 手机框
+  .android-launch-img {
+    width: 68px;
+    margin-top: 13px;
+    margin-right: 1px;
+    height: 127px;
   }
   .android-scross-launch-img{
-    width: 126px;
+    width: 128px;
+    margin-right: 3px;
     margin-top: 4px;
-    height: 67px;
+    height: 68px;
   }
-  .iphone-launch-img{
-    width: 59px;
-    margin-left: 2px;
-    margin-top: 18px;
+  .ipad-launch-img {
+    width: 87px;
+    margin-top: 17px;
+    height: 139px;
   }
-  .iphone-scross-launch-img{
+  .ipad-scross-launch-img {
+    width: 140px;
+    height: 87px;
+    margin-top: 5px;
+    margin-right: 1px;
+  }
+
+  .iphone-launch-img {
+    width: 60px;
+    /* margin-left: 2px; */
+    margin-top: 20px;
+    height: 107px;
+    margin-left: 1px;
+  }
+
+  .iphone-scross-launch-img {
     width: 104px;
     margin-top: 5px;
+    height: 59px;
+    margin-right: 1px;
   }
-  .ipad-launch-img{
-    width: 87px;
-    margin-top: 20px;
-  }
-  .ipad-scross-launch-img{
-    width: 135px;
-    height: 85px;
-    margin-top: 5px;
-    margin-right: 2px;
-  }
+
   li{
     display: inline-block;
   }
@@ -910,85 +971,54 @@ atom-panel.modal > .login-box {
   .android-launch {
     text-align: center;
     display: inline-block;
-      position: relative;
-      background: url('atom://chameleon-qdt-atom/images/android_vertical.png');
-      background-size: 100% 100%;
-      width: 75px;
-      height: 155px;
-      cursor: pointer;
+    position: relative;
+    background: url('atom://chameleon-qdt-atom/images/android_vertical.png');
+    background-size: 100% 100%;
+    width: 75px;
+    height: 155px;
+    cursor: pointer;
   }
 
   .iphone-launch {
     text-align: center;
     display: inline-block;
-      position: relative;
-      background: url('atom://chameleon-qdt-atom/images/iphone_vertical.png');
-      background-size: 100% 100%;
-      width: 70px;
-      height: 147px;
-      cursor: pointer;
+    position: relative;
+    background: url('atom://chameleon-qdt-atom/images/iphone_vertical.png');
+    background-size: 100% 100%;
+    width: 70px;
+    height: 147px;
+    cursor: pointer;
   }
   .ipad-launch {
     text-align: center;
     display: inline-block;
-      position: relative;
-      background: url('atom://chameleon-qdt-atom/images/ipad_vertical.png');
-      background-size: 100% 100%;
-      width: 97px;
-      height: 173px;
-      cursor: pointer;
+    position: relative;
+    background: url('atom://chameleon-qdt-atom/images/ipad_vertical.png');
+    background-size: 100% 100%;
+    width: 97px;
+    height: 173px;
+    cursor: pointer;
   }
   .iphone-scross-launch {
     text-align: center;
     display: inline-block;
-      position: relative;
-      background: url('atom://chameleon-qdt-atom/images/iphone_scross.png');
-      background-size: 100% 100%;
-      width: 147px;
-      height: 70px;
-      cursor: pointer;
+    position: relative;
+    background: url('atom://chameleon-qdt-atom/images/iphone_scross.png');
+    background-size: 100% 100%;
+    width: 147px;
+    height: 70px;
+    cursor: pointer;
   }
   .ipad-scross-launch {
     text-align: center;
     display: inline-block;
-      position: relative;
-      background: url('atom://chameleon-qdt-atom/images/ipad_scross.png');
-      background-size: 100% 100%;
-      width: 173px;
-      height: 97px;
-      cursor: pointer;
+    position: relative;
+    background: url('atom://chameleon-qdt-atom/images/ipad_scross.png');
+    background-size: 100% 100%;
+    width: 173px;
+    height: 97px;
+    cursor: pointer;
   }
-  .div-table-view{
-    border: 2px solid;
-    text-align: center;
-    border-color: gray;
-    margin: 12px 0px;
-    padding: 20px 10px;
-    height: 300px;
-    overflow-y: scroll;
-  }
-  .click-platform{
-    background-color: black;
-  }
-  .public-view{
-    position: absolute;
-    margin-left: 20px;
-  }
-  .private-view{
-    position: absolute;
-    margin-left: 120px;
-  }
-  table{
-    width: 100%;
-    border: 1px solid gray;
-  }
-  th,td{
-    width: 14%;
-    border: 1px solid gray;
-    padding: 0;
-    text-align: center;
-  }
-
   .selectBuildTemplate {
     width: 125px;
     height: 125px;
@@ -1020,7 +1050,18 @@ atom-panel.modal > .login-box {
     padding: 0;
     border-radius: 3px;
   }
-  .form_width {
+  .border-style{
+    border: 1px solid gray;
+    height: 200px;
+    padding-top: 10px;
+  }
+  .iOSCertTh{
+    border: 1px solid gray;
+    margin: 0px;
+    padding: 5px 10px;
+  }
+  .click-cert-label{
+    background-color: #5C5C5C;
   }
   progress:indeterminate {
     width: 100%;
@@ -1046,14 +1087,17 @@ atom-panel.modal > .login-box {
     display: inline-block;
   }
 
+  .text-right-align{
+    text-align: right;
+  }
   .inline-view{
     display: inline-block;
     vertical-align: -webkit-baseline-middle;
-    width: 300px;
+    width: 347px;
   }
 
   .certInfo-label {
-    width: 150px;
+    width: 136px;
     text-align: right;
     padding-right: 10px;
   }
@@ -1248,4 +1292,10 @@ select{
   box-shadow: none;
   background-color: #3a3f4b;
   border-color: #181a1f;
+}
+.builder-iframe {
+  border: none;
+  width: 100%;
+  height: 100%;
+  background: #fff;
 }

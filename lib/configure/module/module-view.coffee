@@ -12,7 +12,7 @@ class ModuleInfoView extends View
 
   # version: null
   moduleConfigFileName: desc.moduleConfigFileName
-  projectConfigFileName: desc.ProjectConfigFileName
+  projectConfigFileName: desc.projectConfigFileName
   moduleLogoFileName: desc.moduleLogoFileName
   moduleLocatFileName: desc.moduleLocatFileName
 
@@ -111,7 +111,7 @@ class ModuleInfoView extends View
     el.checked = true
 
   nextStep: ->
-    # projectConfigFileName = desc.ProjectConfigFileName
+    # projectConfigFileName = desc.projectConfigFileName
     if @second.hasClass('hide')
       # console.log 'second has hide'
       flag = @getInitInput()

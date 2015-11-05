@@ -8,9 +8,11 @@ module.exports = TextDescription =
   upload : '上传'
   back : '返回'
   finish : '完成'
+  edit: '编辑'
   save : '保存'
   recovery : '还原'
   login : '登录'
+  osclogin: 'osc账号登录'
   logout : '退出登录'
   email : '邮箱'
   pwd : '密码'
@@ -119,7 +121,7 @@ module.exports = TextDescription =
   publishModulePageTwoTitle: '确认发布模块信息'
 
   moduleConfigFileName: 'module-config.json'
-  ProjectConfigFileName: 'app-config.json'
+  projectConfigFileName: 'app-config.json'
 
   projectConfig : '应用配置'
   moduleConfig : '模块配置'
@@ -144,3 +146,12 @@ module.exports = TextDescription =
   projectTipsStep5_1: "请选择横竖屏支持"
   projectTipsStep5_2: "请选择硬件支持"
   projectTipsStep6_selectImg:"请选择扩展名为 .png"
+
+  # builder
+  builderPanelTitle: 'QDT-Builder'
+
+  oscLoginPanelTitle: 'OSChina登录'
+
+  selectCorrectProject: "请选择变色龙应用"
+  rapidDevTitle: '快速开发'
+  noModules: '暂无相关模块'

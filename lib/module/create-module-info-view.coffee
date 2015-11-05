@@ -55,7 +55,6 @@ class CreateModuleInfoView extends View
 
     @parentView.setNextBtn('finish')
     @parentView.disableNext()
-    @parentView.hidePrevBtn()
 
     @projects = @findProject()
     projectNum = @projects.length
@@ -95,7 +94,7 @@ class CreateModuleInfoView extends View
       text?=""
       optionStr = "<option value='#{path}' class='#{className}'>#{text}</option>"
     else
-      filePath = pathM.join path,desc.ProjectConfigFileName
+      filePath = pathM.join path,desc.projectConfigFileName
       obj = Util.readJsonSync filePath
       projectName = if obj? then obj.name else pathM.basename path
       if isSelected? and isSelected is true
@@ -127,7 +126,7 @@ class CreateModuleInfoView extends View
     projectNum = projectPaths.length
     if projectNum isnt 0
       projectPaths.forEach (path,i) ->
-        configPath = pathM.join path,desc.ProjectConfigFileName
+        configPath = pathM.join path,desc.projectConfigFileName
         projects.push path if yes is Util.isFileExist configPath,'sync'
     return projects
 
@@ -173,7 +172,7 @@ class CreateModuleInfoView extends View
 
   checkProjectPath: (path) ->
     result = null
-    configPath = pathM.join path,desc.ProjectConfigFileName
+    configPath = pathM.join path,desc.projectConfigFileName
     return Util.isFileExist configPath,'sync'
 
   checkPath: ->
