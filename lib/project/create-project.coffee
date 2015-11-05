@@ -56,6 +56,7 @@ module.exports = CreateProject =
 
   openBuilder: (options) ->
     Builder.activate(options)
+    @chameleonBox.closeView()
 
 
   # 空白应用创建
