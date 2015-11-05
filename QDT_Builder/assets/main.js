@@ -36,7 +36,6 @@ require(['app', 'backbone', 'scripts/event-dispatcher'], function(app, Backbone,
 
     initialize: function() {
       var appConfig = window.message;
-      console.log (appConfig);
       new app(appConfig);
     },
 

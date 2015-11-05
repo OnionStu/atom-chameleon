@@ -1,5 +1,6 @@
 {$, ScrollView} = require 'atom-space-pen-views'
 
+pathM = require 'path'
 desc = require '../utils/text-description'
 util = require '../utils/util'
 
@@ -22,5 +23,14 @@ class ChameleonBuilderView extends ScrollView
       @.attr 'src', e 
        .on 'load', ()=>
         window.frames[0].postMessage JSON.stringify(@appConfig), e
+
+    getBuilderConfig = (e) =>
+      builderConfig = JSON.parse e.data
+      @appConfig.builderConfig = builderConfig
+      console.log @appConfig
+      window.removeEventListener 'message', getBuilderConfig, false
+
+    window.addEventListener 'message', getBuilderConfig, false
+
 
 
