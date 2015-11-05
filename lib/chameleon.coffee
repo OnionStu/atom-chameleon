@@ -72,7 +72,6 @@ module.exports = Chameleon =
 
   openBuilder: ->
     @Builder.activate('hi')
-    util.startServer()
 
   openSettings: ->
     @settings.activate()

@@ -10,17 +10,17 @@ class ChameleonBuilderView extends ScrollView
 
   getURI: -> @uri
 
-  getTitle: -> desc.builderPanelTitle
+  getTitle: -> 
+    @uri.replace('atom://', '')
 
-  initialize: ({@uri}) ->
-    # super
-    # @accountPanel = new AccountPanel()
-    # @settingsPanel.html @accountPanel
-    # @accountPanel = null
-    # @on 'click', '.settingsItem', (e) =>
-    #   @menuClick(e.currentTarget)
+  initialize: (options) ->
+    @uri = options.uri
+    @appConfig = options.appConfig
 
   attached: ->
     util.eventEmitter().on 'server_on', (e)=>
-      @.attr('src', e)
+      @.attr 'src', e 
+       .on 'load', ()=>
+        window.frames[0].postMessage JSON.stringify(@appConfig), e
+
 
