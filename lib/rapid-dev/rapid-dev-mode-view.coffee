@@ -1,4 +1,5 @@
 {$, ScrollView} = require 'atom-space-pen-views'
+AddModuleInfo = require './add-module-info'
 
 Desc = require '../utils/text-description'
 Util = require '../utils/util'
@@ -125,7 +126,10 @@ class RapidDevModeView extends ScrollView
   addNewModule: ->
     activeItem = document.querySelector('.settingsItem.active')
     currentProject = activeItem.dataset.id
-    @openBuilder(currentProject)
+    console.log currentProject
+    AddModuleInfo.activate();
+    AddModuleInfo.openView();
+    # @openBuilder()
 
   openBuilder: (params) ->
     console.log "open builder",params
