@@ -143,6 +143,9 @@ module.exports = TextDescription =
   uploadAppError: ""
   uploadAppSuccess: "上传应用成功"
 
+  projectTipsStep5_1: "请选择横竖屏支持"
+  projectTipsStep5_2: "请选择硬件支持"
+  projectTipsStep6_selectImg:"请选择扩展名为 .png"
 
   # builder
   builderPanelTitle: 'QDT-Builder'
