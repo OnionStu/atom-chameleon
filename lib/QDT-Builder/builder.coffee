@@ -17,7 +17,7 @@ atom.deserializers.add(deserializer)
 module.exports =
   activate: (options)->
     console.log options
-    ViewUri = "atom://#{options.moduleInfo.moduleId}"
+    ViewUri = "atom://#{options.moduleInfo.identifier}"
     atom.workspace.addOpener (filePath) ->
       createView({uri: ViewUri, appConfig: options}) if filePath is ViewUri
 
