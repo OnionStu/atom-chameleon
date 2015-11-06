@@ -51,6 +51,7 @@ class NewProjectView extends View
         # path = pathM.join paths[0],@appId.getText()
         # console.log  path
         @appPath.html paths[0]
+        @checkPath()
 
   getElement: ->
     @element
@@ -66,7 +67,6 @@ class NewProjectView extends View
       appName : @appName.getText()
       appPath : path
 
-    console.log projectInfo
     projectInfo
 
   checkInput: ->

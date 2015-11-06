@@ -19,6 +19,12 @@ class BuildProjectInfoView extends View
   moduleLocatFileName: desc.moduleLocatFileName
   selectProjectTxt:"请选择变色龙项目"
   selectModuleTxt:"请选择主模块"
+  versionLegalTips:"版本填写不合法"
+  buildIsFail:"构建失败"
+  buildIsExist:"构建不存在"
+  appConfigNoExistTips:"本地应用配置文件不存在"
+  appConfigIsNoCompleteTips:"本地配置文件有缺损"
+  pleaseSelectRealProjectTips:"请选择正确的应用"
   projectPath:null #项目的路径
   engineType:"PUBLIC"
   buildPlatform:"iOS"   # 对应构建应用的 platform
@@ -40,7 +46,7 @@ class BuildProjectInfoView extends View
   engineMessage:null
   buildingId:null
   timer:null
-  buildStep:1 #1、表示上传图片 2、表示调构建接口 3、表示见识构建结果 4、表示显示结果
+  # buildStep:1 #1、表示上传图片 2、表示调构建接口 3、表示见识构建结果 4、表示显示结果
   step:1 #1、代表第一步选择应用  2、为选择选择平台 3、为选择引擎 4、为选择引擎的版本 5、为引擎基本信息
          #6、应用基本信息，上传各个分辨率的封面图片  7、 选择模块 8、选择插件 9、证书管理 10、构建预览
   #分页都还没做
@@ -216,7 +222,7 @@ class BuildProjectInfoView extends View
           @label "证书管理",class:"title-2-level"
         @div outlet:"androidCertSelectView", =>
           @div class:"", =>
-            @label "Android证书"
+            @label "Android证书",class:"AndroidCertTh"
           @div class:"border-style",=>
             @div class:"col-xs-12",=>
               @label "Keystore别名" ,class:"certInfo-label"
@@ -259,25 +265,46 @@ class BuildProjectInfoView extends View
                 @subview 'keystoreName', new TextEditorView(mini: true,placeholderText: 'moduleName...')
             @div class:"col-xs-12 text-right-align",=>
               @button "检验证书",class:"btn"
-      @div outlet:"buildReView", =>
-        @button "生成安装包",click:"buildAppMethod"
+      @div outlet:"buildReView",class:"buildReViewClass", =>
+        @div =>
+          @label "版本号",class:"title-2-level"
+        @div =>
+          @label "当前版本号："
+          @label outlet:"lastAppVersion"
+        @div =>
+          @label "填写版本号:"
+          @div class: 'inline-view', =>
+            @subview 'versionUpload', new TextEditorView(mini: true,placeholderText: 'moduleName...')
+        @div =>
+          @button "生成安装包",click:"buildAppMethod",class:"btn"
       @div outlet:"buildAppView", =>
         @div outlet:"uploadImageStepView" ,=>
           @label "正在上传图片..."
+          @progress class:'inline-block uploadImagesProgress', max:'100',value:"0", outlet:"imagesUploadProgress"
         @div outlet:"sendBuildRequestView", =>
-          @label "正在请求构建,请耐心等待..."
+          @div =>
+            @label "正在请求构建,请耐心等待..."
+          @div class:"waitToLoad",=>
+            @span class:'loading loading-spinner-small inline-block'
         @div outlet:"waitingBuildResultView", =>
           @label outlet:"buildingTips"
+          @div class: "col-sm-12 text-center", =>
+            @progress class: 'inline-block'
           # @label outlet:"needTime"
         @div outlet:"buildResultView" , =>
           @div =>
-            @img outlet:"imgForDownloadApp"
-            @a outlet:"urlForDownloadApp"
-
-  # 点击平台图片触发事件
+            @label "构建成功"
+          @div class:"text-center", =>
+            @div class:"urlImageShow",=>
+              @img outlet:"imgForDownloadApp"
+            @div =>
+              @a outlet:"urlForDownloadApp"
+        @div outlet:"errorView" , =>
+          @label outlet:"buildErrorView"
+  # 点击平台图片触发事件  同时初始化  @buildPlatform
   clickIcon:(e) ->
     el = e.currentTarget
-    console.log $(el).attr('value')
+    console.log "选择 #{$(el).attr('value')} 平台"
     @buildPlatform = $(el).attr('value')
     @.find(".selectBuildTemplate").removeClass("active")
     $(el).addClass("active")
@@ -285,7 +312,7 @@ class BuildProjectInfoView extends View
   # 点击平台按钮事件
   platformBtnClick:(m1,b1) ->
     @engineType = $(b1).attr("value")
-    console.log $(b1).attr("value"),@engineType
+    # console.log $(b1).attr("value"),@engineType
     @.find(".platformBtn").removeClass("click-platform")
     $(b1).addClass("click-platform")
     @initEngineTableView()
@@ -324,25 +351,37 @@ class BuildProjectInfoView extends View
     @.find('.nextPageButton').on 'click',(e) => @nextPageClick(e)
     @.find('.iOSCertTh').on 'click',(e) => @clickIosCert(e)
 
+  initParam: ->
+    @imageList = {}
+    @pluginList = {}
+    @moduleList = {}
+    @logoImage = null
+    @buildPlatform = "iOS"
+    @engineType = "PUBLIC"
+    @httpType = "http"
   # 点击下一步按钮触发事件
   nextBtnClick:() ->
-    if @step is 1   #1、代表第一步选择应用
-      if @projectPath isnt @selectProject.val()
-        @mainModuleTag.html("")
-        @modulesTag.html("")
+    if @step is 1   #1、代表第一步选择应用，初始化 @projectPath
+      # if @projectPath isnt @selectProject.val()
+      #   @mainModuleTag.html("")
+      #   @modulesTag.html("")
+      #初始化 projectPath 的全局变量，只在这里赋值
       @projectPath = @selectProject.val()
-      console.log @step,@projectPath
+      if @projectPath is " "
+        alert @selectProjectTxt
+        return
+      # console.log @step,@projectPath
       @platformSelectView.show()
       @selectProjectView.hide()
       @parentView.prevBtn.show()
       @parentView.prevBtn.attr('disabled',false)
       # @getProjectId()
       @step = 2
-    else if @step is 2 #2、为选择选择平台
+    else if @step is 2 #2、为选择选择平台   在点击平台图片的时候 初始化 @buildPlatform
       console.log @step,@buildPlatform
       @platformSelectView.hide()
       @engineTableView.show()
-      @initEngineTableView()
+      @initEngineTableView() # 需要用到 @buildPlatform 和 @engineType ，@engineType是在点击 tag 时重新赋值的 将 engineMessage 设置为空
       @step = 3
     else if @step is 4 #4、为选择引擎的版本  这个已经没用了
       @engineVersionView.hide()
@@ -353,7 +392,7 @@ class BuildProjectInfoView extends View
       console.log "show engin basic message"
       @engineTableView.hide()
       @engineBasicMessageView.show()
-      @getBasicMessageView()
+      @getBasicMessageView() #初始化  engineMessage 的值
       @step = 5
     else if @step is 5 # 5、为引擎基本信息
       if @.find(".showStyle:checked").length is 0
@@ -394,6 +433,10 @@ class BuildProjectInfoView extends View
     else if @step is 9
       @certSelectView.hide()
       @buildReView.show()
+      if @projectLastContent
+        @lastAppVersion.html(@projectLastContent["base"]["version"])
+      else
+        @lastAppVersion.html("0.0.0")
       @step = 10
       @parentView.nextBtn.hide()
 
@@ -408,7 +451,6 @@ class BuildProjectInfoView extends View
       @androidCertSelectView.show()
 
   clickIosCert:(e) ->
-    console.log "xss"
     el = e.currentTarget
     if $(el).hasClass("click-cert-label")
       @.find('.iOSCertTh').addClass("click-cert-label")
@@ -450,7 +492,8 @@ class BuildProjectInfoView extends View
 
   # 同步上传文件
   uploadImageFileListSync:(keyArray,index,callBack)->
-    if keyArray.length > index
+    length = keyArray.length
+    if length > index
       key = keyArray[index]
       path = @imageList["#{key}"]
       if fs.existsSync(path)
@@ -467,10 +510,23 @@ class BuildProjectInfoView extends View
         client.uploadFileSync(params,"qdt_app",true)
       else
         @uploadImageFileListSync(keyArray,index+1,callBack)
+      @imagesUploadProgress.attr("value",(index+1)*100/length)
     else
       callBack()
 
   buildAppMethod:() ->
+    #判断输入的版本合法
+    uplaoadVersion = @versionUpload.getText()
+    if @checkVersionIsLegal(@versionUpload.getText())
+      if @projectLastContent
+        object = UtilExtend.checkUploadModuleVersion(uplaoadVersion,@projectLastContent["base"]["version"])
+        if object["error"]
+          alert object["errorMessage"]
+          return
+    else
+      alert @versionLegalTips
+      return
+    @parentView.prevBtn.hide()
     callBack = =>
       @uploadImageStepView.hide()
       @sendBuildRequestView.show()
@@ -490,7 +546,7 @@ class BuildProjectInfoView extends View
       data["classify"] = "appdisplay" #可不填
       data["status"] = "OFFLINE" #
       data["appName"] = @projectConfigContent["name"]
-      data["version"] = "3.0.0"
+      data["version"] = uplaoadVersion
       data["createTime"] = UtilExtend.dateFormat("YYYY-MM-DD HH:mm:ss",new Date()) #当前时间
       data["images"] = @imageList #文件id
       modules = []
@@ -516,7 +572,7 @@ class BuildProjectInfoView extends View
       data["mainModuleId"] = @mainModuleId
       data["engineId"] = @engineMessage["engineId"]
       data["engineVersionId"] = @engineMessage["id"]
-      console.log data
+      # console.log data
       params =
         sendCookie:true
         body: JSON.stringify(data)
@@ -532,14 +588,23 @@ class BuildProjectInfoView extends View
       client.requestBuildApp(params)
     @uploadFileSync(callBack)
 
+  # 判断版本是否合法，判断规则：是否由三个数和两个点组成
+  checkVersionIsLegal:(version)->
+    numbers = version.split('.')
+    if numbers.length != 3
+      return false
+    if isNaN(numbers[0]) or isNaN(numbers[1]) or isNaN(numbers[2])
+      return false
+    return true
+
   checkBuildStatusByBuildId:(buildingId)->
     params =
       sendCookie:true
       success:(data) =>
-        console.log data
+        # console.log data
         waitTime = 0
         if data["code"] == -1
-          alert "构建不存在"
+          alert @buildIsExist
           return
         if data["status"] == "WAITING"
           waitTime = data["waitingTime"]
@@ -569,7 +634,8 @@ class BuildProjectInfoView extends View
           @urlForDownloadApp.attr('href',data['url'])
           @urlForDownloadApp.html("app下载地址")
         else
-          alert "构建失败"
+          alert @buildIsFail
+          @parentView.closeView()
           return
         @timer = setTimeout =>
           @timerMethod buildingId,loopTime
@@ -600,13 +666,13 @@ class BuildProjectInfoView extends View
     params =
       sendCookie:true
       success:(data) =>
-        console.log data
+        # console.log data
         if data['totalCount'] <= pageIndex*@pageSize
           @.find(".engineListClass.nextPageButton").attr("disabled",true)
         else
           @.find(".engineListClass.nextPageButton").attr("disabled",false)
         if data["totalCount"] > 0
-          console.log data["datas"]
+          # console.log data["datas"]
           @initPluginViewTableBody(data["datas"])
         else
           console.log "没有任何插件"
@@ -641,9 +707,50 @@ class BuildProjectInfoView extends View
       htmlArray.push(str)
     getHtmlItem item for item in data
     @pluginsShowView.html(htmlArray.join(""))
+
+
+  initModuleList: ->
+    array = @projectLastContent["moduleTree"]
+    @mainModuleId = @projectLastContent["base"]["mainModuleId"]
+    initModuleListMessage = (item) =>
+      text = null
+      getTxt = (item1) =>
+        # console.log item["value"],item[""]
+        if item1["value"] is item["version"]
+          text = item1["text"]
+          return
+      getTxt item1 for item1 in item["versions"]
+
+      @moduleList["#{item['name']}"] =
+        "moduleVersionId": item["version"]
+        "moduleId": item["id"]
+        "appVersionId":""
+        "appId":""
+        "name": item["name"]
+        "moduleVersion": text
+    initModuleListMessage item for item in array
+    @printShowViewOfModule()
+
+  # 打印输出
+  printShowViewOfModule:->
+    mainModuleStr = ""
+    modulesTagArray = []
+    showHtmlView = (key,item) =>
+      str = """
+      <span> #{item["name"]}:#{item["moduleVersion"]} </span>
+      """
+      modulesTagArray.push(str)
+      if item["moduleId"] is @mainModuleId
+        mainModuleStr = str
+    showHtmlView key,item for key,item of @moduleList
+    if mainModuleStr is ""
+      @mainModuleId = null
+    @mainModuleTag.html(mainModuleStr)
+    @modulesTag.html(modulesTagArray.join(""))
   #初始化模块
   initSelectModuleView:(array,pageIndex,pageSize)->
     console.log "begin to initSelectModuleView"
+    # console.log @projectLastContent
     platform = "ANDROID"
     if @buildPlatform is "iOS"
       platform = "IOS"
@@ -686,18 +793,15 @@ class BuildProjectInfoView extends View
             htmlArray.push(str)
           getHtmlItem item for item in data["datas"]
           @modulesShowView.html(htmlArray.join(""))
+          # 初始化 mainModuleId  和 moduleList
+          @initModuleList()
           # 点击模块button按钮触发事件
           clickModuleShowViewBtn = (e) =>
             el = e.target
-            # ell = e.currentTarget
-            # className = el.attr("value")
-            # console.log el
             className = $(el).attr("value")
             moduleName = @.find("span.#{className}").html()
             moduleVersionId = @.find("td>select.#{className}").val()
             moduleVersion = @.find("td>select.#{className}>option[value=#{moduleVersionId}]").html()
-            # console.log moduleName+":"+moduleVersion
-            # console.log moduleVersionId
             @moduleList[moduleName] =
               "moduleVersionId": moduleVersionId
               "moduleId":className
@@ -705,62 +809,50 @@ class BuildProjectInfoView extends View
               "appId":""
               "name":moduleName
               "moduleVersion":moduleVersion
-            # console.log @moduleList
             if $(el).hasClass("mainModuleTag")
               @mainModuleId = className
             else if $(el).hasClass("cancelSelect")
               delete @moduleList[moduleName]
             # view
-            mainModuleStr = ""
-            modulesTagArray = []
-            showHtmlView = (key,item) =>
-              # console.log  "item = #{item}"
-              str = """
-              <span> #{item["name"]}:#{item["moduleVersion"]} </span>
-              """
-              modulesTagArray.push(str)
-              if item["moduleId"] is @mainModuleId
-                mainModuleStr = str
-            showHtmlView key,item for key,item of @moduleList
-            if mainModuleStr is ""
-              @mainModuleId = null
-            # console.log @moduleList
-            @mainModuleTag.html(mainModuleStr)
-            @modulesTag.html(modulesTagArray.join(""))
+            @printShowViewOfModule()
           @.find(".modulesShowView").on "click","a",(e) => clickModuleShowViewBtn(e)
         else
-          alert "没有模块"
+          console.log  "没有模块"
       error:(msg) =>
         console.log "initSelectModuleView api error = #{msg}"
     client.getModuleList(params,platform,"PRIVATE",exceptModuleArray.join(","),pageIndex,pageSize)
 
   # 获取上一次构建时的信息
   getLastBuildMessage:()->
+    if @buildPlatform is "iOS"
+      platform = "IOS"
+    else
+      platform = "ANDROID"
     params =
       sendCookie:true
       success:(data) =>
-        console.log data
+        console.log "getLastBuildMessage #{data}"
         @projectLastContent = data
         @initProjectBasicMessageViewStep5_2()
       error: (msg) =>
         console.log msg
         @initProjectBasicMessageViewStep5_2()
-    client.getLastBuildProjectMessage(params,@projectIdFromServer,@buildPlatform)
+    client.getLastBuildProjectMessage(params,@projectIdFromServer,platform)
 
   # 获取应用ID 如果应用ID不存在则判断为
   getProjectId: () ->
     filePath = pathM.join @projectPath,@projectConfigFileName
     if !fs.existsSync(filePath)
-      alert "本地应用配置文件不存在"
+      alert @appConfigNoExistTips
       return
     @projectConfigContent = Util.readJsonSync filePath
     if !@projectConfigContent["identifier"] or typeof(@projectConfigContent["identifier"]) == undefined
-      alert "本地配置文件有缺损"
+      alert @appConfigIsNoCompleteTips
       return
     params =
       sendCookie: true
       success: (data) =>
-        console.log data
+        # console.log data
         @projectIdFromServer = data["id"]
         @getLastBuildMessage()
         # @projectConfigContent["id"] =
@@ -768,7 +860,7 @@ class BuildProjectInfoView extends View
       error:(msg) =>
         @initProjectBasicMessageViewStep5_2()
         console.log msg
-    client.getAppIdByAppIndentifer(params,"com.hover.cyz.test")
+    client.getAppIdByAppIndentifer(params,@projectConfigContent["identifier"])
 
   #初始化基本信息，也就
   initProjectBasicMessageViewStep5_1:()->
@@ -782,6 +874,7 @@ class BuildProjectInfoView extends View
     # 如果获取到了上一次构建时的信息则执行这一步
     if @projectLastContent
       @logo.attr("src",@getImageUrlMethod(@projectLastContent["base"]["logoFileId"]))
+      @logoImage = @projectLastContent["base"]["logoFileId"]
     getShowStyle = (item) ->
       showStyleArray.push(item.value)
     getShowStyle item for item in @.find(".showStyle:checked")
@@ -802,17 +895,17 @@ class BuildProjectInfoView extends View
         htmlVerticalArray = []
         getVerticalStr = (item1) =>
           if item1 is "iPad"
-            console.log "getIPadVerticalHtml"
+            # console.log "getIPadVerticalHtml"
             htmlVerticalArray.push(@getIPadVerticalHtml())
           else if item1 is "iPhone"
-            console.log "getIPhoneVerticalHtml"
+            # console.log "getIPhoneVerticalHtml"
             htmlVerticalArray.push(@getIPhoneVerticalHtml())
           else
-            console.log "getAndroidVerticalHtml"
+            # console.log "getAndroidVerticalHtml"
             htmlVerticalArray.push(@getAndroidVerticalHtml())
         getVerticalStr item1 for item1 in supportMobileTypeArray
         @.find(".verticalModelView").show()
-        console.log htmlVerticalArray.join("")
+        # console.log htmlVerticalArray.join("")
         @verticalModelView.html(htmlVerticalArray.join(""))
       else
         if isNeedHide is 0
@@ -832,7 +925,7 @@ class BuildProjectInfoView extends View
             htmlScrossArray.push(@getAndroidScrossHtml())
         getScrossStr item2 for item2 in supportMobileTypeArray
         @.find(".scrossModelView").show()
-        console.log htmlScrossArray.join("")
+        # console.log htmlScrossArray.join("")
         @scrossModelView.html(htmlScrossArray.join(""))
     showView item for item in showStyleArray
     @.find("img").on "click",(e) => @selectImg(e)
@@ -917,12 +1010,14 @@ class BuildProjectInfoView extends View
       @initSelectModuleView([],pageIndex,pageSize)
     else if $(el).hasClass("pluginListClass")
       @initSelectPluginView([],pageIndex,pageSize)
+
   # 点击下一页所触发的事件
   nextPageClick:(e) ->
     el = e.currentTarget
     @pageIndex = @pageIndex + 1
     console.log @pageIndex
     @getList(el,@pageIndex,@pageSize)
+
   # 点击上一页所触发的事件
   prevPageClick:(e) ->
     el = e.currentTarget
@@ -974,12 +1069,13 @@ class BuildProjectInfoView extends View
       error:(msg) =>
         console.log msg
     client.getEngineList params,@engineType,platform,pageIndex,pageSize
+
   # 初始化引擎列表
   initEngineTableView:() ->
+    @engineMessage = null
     @pageIndex = 1
     @pageSize = 4
     @getApiEngingList @pageIndex,@pageSize
-
 
   # 点击选择，直接就获取引擎的版本列表
   clickEngineSelectA:(e) ->
@@ -1047,7 +1143,7 @@ class BuildProjectInfoView extends View
     params =
       sendCookie:true
       success:(data) =>
-        console.log data
+        # console.log data
         @initEngineBasicView(data)
       error: (msg) =>
         console.log msg
@@ -1104,7 +1200,7 @@ class BuildProjectInfoView extends View
         # console.log filePath
         if !fs.existsSync(filePath)
           @.find("select option:first").prop("selected","selected")
-          alert "请选择正确的应用"
+          alert @pleaseSelectRealProjectTips
           return
         obj = Util.readJsonSync filePath
         if obj
@@ -1120,9 +1216,35 @@ class BuildProjectInfoView extends View
 
   #获取苹果手机横屏显示类型
   getIPhoneScrossHtml:() ->
+    iphoneSrc = desc.getImgPath "default_app_iphone_scross_logo.png"
+    # console.log  @projectLastContent["base"]["images"]
     if @projectLastContent
       # console.log  @projectLastContent
       images = @projectLastContent["base"]["images"]
+      # console.log images
+      # console.log images["iphone960_640"]
+      if typeof(images["iphone960_640"]) is "undefined" || images["iphone960_640"] == ""
+        images["iphone960_640"] = iphoneSrc
+      else
+        @imageList["iphone960_640"] = images["iphone960_640"]
+        # console.log images["iphone960_640"]
+        images["iphone960_640"] = @getImageUrlMethod(images["iphone960_640"])
+        # console.log images["iphone960_640"]
+      if typeof(images["iphone1136_640"]) is "undefined" || images["iphone1136_640"] == ""
+        images["iphone1136_640"] = iphoneSrc
+      else
+        @imageList["iphone1136_640"] = images["iphone1136_640"]
+        images["iphone1136_640"] = @getImageUrlMethod(images["iphone1136_640"])
+      if typeof(images["iphone1334_750"]) is "undefined" || images["iphone1334_750"] == ""
+        images["iphone1334_750"] = iphoneSrc
+      else
+        @imageList["iphone1334_750"] = images["iphone1334_750"]
+        images["iphone1334_750"] = @getImageUrlMethod(images["iphone1334_750"])
+      if typeof(images["iphone2208_1242"]) is "undefined" || images["iphone2208_1242"] == ""
+        images["iphone2208_1242"] = iphoneSrc
+      else
+        @imageList["iphone2208_1242"] = images["iphone2208_1242"]
+        images["iphone2208_1242"] = @getImageUrlMethod(images["iphone2208_1242"])
       """
       <li>
       <div class='iphone-scross-launch' >
@@ -1150,7 +1272,6 @@ class BuildProjectInfoView extends View
       </li>&nbsp;
       """
     else
-      iphoneSrc = desc.getImgPath "default_app_iphone_scross_logo.png"
       """
       <li>
       <div class='iphone-scross-launch' >
@@ -1180,9 +1301,30 @@ class BuildProjectInfoView extends View
 
   # 获取苹果手机竖屏显示类型
   getIPhoneVerticalHtml:() ->
+    iphoneSrc = desc.getImgPath "default_app_iphone_logo.png"
     if @projectLastContent
       # console.log  @projectLastContent
       images = @projectLastContent["base"]["images"]
+      if typeof(images["iphone640_960"]) is "undefined" || images["iphone640_960"] == ""
+        images["iphone640_960"] = iphoneSrc
+      else
+        @imageList["iphone640_960"] = images["iphone640_960"]
+        images["iphone640_960"] = @getImageUrlMethod(images["iphone640_960"])
+      if typeof(images["iphone640_1136"]) is "undefined" || images["iphone640_1136"] == ""
+        images["iphone640_1136"] = iphoneSrc
+      else
+        @imageList["iphone640_1136"] = images["iphone640_1136"]
+        images["iphone640_1136"] = @getImageUrlMethod(images["iphone640_1136"])
+      if typeof(images["iphone750_1334"]) is "undefined" || images["iphone750_1334"] == ""
+        images["iphone750_1334"] = iphoneSrc
+      else
+        @imageList["iphone750_1334"] = images["iphone750_1334"]
+        images["iphone750_1334"] = @getImageUrlMethod(images["iphone750_1334"])
+      if typeof(images["iphone1242_2208"]) is "undefined" || images["iphone1242_2208"] == ""
+        images["iphone1242_2208"] = iphoneSrc
+      else
+        @imageList["iphone1242_2208"] = images["iphone1242_2208"]
+        images["iphone1242_2208"] = @getImageUrlMethod(images["iphone1242_2208"])
       """
       <li>
       <div class='iphone-launch' >
@@ -1192,25 +1334,24 @@ class BuildProjectInfoView extends View
       </li>&nbsp;
       <li>
       <div class='iphone-launch'>
-      <img class='iphone-launch-img' src='#{images["iphone640_960"]}' value='iphone640_1136'>
+      <img class='iphone-launch-img' src='#{images["iphone640_1136"]}' value='iphone640_1136'>
       </div>
       <p>640&nbsp;X&nbsp;1136</p>
       </li>&nbsp;
       <li>
       <div class='iphone-launch'>
-      <img class='iphone-launch-img' src='#{images["iphone640_960"]}' value='iphone750_1334'>
+      <img class='iphone-launch-img' src='#{images["iphone750_1334"]}' value='iphone750_1334'>
       </div>
       <p>750&nbsp;X&nbsp;1334</p>
       </li>&nbsp;
       <li>
       <div class='iphone-launch'>
-      <img class='iphone-launch-img' src='#{iphone1242_2208}' value='iphone1242_2208'>
+      <img class='iphone-launch-img' src='#{images["iphone1242_2208"]}' value='iphone1242_2208'>
       </div>
       <p>1242&nbsp;X&nbsp;2208</p>
       </li>&nbsp;
       """
     else
-      iphoneSrc = desc.getImgPath "default_app_iphone_logo.png"
       """
       <li>
       <div class='iphone-launch' >
@@ -1240,8 +1381,14 @@ class BuildProjectInfoView extends View
 
   #获取苹果平板横屏显示类型
   getIPadScrossHtml:() ->
+    ipadSrc = desc.getImgPath "default_app_ipad_scross_logo.png"
     if @projectLastContent
       images = @projectLastContent["base"]["images"]
+      if typeof(images["ipad2208_1242"]) is "undefined" || images["ipad2208_1242"] == ""
+        images["ipad2208_1242"] = ipadSrc
+      else
+        @imageList["ipad2208_1242"] = images["ipad2208_1242"]
+        images["ipad2208_1242"] = @getImageUrlMethod(images["ipad2208_1242"])
       """
       <li>
       <div class='ipad-scross-launch' >
@@ -1251,7 +1398,6 @@ class BuildProjectInfoView extends View
       </li>&nbsp;
       """
     else
-      ipadSrc = desc.getImgPath "default_app_ipad_scross_logo.png"
       """
       <li>
       <div class='ipad-scross-launch' >
@@ -1263,8 +1409,14 @@ class BuildProjectInfoView extends View
 
   #获取苹果平板竖屏显示类型
   getIPadVerticalHtml:() ->
+    ipadSrc = desc.getImgPath "default_app_ipad_logo.png"
     if @projectLastContent
       images = @projectLastContent["base"]["images"]
+      if typeof(images["ipad1242_2208"]) is "undefined" || images["ipad1242_2208"] == ""
+        images["ipad1242_2208"] = ipadSrc
+      else
+        @imageList["ipad1242_2208"] = images["ipad1242_2208"]
+        images["ipad1242_2208"] = @getImageUrlMethod(images["ipad1242_2208"])
       """
       <li>
       <div class='ipad-launch' >
@@ -1274,7 +1426,6 @@ class BuildProjectInfoView extends View
       </li>&nbsp;
       """
     else
-      ipadSrc = desc.getImgPath "default_app_ipad_logo.png"
       """
       <li>
       <div class='ipad-launch' >
@@ -1286,8 +1437,21 @@ class BuildProjectInfoView extends View
 
   #获取安卓手机横屏显示类型
   getAndroidScrossHtml:() ->
+    androidSrc = desc.getImgPath "default_app_android_scross_logo.png"
+    console.log @projectLastContent["base"]["images"]
     if @projectLastContent
       images = @projectLastContent["base"]["images"]
+      if typeof(images["android960_640"]) is "undefined" || images["android960_640"] == ""
+        images["android960_640"] = androidSrc
+      else
+        @imageList["android960_640"] = images["android960_640"]
+        images["android960_640"] = @getImageUrlMethod(images["android960_640"])
+        console.log images["android960_640"]
+      if typeof(images["android1136_640"]) is "undefined" || images["android1136_640"] == ""
+        images["android1136_640"] = androidSrc
+      else
+        @imageList["android1136_640"] = images["android1136_640"]
+        images["android1136_640"] = @getImageUrlMethod(images["android1136_640"])
       """
       <li>
       <div class='android-scross-launch' >
@@ -1303,7 +1467,6 @@ class BuildProjectInfoView extends View
       </li>&nbsp;
       """
     else
-      androidSrc = desc.getImgPath "default_app_android_scross_logo.png"
       """
       <li>
       <div class='android-scross-launch' >
@@ -1321,8 +1484,19 @@ class BuildProjectInfoView extends View
 
   #获取安卓手机竖屏显示类型
   getAndroidVerticalHtml:() ->
+    androidSrc = desc.getImgPath "default_app_android_logo.png"
     if @projectLastContent
       images = @projectLastContent["base"]["images"]
+      if typeof(images["android640_960"]) is "undefined" || images["android640_960"] == ""
+        images["android640_960"] = androidSrc
+      else
+        @imageList["android640_960"] = images["android640_960"]
+        images["android640_960"] = @getImageUrlMethod(images["android640_960"])
+      if typeof(images["android640_1136"]) is "undefined" || images["android640_1136"] == ""
+        images["android640_1136"] = androidSrc
+      else
+        @imageList["android640_1136"] = images["android640_1136"]
+        images["android640_1136"] = @getImageUrlMethod(images["android640_1136"])
       """
       <li>
       <div class='android-launch' >
@@ -1338,7 +1512,6 @@ class BuildProjectInfoView extends View
       </li>&nbsp;
       """
     else
-      androidSrc = desc.getImgPath "default_app_android_logo.png"
       """
       <li>
       <div class='android-launch' >
@@ -1356,6 +1529,7 @@ class BuildProjectInfoView extends View
 
   # 获取图片的url
   getImageUrlMethod:(fileId, pixel) ->
+    # console.log fileId,pixel
     if !fileId
       return fileId
     if !pixel
@@ -1371,19 +1545,19 @@ class BuildProjectInfoView extends View
       QINIU_URL = QINIU_HTTPS
     else
       QINIU_URL = ''
-    console.log "QINIU_URL = #{QINIU_URL}"
+    # console.log "QINIU_URL = #{QINIU_URL}"
     if fileId.indexOf("qdt_icon_") is 0
       return  WEB_CONTEXT + fileId
     else
       start = fileId.toLowerCase().charAt(0)
-      console.log "start = #{start}"
+      # console.log "start = #{start}"
       index = 0
       returnUrl = null
       methodFor = (item) =>
         if start is HEX_RADIX[index]
           returnUrl = QINIU_URL + fileId + pixel
-          return
-        console.log "item = #{item} , index = #{index}"
+          return returnUrl
+        # console.log "item = #{item} , index = #{index}"
         index = index + 1
       methodFor item for item in HEX_RADIX
       if returnUrl
@@ -1401,3 +1575,5 @@ module.exports =
       subview: new BuildProjectInfoView()
     closeView: ->
       super()
+      if @timer
+        window.clearTimeout(@timer)

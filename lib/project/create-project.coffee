@@ -46,7 +46,7 @@ module.exports = CreateProject =
       @modalPanel.hide()
 
   createProject: (options) ->
-    console.log options
+    # console.log options
     switch options.newType
       when "empty" then @newEmptyProject options
       when "frame" then @newFrameProject options
@@ -57,12 +57,14 @@ module.exports = CreateProject =
   openBuilder: (options) ->
     info = options.projectInfo
     moduleConfig = Util.appConfigToModuleConfig info
-    options.builderConfig?=[]
-    parmas =
-      projectInfo : info
-      moduleInfo : moduleConfig
-      builderConfig : options.builderConfig
-    Builder.activate(parmas)
+    params =
+      builderConfig: []
+      moduleConfig: moduleConfig
+      moduleInfo:
+        identifier: moduleConfig.identifier
+        moduleName: moduleConfig.name
+        modulePath: pathM.join info.appPath, desc.moduleLocatFileName
+    Builder.activate(params)
     @chameleonBox.closeView()
 
 
@@ -70,6 +72,7 @@ module.exports = CreateProject =
   newEmptyProject: (options) ->
     LoadingMask = new @LoadingMask()
     info = options.projectInfo
+    console.log "应用信息",info
     createSuccess = (err) =>
       if err
         console.error err
@@ -86,6 +89,7 @@ module.exports = CreateProject =
             aft = =>
               Util.rumAtomCommand('tree-view:reveal-active-file')
             _.debounce(aft,300)
+
           moduleConfig = Util.appConfigToModuleConfig info
           moduleFolderPath = pathM.join info.appPath, desc.moduleLocatFileName
           modulePath = pathM.join moduleFolderPath, moduleConfig.identifier
@@ -102,6 +106,7 @@ module.exports = CreateProject =
 
           appConfig.mainModule = moduleConfig.identifier
           appConfig.modules[moduleConfig.identifier] = moduleConfig.version
+
           Util.writeJson appConfigPath, appConfig, writeCB
           @modalPanel.item.children(".loading-mask").remove()
           alert desc.createAppSuccess
