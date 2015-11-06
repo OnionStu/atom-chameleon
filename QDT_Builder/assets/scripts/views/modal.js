@@ -23,14 +23,22 @@ define([
 
     create: function(e) {
       e.preventDefault();
-      var formVal = this.$form.serializeArray()
-      var isValid = _.every(formVal, function(item) {
-        if (item.value === '') {
-          return false
-        } else {
-          return true
-        }
-      })
+      var formVal = this.$form.serializeArray();
+      var re = /^\w+$/g;
+      // var isValid = _.every(formVal, function(item) {
+      //   if (item.value !== '' && re.test(item.value)) {
+      //     return true
+      //   } else {
+      //     return false
+      //   }
+      // })
+      var isValid;
+      if (formVal[0].value !== '' && re.test(formVal[0].value)) {
+        isValid = true
+      } else {
+        isValid = false
+      }
+
       if (isValid) {
         dispatcher.trigger('createPage', formVal);
         this.hideModal();
