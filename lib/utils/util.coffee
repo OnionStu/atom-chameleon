@@ -94,16 +94,16 @@ module.exports = Util =
             page = pages[index]
             result =
               html: page.html
-              path: pathM.join moduleInfo.modulePath,page.name
+              path: pathM.join modulePath,page.name
             return result
           info = getPageInfo currIndex
           writeHtmlFileCB = (err) =>
             return cb err if err?
-            if currIndex >= len
-              cb()
-            else
+            if currIndex < len-1
               info = getPageInfo ++currIndex
               @writeFile info.path, info.html, writeHtmlFileCB
+            else
+              cb()
           @writeFile info.path, info.html, writeHtmlFileCB
 
 
