@@ -27,9 +27,6 @@ class ChameleonBuilderView extends ScrollView
       builderConfig = JSON.parse e.data
       @appConfig.builderConfig = builderConfig
       console.log @appConfig
-      util.createModule @appConfig, (err) =>
-        return console.error err if err?
-        console.log 'success'
       window.removeEventListener 'message', getBuilderConfig, false
 
     window.addEventListener 'message', getBuilderConfig, false
