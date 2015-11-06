@@ -70,6 +70,43 @@ module.exports = Util =
       moduleId: info.appId.split('.').slice(-1)[0]
     @formatModuleConfigToObj opt
 
+
+  createModule: (params,cb) ->
+    pages = params.builderConfig
+    moduleConfig = params.moduleConfig
+    moduleInfo = params.moduleInfo
+    modulePath = pathM.join moduleInfo.modulePath,moduleInfo.identifier
+    moduleConfigPath = pathM.join modulePath,desc.moduleConfigFileName
+    @createDir modulePath, (err) =>
+      return cb err if err?
+      @writeJson moduleConfigPath, moduleConfig, (err) =>
+        return cb err if err?
+        console.log 'writeJson Success!'
+        if pages.length is 0
+          htmlFilePath = pathM.join modulePath,desc.mainEntryFileName
+          htmlString = Util.getIndexHtmlCore moduleConfig
+          @writeFile htmlFilePath, htmlString, (err) =>
+            cb err
+        else
+          len = pages.length
+          currIndex = 0
+          getPageInfo = (index) =>
+            page = pages[index]
+            result =
+              html: page.html
+              path: pathM.join moduleInfo.modulePath,page.name
+            return result
+          info = getPageInfo currIndex
+          writeHtmlFileCB = (err) =>
+            return cb err if err?
+            if currIndex > len
+              cb()
+            else
+              info = getPageInfo --currIndex
+              @writeFile info.path, info.html, writeHtmlFileCB
+          @writeFile info.path, info.html, writeHtmlFileCB
+
+
   # 将传递过来的 str 进行判断是否符合文件命名，如果不符合，将不符合的字符改为"-", 并进行去重
   checkProjectName: (str)->
     regEx5 = /^([A-Za-z]+\.){2,}[A-Za-z]+\w*$/
