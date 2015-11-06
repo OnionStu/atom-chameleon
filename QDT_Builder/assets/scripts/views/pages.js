@@ -23,6 +23,7 @@ define([
 
     render: function() {
       this.$el.empty();
+      console.log(this.collection);
       _.each(this.collection.renderAll(), function(PageItem) {
         this.$el.append(PageItem)
       }.bind(this))

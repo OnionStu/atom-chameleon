@@ -20,8 +20,10 @@ define([
       'click .nav-item': 'triggerTab'
     },
 
-    initialize: function() {
-      var PagesJSON = JSON.parse(pagesJSON);
+    initialize: function(appConfig) {
+      var PagesJSON = JSON.parse(appConfig.data).builderConfig;
+      console.log(PagesJSON)
+      
       this.$iframe = this.$el.find('#iframe-container');
 
       this.PagesCollection = new PagesCollection(PagesJSON);
@@ -33,10 +35,14 @@ define([
       
       $('#publish').on('click', function() {
         console.log(this.PagesCollection)
-        _.each(this.PagesCollection.models, function(pageCollection) {
-          console.log(pageCollection)
+        var PageCollection = this.PagesCollection.toJSON();
+        _.each(this.PagesCollection.models, function(pageCollection, index) {
           var newstr = (new renderappView({collection: pageCollection.attributes.components})).render();
+          PageCollection[index].components = pageCollection.attributes.components.toJSON();
+          PageCollection[index].html = newstr;
         })
+        var pageString = JSON.stringify(PageCollection);
+        window.parent.postMessage(pageString, '*')
       }.bind(this));
 
       this.listenTo(dispatcher, 'renderPage', this.renderPage)

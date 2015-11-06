@@ -92,7 +92,6 @@ module.exports = ModuleManager =
     Builder.activate(params);
     @chameleonBox.closeView()
 
-
   CreateTemplateModule: (options) ->
     console.log 'tmp'
     console.log options

@@ -259,8 +259,18 @@ class BuildProjectInfoView extends View
                 @subview 'keystoreName', new TextEditorView(mini: true,placeholderText: 'moduleName...')
             @div class:"col-xs-12 text-right-align",=>
               @button "检验证书",class:"btn"
-      @div outlet:"buildReView", =>
-        @button "生成安装包",click:"buildAppMethod"
+      @div outlet:"buildReView",class:"buildReViewClass", =>
+        @div =>
+          @label "版本号",class:"title-2-level"
+        @div =>
+          @label "当前版本号："
+          @label outlet:"lastAppVersion"
+        @div =>
+          @label "填写版本号:"
+          @div class: 'inline-view', =>
+            @subview 'versionUpload', new TextEditorView(mini: true,placeholderText: 'moduleName...')
+        @div =>
+          @button "生成安装包",click:"buildAppMethod",class:"btn"
       @div outlet:"buildAppView", =>
         @div outlet:"uploadImageStepView" ,=>
           @label "正在上传图片..."
@@ -394,6 +404,10 @@ class BuildProjectInfoView extends View
     else if @step is 9
       @certSelectView.hide()
       @buildReView.show()
+      if @projectLastContent
+        @lastAppVersion.html(@projectLastContent["base"]["version"])
+      else
+        @lastAppVersion.html("0.0.0")
       @step = 10
       @parentView.nextBtn.hide()
 
@@ -471,6 +485,17 @@ class BuildProjectInfoView extends View
       callBack()
 
   buildAppMethod:() ->
+    #判断输入的版本合法
+    uplaoadVersion = @versionUpload.getText()
+    if @checkVersionIsLegal(@versionUpload.getText())
+      if @projectLastContent
+        object = UtilExtend.checkUploadModuleVersion(uplaoadVersion,@projectLastContent["base"]["version"])
+        if object["error"]
+          alert object["errorMessage"]
+          return
+    else
+      alert "版本填写不合法"
+      return
     callBack = =>
       @uploadImageStepView.hide()
       @sendBuildRequestView.show()
@@ -490,7 +515,7 @@ class BuildProjectInfoView extends View
       data["classify"] = "appdisplay" #可不填
       data["status"] = "OFFLINE" #
       data["appName"] = @projectConfigContent["name"]
-      data["version"] = "3.0.0"
+      data["version"] = uplaoadVersion
       data["createTime"] = UtilExtend.dateFormat("YYYY-MM-DD HH:mm:ss",new Date()) #当前时间
       data["images"] = @imageList #文件id
       modules = []
@@ -531,6 +556,15 @@ class BuildProjectInfoView extends View
           console.log msg
       client.requestBuildApp(params)
     @uploadFileSync(callBack)
+
+  # 判断版本是否合法，判断规则：是否由三个数和两个点组成
+  checkVersionIsLegal:(version)->
+    numbers = version.split('.')
+    if numbers.length != 3
+      return false
+    if isNaN(numbers[0]) or isNaN(numbers[1]) or isNaN(numbers[2])
+      return false
+    return true
 
   checkBuildStatusByBuildId:(buildingId)->
     params =
@@ -736,16 +770,20 @@ class BuildProjectInfoView extends View
 
   # 获取上一次构建时的信息
   getLastBuildMessage:()->
+    if @buildPlatform is "iOS"
+      platform = "IOS"
+    else
+      platform = "ANDROID"
     params =
       sendCookie:true
       success:(data) =>
-        console.log data
+        console.log "getLastBuildMessage #{data}"
         @projectLastContent = data
         @initProjectBasicMessageViewStep5_2()
       error: (msg) =>
         console.log msg
         @initProjectBasicMessageViewStep5_2()
-    client.getLastBuildProjectMessage(params,@projectIdFromServer,@buildPlatform)
+    client.getLastBuildProjectMessage(params,@projectIdFromServer,platform)
 
   # 获取应用ID 如果应用ID不存在则判断为
   getProjectId: () ->
@@ -768,7 +806,7 @@ class BuildProjectInfoView extends View
       error:(msg) =>
         @initProjectBasicMessageViewStep5_2()
         console.log msg
-    client.getAppIdByAppIndentifer(params,"com.hover.cyz.test")
+    client.getAppIdByAppIndentifer(params,@projectConfigContent["identifier"])
 
   #初始化基本信息，也就
   initProjectBasicMessageViewStep5_1:()->
@@ -1120,9 +1158,26 @@ class BuildProjectInfoView extends View
 
   #获取苹果手机横屏显示类型
   getIPhoneScrossHtml:() ->
+    iphoneSrc = desc.getImgPath "default_app_iphone_scross_logo.png"
     if @projectLastContent
       # console.log  @projectLastContent
       images = @projectLastContent["base"]["images"]
+      if typeof(images["iphone960_640"]) is "undefined" || images["iphone960_640"] = ""
+        images["iphone960_640"] = iphoneSrc
+      else
+        images["iphone960_640"] = @getImageUrlMethod(images["iphone960_640"])
+      if typeof(images["iphone1136_640"]) is "undefined" || images["iphone1136_640"] = ""
+        images["iphone1136_640"] = iphoneSrc
+      else
+        images["iphone1136_640"] = @getImageUrlMethod(images["iphone1136_640"])
+      if typeof(images["iphone1334_750"]) is "undefined" || images["iphone1334_750"] = ""
+        images["iphone1334_750"] = iphoneSrc
+      else
+        images["iphone1334_750"] = @getImageUrlMethod(images["iphone1334_750"])
+      if typeof(images["iphone2208_1242"]) is "undefined" || images["iphone2208_1242"] = ""
+        images["iphone2208_1242"] = iphoneSrc
+      else
+        images["iphone2208_1242"] = @getImageUrlMethod(images["iphone2208_1242"])
       """
       <li>
       <div class='iphone-scross-launch' >
@@ -1150,7 +1205,6 @@ class BuildProjectInfoView extends View
       </li>&nbsp;
       """
     else
-      iphoneSrc = desc.getImgPath "default_app_iphone_scross_logo.png"
       """
       <li>
       <div class='iphone-scross-launch' >
@@ -1180,9 +1234,26 @@ class BuildProjectInfoView extends View
 
   # 获取苹果手机竖屏显示类型
   getIPhoneVerticalHtml:() ->
+    iphoneSrc = desc.getImgPath "default_app_iphone_logo.png"
     if @projectLastContent
       # console.log  @projectLastContent
       images = @projectLastContent["base"]["images"]
+      if typeof(images["iphone640_960"]) is "undefined" || images["iphone640_960"] = ""
+        images["iphone640_960"] = iphoneSrc
+      else
+        images["iphone640_960"] = @getImageUrlMethod(images["iphone640_960"])
+      if typeof(images["iphone640_1136"]) is "undefined" || images["iphone640_1136"] = ""
+        images["iphone640_1136"] = iphoneSrc
+      else
+        images["iphone640_1136"] = @getImageUrlMethod(images["iphone640_1136"])
+      if typeof(images["iphone750_1334"]) is "undefined" || images["iphone750_1334"] = ""
+        images["iphone750_1334"] = iphoneSrc
+      else
+        images["iphone750_1334"] = @getImageUrlMethod(images["iphone750_1334"])
+      if typeof(images["iphone1242_2208"]) is "undefined" || images["iphone1242_2208"] = ""
+        images["iphone1242_2208"] = iphoneSrc
+      else
+        images["iphone1242_2208"] = @getImageUrlMethod(images["iphone1242_2208"])
       """
       <li>
       <div class='iphone-launch' >
@@ -1192,13 +1263,13 @@ class BuildProjectInfoView extends View
       </li>&nbsp;
       <li>
       <div class='iphone-launch'>
-      <img class='iphone-launch-img' src='#{images["iphone640_960"]}' value='iphone640_1136'>
+      <img class='iphone-launch-img' src='#{images["iphone640_1136"]}' value='iphone640_1136'>
       </div>
       <p>640&nbsp;X&nbsp;1136</p>
       </li>&nbsp;
       <li>
       <div class='iphone-launch'>
-      <img class='iphone-launch-img' src='#{images["iphone640_960"]}' value='iphone750_1334'>
+      <img class='iphone-launch-img' src='#{images["iphone750_1334"]}' value='iphone750_1334'>
       </div>
       <p>750&nbsp;X&nbsp;1334</p>
       </li>&nbsp;
@@ -1210,7 +1281,6 @@ class BuildProjectInfoView extends View
       </li>&nbsp;
       """
     else
-      iphoneSrc = desc.getImgPath "default_app_iphone_logo.png"
       """
       <li>
       <div class='iphone-launch' >
@@ -1240,8 +1310,13 @@ class BuildProjectInfoView extends View
 
   #获取苹果平板横屏显示类型
   getIPadScrossHtml:() ->
+    ipadSrc = desc.getImgPath "default_app_ipad_scross_logo.png"
     if @projectLastContent
       images = @projectLastContent["base"]["images"]
+      if typeof(images["ipad2208_1242"]) is "undefined" || images["ipad2208_1242"] = ""
+        images["ipad2208_1242"] = ipadSrc
+      else
+        images["ipad2208_1242"] = @getImageUrlMethod(images["ipad2208_1242"])
       """
       <li>
       <div class='ipad-scross-launch' >
@@ -1251,7 +1326,6 @@ class BuildProjectInfoView extends View
       </li>&nbsp;
       """
     else
-      ipadSrc = desc.getImgPath "default_app_ipad_scross_logo.png"
       """
       <li>
       <div class='ipad-scross-launch' >
@@ -1263,8 +1337,13 @@ class BuildProjectInfoView extends View
 
   #获取苹果平板竖屏显示类型
   getIPadVerticalHtml:() ->
+    ipadSrc = desc.getImgPath "default_app_ipad_logo.png"
     if @projectLastContent
       images = @projectLastContent["base"]["images"]
+      if typeof(images["ipad1242_2208"]) is "undefined" || images["ipad1242_2208"] = ""
+        images["ipad1242_2208"] = ipadSrc
+      else
+        images["ipad1242_2208"] = @getImageUrlMethod(images["ipad1242_2208"])
       """
       <li>
       <div class='ipad-launch' >
@@ -1274,7 +1353,6 @@ class BuildProjectInfoView extends View
       </li>&nbsp;
       """
     else
-      ipadSrc = desc.getImgPath "default_app_ipad_logo.png"
       """
       <li>
       <div class='ipad-launch' >
@@ -1286,8 +1364,17 @@ class BuildProjectInfoView extends View
 
   #获取安卓手机横屏显示类型
   getAndroidScrossHtml:() ->
+    androidSrc = desc.getImgPath "default_app_android_scross_logo.png"
     if @projectLastContent
       images = @projectLastContent["base"]["images"]
+      if typeof(images["android960_640"]) is "undefined" || images["android960_640"] = ""
+        images["android960_640"] = androidSrc
+      else
+        images["android960_640"] = @getImageUrlMethod(images["android960_640"])
+      if typeof(images["android1136_640"]) is "undefined" || images["android1136_640"] = ""
+        images["android1136_640"] = androidSrc
+      else
+        images["android1136_640"] = @getImageUrlMethod(images["android1136_640"])
       """
       <li>
       <div class='android-scross-launch' >
@@ -1303,7 +1390,6 @@ class BuildProjectInfoView extends View
       </li>&nbsp;
       """
     else
-      androidSrc = desc.getImgPath "default_app_android_scross_logo.png"
       """
       <li>
       <div class='android-scross-launch' >
@@ -1321,8 +1407,17 @@ class BuildProjectInfoView extends View
 
   #获取安卓手机竖屏显示类型
   getAndroidVerticalHtml:() ->
+    androidSrc = desc.getImgPath "default_app_android_logo.png"
     if @projectLastContent
       images = @projectLastContent["base"]["images"]
+      if typeof(images["android640_960"]) is "undefined" || images["android640_960"] = ""
+        images["android640_960"] = androidSrc
+      else
+        images["android640_960"] = @getImageUrlMethod(images["android640_960"])
+      if typeof(images["android640_1136"]) is "undefined" || images["android640_1136"] = ""
+        images["android640_1136"] = androidSrc
+      else
+        images["android640_1136"] = @getImageUrlMethod(images["android640_1136"])
       """
       <li>
       <div class='android-launch' >
@@ -1338,7 +1433,6 @@ class BuildProjectInfoView extends View
       </li>&nbsp;
       """
     else
-      androidSrc = desc.getImgPath "default_app_android_logo.png"
       """
       <li>
       <div class='android-launch' >

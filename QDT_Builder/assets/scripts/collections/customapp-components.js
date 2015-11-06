@@ -41,6 +41,7 @@ define([
         var prefixTemp = componentView.splitTemp();
         return {
           componentView: prefixTemp[0],
+          componentPos: component.attributes.fixed,
           componentScript: componentView.renderScript(prefixTemp)
         }
       })
