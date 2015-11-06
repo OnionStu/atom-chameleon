@@ -2,6 +2,7 @@
 pathM = require 'path'
 desc = require '../utils/text-description'
 util = require '../utils/util'
+_ = require 'underscore-plus'
 
 module.exports =
 class ChameleonBuilderView extends ScrollView
@@ -52,4 +53,16 @@ class ChameleonBuilderView extends ScrollView
         util.createModule options, (err) =>
           return console.error err if err?
           console.log 'success'
-          
+          moduleInfo = options.moduleInfo
+          moduleId = moduleInfo.identifier
+          appConfig.mainModule = moduleId
+          appConfig.modules[moduleId] = desc.minVersion
+          Util.writeJson appConfigPath, appConfig, (err) =>
+            throw err if err
+            atom.workspace.open appConfigPath
+            aft = =>
+              Util.rumAtomCommand('tree-view:reveal-active-file')
+            _.debounce(aft,300)
+          alert desc.createAppSuccess
+          atom.project.addPath(info.appPath)
+          Util.rumAtomCommand 'tree-view:toggle' if $('.tree-view-resizer').length is 0
