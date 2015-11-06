@@ -64,8 +64,6 @@ module.exports = CreateProject =
         identifier: moduleConfig.identifier
         moduleName: moduleConfig.name
         modulePath: pathM.join info.appPath, desc.moduleLocatFileName
-
-    # console.log params
     Builder.activate(params)
     @chameleonBox.closeView()
 
