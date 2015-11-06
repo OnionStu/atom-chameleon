@@ -88,6 +88,17 @@ module.exports = Util =
           @writeFile htmlFilePath, htmlString, (err) =>
             cb err
         else
+          # 生成builder配置
+          builderConfigPath = pathM.join modulePath,desc.builderConfigFileName
+          builderConfig = _.map pages,(page) ->
+            result =
+              name: page.name
+              components: page.components
+            return result
+          @writeJson builderConfigPath, builderConfig, (err) =>
+            return cb err if err?
+            console.log 'writeBuilderJson Success!'
+          # 生成页面
           len = pages.length
           currIndex = 0
           getPageInfo = (index) =>
