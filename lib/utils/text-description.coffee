@@ -122,6 +122,7 @@ module.exports = TextDescription =
 
   moduleConfigFileName: 'module-config.json'
   projectConfigFileName: 'app-config.json'
+  builderConfigFileName: 'builder-config.json'
 
   projectConfig : '应用配置'
   moduleConfig : '模块配置'
