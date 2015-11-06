@@ -58,7 +58,13 @@ module.exports = CreateProject =
     info = options.projectInfo
     moduleConfig = Util.appConfigToModuleConfig info
     params =
-      builderConfig: []
+      projectInfo: info
+      builderConfig: [
+        {
+          name: "index",
+          components: []
+        }
+      ]
       moduleConfig: moduleConfig
       moduleInfo:
         identifier: moduleConfig.identifier

@@ -115,7 +115,13 @@ module.exports = ModuleManager =
     info = options.moduleInfo
     moduleConfig = Util.formatModuleConfigToObj info
     params =
-      builderConfig: []
+      projectInfo: null
+      builderConfig: [
+        {
+          name: "index",
+          components: []
+        }
+      ]
       moduleConfig: moduleConfig
       moduleInfo:
         identifier: info.moduleId
