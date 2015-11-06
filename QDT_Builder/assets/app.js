@@ -22,6 +22,8 @@ define([
 
     initialize: function(appConfig) {
       var PagesJSON = JSON.parse(appConfig.data).builderConfig;
+      // var PagesJSON = JSON.parse('[]');
+      // var PagesJSON = JSON.parse(pagesJSON)
       console.log(PagesJSON)
       
       this.$iframe = this.$el.find('#iframe-container');
@@ -41,8 +43,7 @@ define([
           PageCollection[index].components = pageCollection.attributes.components.toJSON();
           PageCollection[index].html = newstr;
         })
-        var pageString = JSON.stringify(PageCollection);
-        window.parent.postMessage(pageString, '*')
+        console.log(JSON.stringify(PageCollection))
       }.bind(this));
 
       this.listenTo(dispatcher, 'renderPage', this.renderPage)

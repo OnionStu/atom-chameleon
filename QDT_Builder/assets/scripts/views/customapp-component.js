@@ -1,18 +1,19 @@
 define([
   'jquery', 'underscore', 'backbone',
   'views/component', 'views/popover',
-  'templates/components/components-templates',
+  'templates/components/components-templates', 'text!templates/app/component-controlWarp.html',
   'scripts/event-dispatcher'
 ], function(
   $, _, Backbone,
   Component, popoverView,
-  _componentTemplates,
+  _componentTemplates, _controlwarpTemp,
   dispatcher
 ){
   return Component.extend({
     initialize: function() {
       console.log(this.model)
       this.template = _.template(_componentTemplates[this.model.get('title')]);
+      this.controlwarpTemp = _.template(_controlwarpTemp);
       if ( this.model.get('title') !== 'header'){
         this.$el.attr('draggable', true);
       }
@@ -33,7 +34,7 @@ define([
         this.iframeDocment.body.appendChild(renderScript);
       }
       return this.$el.html(
-        prefixTemp[0]
+        this.controlwarpTemp({id: this.model.attributes.fields.id.value}) + prefixTemp[0]
       )
     },
 

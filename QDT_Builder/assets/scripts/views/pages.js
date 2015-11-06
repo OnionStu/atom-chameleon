@@ -23,7 +23,6 @@ define([
 
     render: function() {
       this.$el.empty();
-      console.log(this.collection);
       _.each(this.collection.renderAll(), function(PageItem) {
         this.$el.append(PageItem)
       }.bind(this))
@@ -31,7 +30,7 @@ define([
 
     createPage: function(val) {
       console.log(val)
-      this.collection.add({name: val[0].value})
+      this.collection.add({name: val[0].value + '.html'})
     }
   })
 })
