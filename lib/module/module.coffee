@@ -48,46 +48,18 @@ module.exports = ModuleManager =
     console.log options
     info = options.moduleInfo
     filePath = pathM.join info.modulePath,info.moduleId
-    configFilePath = pathM.join filePath,desc.moduleConfigFileName
-    configFile = new File(configFilePath)
-    configFileContent = Util.formatModuleConfigToObj(info)
-    entryFilePath = pathM.join filePath,info.mainEntry
-    entryFile = new File(entryFilePath)
-    htmlString = Util.getIndexHtmlCore()
-    isProject = options.isChameleonProject
-    configFile.create()
-      .then (isSuccess) =>
-        console.log isSuccess
-        if isSuccess is yes
-          configFile.setEncoding('utf8')
-          console.log 'CreateModule Success'
-          cb = (err) =>
-            console.log err
-          Util.writeJson(configFilePath,configFileContent,cb)
-          entryFile.create()
-        else
-          console.log 'CreateModule error'
-      .then (isSuccess) =>
-        if isSuccess is yes
-          entryFile.writeSync(htmlString)
-          @addProjectModule info
-          @openTreeView filePath
-          alert desc.createModuleSuccess
-          @chameleonBox.closeView()
-      # .finally =>
-        # console.log 'CreateModule Success',@
+    params = @formatOptions options
+    Util.createModule params, (err) =>
+      return console.error err if err?
+      @addProjectModule info
+      @openTreeView filePath
+      alert desc.createModuleSuccess
+      @chameleonBox.closeView()
+
 
   CreateSimpleModule: (options) ->
     console.log 'SimpleModule'
-    info = options.moduleInfo
-    moduleConfig = Util.formatModuleConfigToObj info
-    params =
-      builderConfig: []
-      moduleConfig: moduleConfig
-      moduleInfo:
-        identifier: info.moduleId
-        moduleName: info.moduleName
-        modulePath: info.modulePath
+    params = @formatOptions options
     # console.log params
     Builder.activate(params);
     @chameleonBox.closeView()
@@ -139,6 +111,16 @@ module.exports = ModuleManager =
         @modalPanel.item.children(".loading-mask").remove()
     Util.getRepo(desc.getFrameworkPath(), config.repoUri, success) #没有，执行 git clone，成功后执行第二步
 
+  formatOptions: (options) ->
+    info = options.moduleInfo
+    moduleConfig = Util.formatModuleConfigToObj info
+    params =
+      builderConfig: []
+      moduleConfig: moduleConfig
+      moduleInfo:
+        identifier: info.moduleId
+        moduleName: info.moduleName
+        modulePath: info.modulePath
 
   editModuleConfig: (config,info) ->
     config.template = config.identifier
