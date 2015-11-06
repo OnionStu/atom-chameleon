@@ -118,7 +118,7 @@ module.exports = ModuleManager =
       projectInfo: null
       builderConfig: [
         {
-          name: "index",
+          name: "index.html",
           components: []
         }
       ]

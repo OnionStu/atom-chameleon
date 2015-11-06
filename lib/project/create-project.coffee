@@ -61,7 +61,7 @@ module.exports = CreateProject =
       projectInfo: info
       builderConfig: [
         {
-          name: "index",
+          name: "index.html",
           components: []
         }
       ]
