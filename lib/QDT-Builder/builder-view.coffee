@@ -10,7 +10,7 @@ class ChameleonBuilderView extends ScrollView
 
   getURI: -> @uri
 
-  getTitle: -> 
+  getTitle: ->
     @uri.replace('atom://', '')
 
   initialize: (options) ->
@@ -19,7 +19,7 @@ class ChameleonBuilderView extends ScrollView
 
   attached: ->
     util.eventEmitter().on 'server_on', (e)=>
-      @.attr 'src', e 
+      @.attr 'src', e
        .on 'load', ()=>
         window.frames[0].postMessage JSON.stringify(@appConfig), e
 
@@ -27,11 +27,29 @@ class ChameleonBuilderView extends ScrollView
       builderConfig = JSON.parse e.data
       @appConfig.builderConfig = builderConfig
       console.log @appConfig
-      util.createModule @appConfig, (err) =>
-        return console.error err if err?
-        console.log 'success'
+      if @appConfig.projectInfo?
+        @createProject @appConfig
+      else
+        @createModule @appConfig
       window.removeEventListener 'message', getBuilderConfig, false
 
     window.addEventListener 'message', getBuilderConfig, false
 
+  createModule: (options) ->
+    util.createModule options, (err) =>
+      return console.error err if err?
+      console.log 'success'
 
+  createProject: (options) ->
+    info = options.projectInfo
+    Util.createDir info.appPath, (err) =>
+      if err
+        console.error err
+        alert "应用创建失败#{':权限不足' if err.code is 'EACCES'}"
+      else
+        appConfigPath = pathM.join info.appPath,desc.projectConfigFileName
+        appConfig = Util.formatAppConfigToObj(info)
+        util.createModule options, (err) =>
+          return console.error err if err?
+          console.log 'success'
+          
