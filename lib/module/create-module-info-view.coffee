@@ -162,6 +162,8 @@ class CreateModuleInfoView extends View
             alert desc.selectProjectPath
         else
           @modulePath.html path
+          @checkPath()
+
 
   onSelectChange: (e) ->
     el = e.currentTarget
