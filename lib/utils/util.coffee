@@ -102,7 +102,7 @@ module.exports = Util =
             if currIndex > len
               cb()
             else
-              info = getPageInfo --currIndex
+              info = getPageInfo ++currIndex
               @writeFile info.path, info.html, writeHtmlFileCB
           @writeFile info.path, info.html, writeHtmlFileCB
 
