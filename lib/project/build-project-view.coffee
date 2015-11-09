@@ -17,6 +17,7 @@ class BuildProjectInfoView extends View
   projectConfigFileName: desc.projectConfigFileName
   moduleLogoFileName: desc.moduleLogoFileName
   moduleLocatFileName: desc.moduleLocatFileName
+  moduleDir:"modules"
   selectProjectTxt:"请选择变色龙项目"
   selectModuleTxt:"请选择主模块"
   versionLegalTips:"版本填写不合法"
@@ -25,6 +26,8 @@ class BuildProjectInfoView extends View
   appConfigNoExistTips:"本地应用配置文件不存在"
   appConfigIsNoCompleteTips:"本地配置文件有缺损"
   pleaseSelectRealProjectTips:"请选择正确的应用"
+  passCheckTips:"校验通过"
+  unPassCheckTips:"校验不通过"
   projectPath:null #项目的路径
   engineType:"PUBLIC"
   buildPlatform:"iOS"   # 对应构建应用的 platform
@@ -44,8 +47,9 @@ class BuildProjectInfoView extends View
   projectId:null
   httpType:"http"
   engineMessage:null
+  certInfo:null
   buildingId:null
-  timer:null
+  timerEvent:null
   # buildStep:1 #1、表示上传图片 2、表示调构建接口 3、表示见识构建结果 4、表示显示结果
   step:1 #1、代表第一步选择应用  2、为选择选择平台 3、为选择引擎 4、为选择引擎的版本 5、为引擎基本信息
          #6、应用基本信息，上传各个分辨率的封面图片  7、 选择模块 8、选择插件 9、证书管理 10、构建预览
@@ -74,7 +78,7 @@ class BuildProjectInfoView extends View
               @label "Android"
       @div outlet:"engineTableView",class:'form-horizontal form_width', =>
         @div class: "col-xs-12", =>
-          @label "引擎选择",class:"title-2-level"
+          @label "引擎选择（可跳过）",class:"title-2-level"
         @div class: "col-xs-12", =>
           @label "共有引擎", value:"PUBLIC" ,class:"public-view click-platform platformBtn",click:"platformBtnClick"
           @label "私有引擎", value:"PRIVATE",class:"private-view platformBtn",click:"platformBtnClick"
@@ -104,7 +108,7 @@ class BuildProjectInfoView extends View
             @button "下一页",class:"btn engineListClass nextPageButton"
       @div outlet:"engineVersionView",class:'form-horizontal form_width',=>
         @div =>
-          @label "引擎版本选择:"
+          @label "引擎版本选择（可跳过）:"
           @label outlet:"enginName"
         @div  =>
           @table =>
@@ -151,16 +155,16 @@ class BuildProjectInfoView extends View
           @label outlet:"engineVersion"
         @div class:"col-xs-12",=>
           @label "横竖屏支持:"
-          @input type:"checkbox" ,value:"scross",class:"showStyle"
-          @label "横屏"
-          @input type:"checkbox" ,value:"vertical",class:"showStyle"
-          @label "竖屏"
+          @input type:"checkbox" ,value:"scross",class:"showStyle",id:"scross-view"
+          @label "横屏",for:"scross-view"
+          @input type:"checkbox" ,value:"vertical",class:"showStyle",id:"vertical-view"
+          @label "竖屏",for:"vertical-view"
         @div class:"col-xs-12 iOSSupportView",=>
           @label "硬件支持:"
-          @input type:"checkbox" ,value:"iPhone",class:"supportMobileType"
-          @label "iPhone"
-          @input type:"checkbox" ,value:"iPad",class:"supportMobileType"
-          @label "iPad"
+          @input type:"checkbox" ,value:"iPhone",class:"supportMobileType",id:"iPhone-checkbox"
+          @label "iPhone",for:"iPhone-checkbox"
+          @input type:"checkbox" ,value:"iPad",class:"supportMobileType",id:"iPad-checkbox"
+          @label "iPad",for:"iPad-checkbox"
       @div outlet:"projectBasicMessageView",class:"form-horizontal form_width",=>
         @div class: "col-xs-12", =>
           @div class:"" ,=>
@@ -219,52 +223,80 @@ class BuildProjectInfoView extends View
           @button "下一页",class:"btn pluginListClass nextPageButton"
       @div outlet:"certSelectView",class:"form-horizontal form_width",=>
         @div =>
-          @label "证书管理",class:"title-2-level"
+          @label "证书管理（可跳过）",class:"title-2-level"
         @div outlet:"androidCertSelectView", =>
           @div class:"", =>
             @label "Android证书",class:"AndroidCertTh"
           @div class:"border-style",=>
             @div class:"col-xs-12",=>
               @label "Keystore别名" ,class:"certInfo-label"
-              @div class: 'inline-view', =>
-                @subview 'keystoreName', new TextEditorView(mini: true,placeholderText: 'moduleName...')
+              # @label outlet:"certAlias",class:"label-disable"
+              @input type:"text",class:"label-disable",outlet:"certAlias",disabled:true
             @div class:"col-xs-12", =>
               @label "Android证书文件",class:"certInfo-label"
-              @div class: 'inline-view', =>
-                @subview 'keystoreName', new TextEditorView(mini: true,placeholderText: 'moduleName...')
+              @div class: 'inline-view cert_file_input_click certFile', =>
+                @subview 'certFile', new TextEditorView(mini: true,placeholderText: 'Click to select Certificate File...')
+              # @label outlet:'certFile',class:"label-disable cert_file_input_click"
             @div class:"col-xs-12", =>
               @label "Android证书存储库口令",class:"certInfo-label"
               @div class: 'inline-view', =>
-                @subview 'keystoreName', new TextEditorView(mini: true,placeholderText: 'moduleName...')
+                @subview 'storePassword', new TextEditorView(mini: true,placeholderText: 'The certificate repository password...')
             @div class:"col-xs-12", =>
               @label "Android证书密钥库口令",class:"certInfo-label"
               @div class: 'inline-view', =>
-                @subview 'keystoreName', new TextEditorView(mini: true,placeholderText: 'moduleName...')
+                @subview 'keyPassword', new TextEditorView(mini: true,placeholderText: 'Certificate keystore password...')
             @div class:"col-xs-12 text-right-align",=>
-              @button "检验证书",class:"btn"
+              @button "提交并检验证书",class:"btn androidCertCheck uploadAndCheckCertBtn"
         @div outlet:"iosCertSelectView", =>
           @div =>
             @label "iOS发布证书",class:"iOSPersonCert iOSCertTh "
             @label "iOS企业证书",class:"companyPersonCert iOSCertTh "
-          @div class:"border-style", =>
-            @div class:"col-xs-12",=>
-              @label "App ID",class:"certInfo-label"
-              @div class: 'inline-view', =>
-                @subview 'keystoreName', new TextEditorView(mini: true,placeholderText: 'moduleName...')
-            @div class:"col-xs-12",=>
-              @label "发布证书",class:"certInfo-label"
-              @div class: 'inline-view', =>
-                @subview 'keystoreName', new TextEditorView(mini: true,placeholderText: 'moduleName...')
-            @div class:"col-xs-12",=>
-              @label "证书密码",class:"certInfo-label"
-              @div class: 'inline-view', =>
-                @subview 'keystoreName', new TextEditorView(mini: true,placeholderText: 'moduleName...')
-            @div class:"col-xs-12",=>
-              @label "证书解释文件",class:"certInfo-label"
-              @div class: 'inline-view', =>
-                @subview 'keystoreName', new TextEditorView(mini: true,placeholderText: 'moduleName...')
-            @div class:"col-xs-12 text-right-align",=>
-              @button "检验证书",class:"btn"
+          @div outlet:"iOSCertView", =>
+            @div class:"border-style", =>
+              @div class:"col-xs-12",=>
+                @label "App ID",class:"certInfo-label"
+                @input type:"text",class:"label-disable",outlet:"appId",disabled:true
+                # @div class: 'inline-view', =>
+                #   @subview 'appId', new TextEditorView(mini: true,placeholderText: 'App ID...')
+              @div class:"col-xs-12",=>
+                @label "发布证书",class:"certInfo-label"
+                @div class: 'inline-view cert_file_input_click appCert', =>
+                  @subview 'appCert', new TextEditorView(mini: true,placeholderText: 'Click to select Certificate File...')
+                # @label outlet:'appCert', class:"label-disable cert_file_input_click"
+              @div class:"col-xs-12",=>
+                @label "证书密码",class:"certInfo-label"
+                @div class: 'inline-view', =>
+                  @subview 'appPassword', new TextEditorView(mini: true,placeholderText: 'Certificate password...')
+              @div class:"col-xs-12",=>
+                @label "证书解释文件",class:"certInfo-label"
+                @div class: 'inline-view cert_file_input_click descFile', =>
+                  @subview 'descFile', new TextEditorView(mini: true,placeholderText: 'Click to select Certificate to explain file...')
+                # @label outlet:"descFile" ,class:"label-disable cert_file_input_click"
+              @div class:"col-xs-12 text-right-align",=>
+                @button "提交并检验证书",class:"btn iOSCertCheck uploadAndCheckCertBtn"
+          @div outlet:"iOSCompanyCertView", =>
+            @div class:"border-style", =>
+              @div class:"col-xs-12",=>
+                @label "App ID",class:"certInfo-label"
+                @input type:"text",class:"label-disable",outlet:"companyAppId",disabled:true
+                # @div class: 'inline-view', =>
+                #   @subview 'companyAppId', new TextEditorView(mini: true,placeholderText: 'moduleName...')
+              @div class:"col-xs-12",=>
+                @label "发布证书",class:"certInfo-label"
+                @div class: 'inline-view cert_file_input_click companyAppCert', =>
+                  @subview 'companyAppCert', new TextEditorView(mini: true,placeholderText: 'click...')
+                # @label outlet:'companyAppCert', class:"label-disable cert_file_input_click"
+              @div class:"col-xs-12",=>
+                @label "证书密码",class:"certInfo-label"
+                @div class: 'inline-view', =>
+                  @subview 'companyAppPassword', new TextEditorView(mini: true,placeholderText: 'moduleName...')
+              @div class:"col-xs-12",=>
+                @label "证书解释文件",class:"certInfo-label"
+                @div class: 'inline-view cert_file_input_click companyDescFile', =>
+                  @subview 'companyDescFile', new TextEditorView(mini: true,placeholderText: 'click...')
+                # @label outlet:"companyDescFile" ,class:"label-disable cert_file_input_click"
+              @div class:"col-xs-12 text-right-align",=>
+                @button "提交并检验证书",class:"btn iOSCompanyCertCheck uploadAndCheckCertBtn"
       @div outlet:"buildReView",class:"buildReViewClass", =>
         @div =>
           @label "版本号",class:"title-2-level"
@@ -275,8 +307,8 @@ class BuildProjectInfoView extends View
           @label "填写版本号:"
           @div class: 'inline-view', =>
             @subview 'versionUpload', new TextEditorView(mini: true,placeholderText: 'moduleName...')
-        @div =>
-          @button "生成安装包",click:"buildAppMethod",class:"btn"
+        # @div =>
+        #   @button "生成安装包",click:"buildAppMethod",class:"btn"
       @div outlet:"buildAppView", =>
         @div outlet:"uploadImageStepView" ,=>
           @label "正在上传图片..."
@@ -350,6 +382,8 @@ class BuildProjectInfoView extends View
     @.find('.prevPageButton').on 'click',(e) => @prevPageClick(e)
     @.find('.nextPageButton').on 'click',(e) => @nextPageClick(e)
     @.find('.iOSCertTh').on 'click',(e) => @clickIosCert(e)
+    @.find(".uploadAndCheckCertBtn").on "click",(e) => @uploadCheckCert(e)
+    @.find(".cert_file_input_click").on "click",(e) => @selectCertViewFile(e)
 
   initParam: ->
     @imageList = {}
@@ -359,6 +393,51 @@ class BuildProjectInfoView extends View
     @buildPlatform = "iOS"
     @engineType = "PUBLIC"
     @httpType = "http"
+
+
+  checkModuleNeedToUpload:(path) ->
+    modulesPath = pathM.join path,@moduleDir
+    # console.log modulesPath
+    if fs.existsSync(modulesPath)
+      modules = fs.readdirSync(modulesPath)
+      identifierList = []
+      getModuleIdentifiers = (modulePath) =>
+         filePath = pathM.join modulesPath,modulePath,desc.moduleConfigFileName
+         if fs.existsSync(filePath)
+           identifierList.push(modulePath)
+         else
+           return
+      getModuleIdentifiers modulePath for modulePath in modules
+      console.log identifierList
+      params =
+        formData:{
+          identifier:JSON.stringify(identifierList)
+        }
+        sendCookie: true
+        success: (data) =>
+          console.log data
+          moduleList = []
+          getNeedToUploadModuleIdentifier = (item) =>
+            if item["build"] is ""
+              moduleList.push(item["identifier"])
+            # moduleList.push(item["identifier"])
+          getNeedToUploadModuleIdentifier item for item in data
+          # return moduleList
+          str = moduleList.join(",")
+          console.log str
+          if str is ""
+            return
+          else
+            if confirm "检测到未上传模块： #{str}，是否要先上传模块？"
+              @parentView.closeView()
+              Util.rumAtomCommand("chameleon:publish-module")
+        error:=>
+          console.log "call the last version api fail"
+      # 获取 该模块最新版本 和 build
+      client.getModuleLastVersion(params)
+    else
+      return false
+
   # 点击下一步按钮触发事件
   nextBtnClick:() ->
     if @step is 1   #1、代表第一步选择应用，初始化 @projectPath
@@ -366,10 +445,12 @@ class BuildProjectInfoView extends View
       #   @mainModuleTag.html("")
       #   @modulesTag.html("")
       #初始化 projectPath 的全局变量，只在这里赋值
+      @initParam()
       @projectPath = @selectProject.val()
       if @projectPath is " "
         alert @selectProjectTxt
         return
+      @checkModuleNeedToUpload(@projectPath)
       # console.log @step,@projectPath
       @platformSelectView.show()
       @selectProjectView.hide()
@@ -379,20 +460,24 @@ class BuildProjectInfoView extends View
       @step = 2
     else if @step is 2 #2、为选择选择平台   在点击平台图片的时候 初始化 @buildPlatform
       console.log @step,@buildPlatform
+      @certInfo = {}
       @platformSelectView.hide()
       @engineTableView.show()
       @initEngineTableView() # 需要用到 @buildPlatform 和 @engineType ，@engineType是在点击 tag 时重新赋值的 将 engineMessage 设置为空
+      # @parentView.nextBtn.text("跳过")
       @step = 3
     else if @step is 4 #4、为选择引擎的版本  这个已经没用了
       @engineVersionView.hide()
       @engineBasicMessageView.show()
       @getBasicMessageView()
+      # @parentView.nextBtn.text("下一步")
       @step = 5
     else if @step is 3 #3、为选择引擎
       console.log "show engin basic message"
       @engineTableView.hide()
       @engineBasicMessageView.show()
       @getBasicMessageView() #初始化  engineMessage 的值
+      # @parentView.nextBtn.text("下一步")
       @step = 5
     else if @step is 5 # 5、为引擎基本信息
       if @.find(".showStyle:checked").length is 0
@@ -404,6 +489,7 @@ class BuildProjectInfoView extends View
           return
       @engineBasicMessageView.hide()
       @projectBasicMessageView.show()
+      # @parentView.nextBtn.text("跳过")
       @initProjectBasicMessageViewStep5_1()
       @step = 6
     else if @step is 6 # 6、模块选择
@@ -412,6 +498,7 @@ class BuildProjectInfoView extends View
       @selectModuleView.show()
       @pageSize = 4
       @pageIndex = 1
+      # @parentView.nextBtn.text("下一步")
       @initSelectModuleView([],@pageIndex,@pageSize)
       @step = 7
       # @uploadFileSync(callBack)
@@ -429,32 +516,167 @@ class BuildProjectInfoView extends View
       @selectPluginView.hide()
       @initCertView()
       @certSelectView.show()
+      # @parentView.nextBtn.text("跳过")
       @step = 9
     else if @step is 9
       @certSelectView.hide()
       @buildReView.show()
       if @projectLastContent
         @lastAppVersion.html(@projectLastContent["base"]["version"])
+        version = @projectLastContent["base"]["version"].split('.')
+        version[2] = parseInt(version[2]) + 1
+        @versionUpload.setText(version.join("."))
       else
         @lastAppVersion.html("0.0.0")
+        @versionUpload.setText("0.0.1")
       @step = 10
-      @parentView.nextBtn.hide()
+      @parentView.nextBtn.text("生成安装")
+    else if @step is 10
+      @buildAppMethod()
+
+  selectCertViewFile:(e) ->
+    el = e.currentTarget
+    options = {}
+    cb = (selectPath) =>
+      if selectPath? and selectPath.length != 0
+        tmp = selectPath[0].substring(selectPath[0].lastIndexOf('.'))
+        if @buildPlatform is "Android" and tmp is ".keystore"
+          # console.log selectPath[0]
+          @certFile.setText(selectPath[0])
+        else
+          if $(el).hasClass("appCert")
+            @appCert.setText(selectPath[0])
+          else if $(el).hasClass("descFile")
+            @descFile.setText(selectPath[0])
+          else if $(el).hasClass("companyAppCert")
+            @companyAppCert.setText(selectPath[0])
+          else
+            @companyDescFile.setText(selectPath[0])
+    Util.openFile options,cb
+
+  #检验证书
+  uploadCheckCert:(e) ->
+    console.log "click check"
+    el = e.currentTarget
+    if @buildPlatform is "Android"
+      params =
+        sendCookie:true
+        formData: {
+          up_file: fs.createReadStream(@certFile.getText())
+        }
+        success:(data) =>
+          console.log data
+          obj =
+            keystoreFileId:data["url_id"]
+            keypass:@keyPassword.getText()
+            storepass:@storePassword.getText()
+          params1 =
+            sendCookie:true
+            formData:obj
+            success:(data2) =>
+              console.log data2
+              @parentView.nextBtn.text("下一步")
+              @certAlias.val(data2["alias"])
+              @certInfo["certAlias"] = data2["alias"]
+              @certInfo["certFileId"] = data["url_id"]
+              @certInfo["storePassword"] = obj["storepass"]
+              @certInfo["keyPassword"] = obj["keypass"]
+              alert @passCheckTips
+            error:(msg) =>
+              console.log msg
+              alert @unPassCheckTips
+          client.check_cert_android(params1)
+        error:(msg) =>
+          console.log msg
+      client.uploadFileSync(params,"qdt_app",true)
+    else
+      appCert = null          #iOS应用证书
+      descFile = null         #证书解释文件
+      appPassword = null      #证书密码
+      if $(el).hasClass("iOSCompanyCertCheck")
+        console.log "iOSCompanyCertCheck"
+        appCert = @companyAppCert.getText()
+        descFile = @companyDescFile.getText()
+        appPassword = @companyAppPassword.getText()
+      else
+        appCert = @appCert.getText()
+        descFile = @descFile.getText()
+        appPassword = @appPassword.getText()
+      console.log "开始上传证书 iOS 证书"
+      #上传 iOS 证书
+      params =
+        sendCookie:true
+        formData:{
+          up_file: fs.createReadStream(appCert)
+        }
+        success:(data) =>
+          console.log data
+          console.log "开始上传证书 上传证书解释文件"
+          # 上传证书解释文件
+          params1 =
+            sendCookie:true
+            formData:{
+              up_file:fs.createReadStream(descFile)
+            }
+            success:(data1) =>
+              obj =
+                keypass:appPassword
+                certFileId:data["url_id"]
+                mobileprovisionFileId:data1["url_id"]
+              params2 =
+                sendCookie:true
+                formData:obj
+                success:(data2) =>
+                  @parentView.nextBtn.text("下一步")
+                  console.log data2
+                  if $(el).hasClass("iOSCompanyCertCheck")
+                    @companyAppId.val(data2["bundleIdentify"])
+                    @certInfo["companyAppId"] = data2["bundleIdentify"]
+                    @certInfo["companyAppCert"] = data["url_id"]
+                    @certInfo["companyAppPassword"] = @companyAppPassword.getText()
+                    @certInfo["companyDescFileId"] = data1["url_id"]
+                  else
+                    @appId.val(data2["bundleIdentify"])
+                    @certInfo["appId"] = data2["bundleIdentify"]
+                    @certInfo["appCert"] = data["url_id"]
+                    @certInfo["appPassword"] = @appPassword.getText()
+                    @certInfo["descFileId"] = data1["url_id"]
+                  alert @passCheckTips
+                  # console.log "================",@certInfo
+                error:(msg) =>
+                  console.log msg
+                  alert @unPassCheckTips
+              client.check_cert_iOS(params2)
+            error:(msg) =>
+              console.log msg
+          client.uploadFileSync(params1,"qdt_app",true)
+        error:(msg) =>
+          console.log
+      client.uploadFileSync(params,"qdt_app",true)
 
   #初始化证书选择
   initCertView:() ->
     if @buildPlatform is "iOS"
       @androidCertSelectView.hide()
+      @iOSCompanyCertView.hide()
       @iosCertSelectView.show()
       @.find(".companyPersonCert").addClass("click-cert-label")
     else
       @iosCertSelectView.hide()
       @androidCertSelectView.show()
 
+  #IOS 切换个人证书与企业证书
   clickIosCert:(e) ->
     el = e.currentTarget
     if $(el).hasClass("click-cert-label")
       @.find('.iOSCertTh').addClass("click-cert-label")
       $(el).removeClass("click-cert-label")
+    if $(el).hasClass("companyPersonCert")
+      @iOSCompanyCertView.show()
+      @iOSCertView.hide()
+    else
+      @iOSCompanyCertView.hide()
+      @iOSCertView.show()
 
   #上传logo的图片
   uploadFileSync:(callBack) ->
@@ -527,6 +749,7 @@ class BuildProjectInfoView extends View
       alert @versionLegalTips
       return
     @parentView.prevBtn.hide()
+    @parentView.nextBtn.hide()
     callBack = =>
       @uploadImageStepView.hide()
       @sendBuildRequestView.show()
@@ -534,11 +757,11 @@ class BuildProjectInfoView extends View
       if @buildPlatform is "Android"
         platform = "ANDROID"
       data = {}
-      certInfo =
-        "certSystem":platform
-        "appId":@projectId
-        "certAlias":""  #ios 与android有区别
-      data["certInfo"] = certInfo
+      # certInfo =
+      #   "certSystem":platform
+      #   "appId":
+      #   "certAlias":""  #ios 与android有区别
+      data["certInfo"] = @certInfo
       data["platform"] = platform
       data["appId"] = @projectId
       data["identifier"] = @projectConfigContent["identifier"]
@@ -597,6 +820,7 @@ class BuildProjectInfoView extends View
       return false
     return true
 
+  # 根据构建  ID  来查看构建结果
   checkBuildStatusByBuildId:(buildingId)->
     params =
       sendCookie:true
@@ -637,21 +861,24 @@ class BuildProjectInfoView extends View
           alert @buildIsFail
           @parentView.closeView()
           return
-        @timer = setTimeout =>
+        @timerEvent = setTimeout =>
           @timerMethod buildingId,loopTime
         ,1000
+        window.clearTimeout(@timerEvent)
       error:(msg) =>
         console.log msg
     client.getBuildUrl(params,buildingId)
 
+  # 定时任务
   timerMethod: (buildingId,loopTime) ->
+    # console.log @timerEvent
     if loopTime <= 0
       @checkBuildStatusByBuildId(buildingId)
     else
       number = parseInt(@.find(".waitTime").html()) - 1
       @.find(".waitTime").html(number)
       loopTime = loopTime - 1
-      @timer = setTimeout =>
+      @timerEvent = setTimeout =>
         @timerMethod buildingId,loopTime
       ,1000
 
@@ -979,13 +1206,16 @@ class BuildProjectInfoView extends View
       @engineBasicMessageView.hide()
       @engineTableView.show()
       @step = 3
+      # @parentView.nextBtn.text("跳过")
     else if @step is 6
       @projectBasicMessageView.hide()
       @engineBasicMessageView.show()
+      # @parentView.nextBtn.text("下一步")
       @step = 5
     else if @step is 7
       @selectModuleView.hide()
       @projectBasicMessageView.show()
+      # @parentView.nextBtn.text("跳过")
       @step = 6
     else if @step is 8
       @selectPluginView.hide()
@@ -994,11 +1224,13 @@ class BuildProjectInfoView extends View
     else if @step is 9
       @certSelectView.hide()
       @selectPluginView.show()
+      # @parentView.nextBtn.text("下一步")
       @step = 8
     else if @step is 10
       @buildReView.hide()
       @certSelectView.show()
-      @parentView.nextBtn.show()
+      # @parentView.nextBtn.show()
+      @parentView.nextBtn.text("下一步")
       @step = 9
 
   getList:(el,pageIndex,pageSize) ->
@@ -1568,6 +1800,11 @@ class BuildProjectInfoView extends View
         return QINIU_URL + fileId.substring(QINIU_URL.length, fileId.length) + pixel
       return fileId
 
+  clearTimer:->
+    # @buildPlatform = "shdhsadgsajgdj"
+    console.log @buildPlatform
+    @buildPlatform
+
 module.exports =
   class BuildProjectView extends ChameleonBox
     options :
@@ -1575,5 +1812,3 @@ module.exports =
       subview: new BuildProjectInfoView()
     closeView: ->
       super()
-      if @timer
-        window.clearTimeout(@timer)

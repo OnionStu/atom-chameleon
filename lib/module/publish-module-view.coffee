@@ -14,6 +14,7 @@ class PublishModuleInfoView extends View
   projectConfigFileName: desc.projectConfigFileName
   moduleLogoFileName: desc.moduleLogoFileName
   moduleLocatFileName: desc.moduleLocatFileName
+  moduleDir:"modules"
   moduleIdentifer:null#模块标识
   moduleVersion:null#模块版本
   moduleConfPath:null
@@ -126,7 +127,9 @@ class PublishModuleInfoView extends View
     if moduleMessage
       @moduleIdentifer = moduleMessage['identifier']
       @moduleName.setText(moduleMessage['name'])
-      @moduleUploadVersion.setText(moduleMessage['version'])
+      versionNumber = moduleMessage['version'].split(".")
+      versionNumber[2] = parseInt(versionNumber[2]) + 1
+      @moduleUploadVersion.setText(versionNumber.join("."))
       if fs.existsSync(logoPath)
         @logo.attr("src",logoPath)
 
@@ -263,6 +266,7 @@ class PublishModuleInfoView extends View
     console.log "begin to upload ",@selectProject.val()
     moduleIdentiferList = []
     moduleIdentiferList.push(@moduleIdentifer)
+    console.log JSON.stringify(moduleIdentiferList)
     params =
       formData:{
         identifier:JSON.stringify(moduleIdentiferList)
@@ -358,15 +362,23 @@ class PublishModuleInfoView extends View
       str = ""
       type = desc.appModule
       projectName = PathM.basename path
-      addItem = (id,version) =>
-        console.log id,version
+      modulePath = PathM.join path,@moduleDir
+      if !fs.existsSync(modulePath)
+        return
+      modulePathFiles = fs.readdirSync(modulePath)
+      console.log modulePathFiles
+      addItem = (id) =>
+        # console.log id,version
         moduleConfigFile = PathM.join path,@moduleLocatFileName,id,@moduleConfigFileName
+        if !fs.existsSync(moduleConfigFile)
+          return
         obj2 = Util.readJsonSync moduleConfigFile
         modulePath = PathM.join path,@moduleLocatFileName,id
         console.log moduleConfigFile,obj2
         if obj2
           str = str + "<option value='#{moduleConfigFile}'>#{id} -- #{obj.name} : #{path}</option>"
-      addItem id,version for id,version of obj['modules']
+      # addItem id,version for id,version of obj['modules']
+      addItem fileName for fileName in modulePathFiles
       console.log obj['modules']
       # optionStr = "<option value='#{path}'>#{projectName}  -  #{path}</option>"
       console.log str

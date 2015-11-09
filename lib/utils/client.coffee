@@ -175,3 +175,12 @@ module.exports =
     params.url = "app/qdt/build"
     params.method = "POST"
     @send params
+  check_cert_android:(params) ->
+    params.url = "app/check_cert_android"
+    params.method = "POST"
+    @send params
+
+  check_cert_iOS:(params) ->
+    params.url = "app/check_cert_ios"
+    params.method = "POST"
+    @send params
