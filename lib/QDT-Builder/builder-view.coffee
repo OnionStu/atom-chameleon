@@ -43,13 +43,13 @@ class ChameleonBuilderView extends ScrollView
 
   createProject: (options) ->
     info = options.projectInfo
-    Util.createDir info.appPath, (err) =>
+    util.createDir info.appPath, (err) =>
       if err
         console.error err
         alert "应用创建失败#{':权限不足' if err.code is 'EACCES'}"
       else
         appConfigPath = pathM.join info.appPath,desc.projectConfigFileName
-        appConfig = Util.formatAppConfigToObj(info)
+        appConfig = util.formatAppConfigToObj(info)
         util.createModule options, (err) =>
           return console.error err if err?
           console.log 'success'
@@ -57,12 +57,12 @@ class ChameleonBuilderView extends ScrollView
           moduleId = moduleInfo.identifier
           appConfig.mainModule = moduleId
           appConfig.modules[moduleId] = desc.minVersion
-          Util.writeJson appConfigPath, appConfig, (err) =>
+          util.writeJson appConfigPath, appConfig, (err) =>
             throw err if err
             atom.workspace.open appConfigPath
             aft = =>
-              Util.rumAtomCommand('tree-view:reveal-active-file')
+              util.rumAtomCommand('tree-view:reveal-active-file')
             _.debounce(aft,300)
           alert desc.createAppSuccess
           atom.project.addPath(info.appPath)
-          Util.rumAtomCommand 'tree-view:toggle' if $('.tree-view-resizer').length is 0
+          util.rumAtomCommand 'tree-view:toggle' if $('.tree-view-resizer').length is 0
