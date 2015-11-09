@@ -81,6 +81,7 @@ class RapidDevModeView extends ScrollView
   readConfig: (path,type) ->
     configFileName = if type is 'module' then Desc.moduleConfigFileName else Desc.projectConfigFileName
     configPath = PathM.join path,configFileName
+
     try
       config = Util.readJsonSync configPath
     catch err
@@ -113,12 +114,19 @@ class RapidDevModeView extends ScrollView
 
   addModuleItem: (projectPath,modules) ->
     htmlStr = ''
-    for module,version of modules
-      modulePath = PathM.join projectPath,Desc.moduleLocatFileName,module
-      moduleConfig = @readConfig modulePath, 'module'
-      htmlStr += @getModuleItemHtmlStr moduleConfig if moduleConfig?
-    htmlStr = "<li><h2>#{Desc.noModules}</h2></li>" if htmlStr is ''
-    @codePackList.append htmlStr
+    modulesDir = PathM.join projectPath,Desc.moduleLocatFileName
+    Util.readDir modulesDir, (err,files) =>
+      return console.error err if err?
+      console.log files
+      for module,version of modules
+        modulePath = PathM.join modulesDir,module
+        if Util.isFileExist PathM.join modulePath, Desc.builderConfigFileName
+          moduleConfig = @readConfig modulePath, 'module'
+          htmlStr += @getModuleItemHtmlStr moduleConfig if moduleConfig?
+
+      htmlStr = "<li><h2>#{Desc.noModules}</h2></li>" if htmlStr is ''
+      @codePackList.append htmlStr
+
 
   menuClick: (target) ->
     return @openFolder() if target is @other[0]
