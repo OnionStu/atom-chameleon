@@ -21,5 +21,5 @@ module.exports = AddModuleInfo =
     @chameleonBox.openView()
 
   openBuilder: (options) ->
-    Builder.activate(options)
+    Builder.activate(options.moduleInfo)
     @chameleonBox.closeView()
