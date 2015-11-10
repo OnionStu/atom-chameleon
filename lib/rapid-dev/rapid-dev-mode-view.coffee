@@ -19,9 +19,9 @@ class RapidDevModeView extends ScrollView
         @div class: 'code-view', =>
           @div class: 'frameworkList', =>
             @header class: 'code-panel-header', =>
-              @h2 '模块', =>
+              @h2 Desc._module, =>
                 @span class: 'icon icon-package'
-              @button '添加', class: 'btn icon icon-plus addNewCode',click: 'addNewModule',outlet: 'addBtn'
+              @button Desc.add, class: 'btn icon icon-plus addNewCode',click: 'addNewModule',outlet: 'addBtn'
             @ul outlet: 'codePackList', =>
               @li '', =>
                 @h2 Desc.noModules
