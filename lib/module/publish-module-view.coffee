@@ -59,7 +59,7 @@ class PublishModuleInfoView extends View
           @progress class: 'inline-block'
       @div outlet: "moduleApplyView",class: 'form-horizontal form_width',=>
         @div class:"text-center", =>
-          @span outlet:"getAppListTipsView","模块上传成功过，检测到以下应用已关联本模块，是否应用为模块的最新版本？"
+          @span outlet:"getAppListTipsView","模块上传成功，检测到以下应用已关联本模块，是否应用为模块的最新版本？"
           @br
         @div outlet:"tableView", =>
           @div outlet: "appListtable",=>
