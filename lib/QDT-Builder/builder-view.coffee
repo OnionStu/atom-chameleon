@@ -7,7 +7,7 @@ _ = require 'underscore-plus'
 module.exports =
 class ChameleonBuilderView extends ScrollView
   @content: ->
-    @iframe outlet: 'iframeContainer', class: 'builder-iframe', src: ''
+    @iframe class: 'builder-iframe'
 
   getURI: -> @uri
 
@@ -17,12 +17,18 @@ class ChameleonBuilderView extends ScrollView
   initialize: (options) ->
     @uri = options.uri
     @appConfig = options.appConfig
+    @eventEmitter = util.eventEmitter()
 
   attached: ->
-    util.eventEmitter().on 'server_on', (e)=>
-      @.attr 'src', e
+    frames = window.frames
+    eventEmitter = util.eventEmitter().on 'server_on', (e)=>
+      console.log e
+      @.attr {'src': e}
        .on 'load', ()=>
-        window.frames[0].postMessage JSON.stringify(@appConfig), e
+        _.each frames, (frame)=>
+          if frame.location.href is e + '/'
+            frame.postMessage JSON.stringify(@appConfig), e
+        eventEmitter.dispose()
 
     getBuilderConfig = (e) =>
       builderConfig = JSON.parse e.data
