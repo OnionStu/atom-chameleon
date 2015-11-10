@@ -118,7 +118,7 @@ class RapidDevModeView extends ScrollView
     Util.readDir modulesDir, (err,files) =>
       return console.error err if err?
       console.log files
-      for module,version of modules
+      for module in files
         modulePath = PathM.join modulesDir,module
         if Util.isFileExist PathM.join modulePath, Desc.builderConfigFileName
           moduleConfig = @readConfig modulePath, 'module'
