@@ -1,5 +1,6 @@
 {$, ScrollView} = require 'atom-space-pen-views'
 AddModuleInfo = require './add-module-info'
+Builder = require '../QDT-Builder/builder'
 
 Desc = require '../utils/text-description'
 Util = require '../utils/util'
@@ -39,7 +40,7 @@ class RapidDevModeView extends ScrollView
       @menuClick(e.currentTarget)
 
     @codePackList.on 'click', '.editModule', (e) =>
-      @openBuilder(e)
+      @onEditClick e
 
 
   attached: ->
@@ -47,10 +48,31 @@ class RapidDevModeView extends ScrollView
     @toggleAddBtn()
 
   toggleAddBtn: ->
-    if yes is $.isEmptyObject @projectInfos
-      @addBtn.hide()
-    else
+    if no is $.isEmptyObject(@projectInfos) and @.find('.settingsItem.active').length >0
       @addBtn.show()
+    else
+      @addBtn.hide()
+
+  onEditClick:(e) ->
+    projectPath = @codePackList.attr 'data-path'
+    moduleId = e.currentTarget.dataset.moduleid
+    modulePath = PathM.join projectPath,Desc.moduleLocatFileName,moduleId
+    builderConfigPath = PathM.join modulePath,Desc.builderConfigFileName
+    moduleConfigPath = PathM.join modulePath,Desc.moduleConfigFileName
+    builderConfig = Util.readJsonSync(builderConfigPath)
+    if !builderConfig?
+      return console.error "not Exists builderConfig"
+    moduleConfig = Util.readJsonSync(moduleConfigPath)
+
+    params =
+      projectInfo: null
+      builderConfig: builderConfig
+      moduleConfig: moduleConfig
+      moduleInfo:
+        identifier: moduleConfig.identifier
+        moduleName: moduleConfig.name
+        modulePath: modulePath
+    Builder.activate(params);
 
   isProject: (path) ->
     configPath = PathM.join path,Desc.projectConfigFileName
@@ -109,7 +131,7 @@ class RapidDevModeView extends ScrollView
     config = @projectInfos[projectID]
     console.log projectPath
     @toggleAddBtn()
-    @codePackList.empty()
+    @codePackList.empty().attr('data-path',projectPath);
     @addModuleItem projectPath,config.modules
 
   openFolder: ->
@@ -129,10 +151,7 @@ class RapidDevModeView extends ScrollView
     console.log currentProject
     AddModuleInfo.activate();
     AddModuleInfo.openView();
-    # @openBuilder()
 
-  openBuilder: (params) ->
-    console.log "open builder",params
 
   getModuleItemHtmlStr: (module) ->
     return if !module?
