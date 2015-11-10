@@ -90,19 +90,9 @@ class BuildProjectInfoView extends View
                   @th "平台",class:"th-platform"
                   @th "引擎名称",class:"th-engine"
                   @th "描述",class:"th-desc"
-                  # @th "引擎大小",class:"th-width-50"
                   @th "更新时间",class:"th-update-time"
                   @th "操作"
-              @tbody outlet:"engineItemShowView" #=>
-                # @tr =>
-                #   @td "com.foreveross.codorva"
-                #   @td "Android"
-                #   @td "app 通用引擎"
-                #   @td "支持Android 5.0 , 内置 codova 4.0"
-                #   @td "10M"
-                #   @td "2015-09-18 13:00:00"
-                #   @td =>
-                #     @button "选择"
+              @tbody outlet:"engineItemShowView"
           @div class: "",=>
             @button "上一页",class:"btn engineListClass prevPageButton"
             @button "下一页",class:"btn engineListClass nextPageButton"
@@ -119,14 +109,7 @@ class BuildProjectInfoView extends View
                 @th "发布时间",class:"th-desc"
                 @th "更新内容",class:"th-desc"
                 @th "操作"
-            @tbody outlet:"engineVersionItemView" #=>
-              # @tr =>
-              #   @td "1.0.1"
-              #   @td "10M"
-              #   @td "2015-08-15 17:30"
-              #   @td "支持 codorva 5.0"
-              #   @td =>
-              #     @a "选择"
+            @tbody outlet:"engineVersionItemView"
         @div class: "",=>
           @button "上一页",class:"btn engineVersionListClass prevPageButton"
           @button "下一页",class:"btn engineVersionListClass nextPageButton"
@@ -170,8 +153,6 @@ class BuildProjectInfoView extends View
           @div class:"" ,=>
             @label "APP LOGO", class:"label-logo"
             @img outlet:"logo",class:'pic img-logo', src: desc.getImgPath 'select-logo.png'
-          # @div =>
-          #   @button "上传", outlet:"selectLogo",class:"btn btn-width btn-logo selectImageItem"
           @div =>
             @div =>
               @label
@@ -230,13 +211,11 @@ class BuildProjectInfoView extends View
           @div class:"border-style",=>
             @div class:"col-xs-12",=>
               @label "Keystore别名" ,class:"certInfo-label"
-              # @label outlet:"certAlias",class:"label-disable"
               @input type:"text",class:"label-disable",outlet:"certAlias",disabled:true
             @div class:"col-xs-12", =>
               @label "Android证书文件",class:"certInfo-label"
               @div class: 'inline-view cert_file_input_click certFile', =>
                 @subview 'certFile', new TextEditorView(mini: true,placeholderText: 'Click to select Certificate File...')
-              # @label outlet:'certFile',class:"label-disable cert_file_input_click"
             @div class:"col-xs-12", =>
               @label "Android证书存储库口令",class:"certInfo-label"
               @div class: 'inline-view', =>
@@ -256,13 +235,10 @@ class BuildProjectInfoView extends View
               @div class:"col-xs-12",=>
                 @label "App ID",class:"certInfo-label"
                 @input type:"text",class:"label-disable",outlet:"appId",disabled:true
-                # @div class: 'inline-view', =>
-                #   @subview 'appId', new TextEditorView(mini: true,placeholderText: 'App ID...')
               @div class:"col-xs-12",=>
                 @label "发布证书",class:"certInfo-label"
                 @div class: 'inline-view cert_file_input_click appCert', =>
                   @subview 'appCert', new TextEditorView(mini: true,placeholderText: 'Click to select Certificate File...')
-                # @label outlet:'appCert', class:"label-disable cert_file_input_click"
               @div class:"col-xs-12",=>
                 @label "证书密码",class:"certInfo-label"
                 @div class: 'inline-view', =>
@@ -271,7 +247,6 @@ class BuildProjectInfoView extends View
                 @label "证书解释文件",class:"certInfo-label"
                 @div class: 'inline-view cert_file_input_click descFile', =>
                   @subview 'descFile', new TextEditorView(mini: true,placeholderText: 'Click to select Certificate to explain file...')
-                # @label outlet:"descFile" ,class:"label-disable cert_file_input_click"
               @div class:"col-xs-12 text-right-align",=>
                 @button "提交并检验证书",class:"btn iOSCertCheck uploadAndCheckCertBtn"
           @div outlet:"iOSCompanyCertView", =>
@@ -279,13 +254,10 @@ class BuildProjectInfoView extends View
               @div class:"col-xs-12",=>
                 @label "App ID",class:"certInfo-label"
                 @input type:"text",class:"label-disable",outlet:"companyAppId",disabled:true
-                # @div class: 'inline-view', =>
-                #   @subview 'companyAppId', new TextEditorView(mini: true,placeholderText: 'moduleName...')
               @div class:"col-xs-12",=>
                 @label "发布证书",class:"certInfo-label"
                 @div class: 'inline-view cert_file_input_click companyAppCert', =>
                   @subview 'companyAppCert', new TextEditorView(mini: true,placeholderText: 'click...')
-                # @label outlet:'companyAppCert', class:"label-disable cert_file_input_click"
               @div class:"col-xs-12",=>
                 @label "证书密码",class:"certInfo-label"
                 @div class: 'inline-view', =>
@@ -294,7 +266,6 @@ class BuildProjectInfoView extends View
                 @label "证书解释文件",class:"certInfo-label"
                 @div class: 'inline-view cert_file_input_click companyDescFile', =>
                   @subview 'companyDescFile', new TextEditorView(mini: true,placeholderText: 'click...')
-                # @label outlet:"companyDescFile" ,class:"label-disable cert_file_input_click"
               @div class:"col-xs-12 text-right-align",=>
                 @button "提交并检验证书",class:"btn iOSCompanyCertCheck uploadAndCheckCertBtn"
       @div outlet:"buildReView",class:"buildReViewClass", =>
@@ -307,8 +278,6 @@ class BuildProjectInfoView extends View
           @label "填写版本号:"
           @div class: 'inline-view', =>
             @subview 'versionUpload', new TextEditorView(mini: true,placeholderText: 'moduleName...')
-        # @div =>
-        #   @button "生成安装包",click:"buildAppMethod",class:"btn"
       @div outlet:"buildAppView", =>
         @div outlet:"uploadImageStepView" ,=>
           @label "正在上传图片..."
@@ -322,7 +291,6 @@ class BuildProjectInfoView extends View
           @label outlet:"buildingTips"
           @div class: "col-sm-12 text-center", =>
             @progress class: 'inline-block'
-          # @label outlet:"needTime"
         @div outlet:"buildResultView" , =>
           @div =>
             @label "构建成功"
@@ -349,12 +317,9 @@ class BuildProjectInfoView extends View
     $(b1).addClass("click-platform")
     @initEngineTableView()
 
+
   # 初始化
   attached: ->
-    # UtilExtend.dateFormat("YYYY-MM-DD HH:mm:ss",new Date())
-    # @selectProjectView.hide()
-    # console.log @getImageUrlMethod("qdt_icon_10hdhsdhjasgf",0)
-    # console.log @getImageUrlMethod("10hdhsdhjasgf")
     @platformSelectView.hide()
     @engineTableView.hide()
     @engineVersionView.hide()
@@ -441,9 +406,6 @@ class BuildProjectInfoView extends View
   # 点击下一步按钮触发事件
   nextBtnClick:() ->
     if @step is 1   #1、代表第一步选择应用，初始化 @projectPath
-      # if @projectPath isnt @selectProject.val()
-      #   @mainModuleTag.html("")
-      #   @modulesTag.html("")
       #初始化 projectPath 的全局变量，只在这里赋值
       @initParam()
       @projectPath = @selectProject.val()
@@ -451,12 +413,10 @@ class BuildProjectInfoView extends View
         alert @selectProjectTxt
         return
       @checkModuleNeedToUpload(@projectPath)
-      # console.log @step,@projectPath
       @platformSelectView.show()
       @selectProjectView.hide()
       @parentView.prevBtn.show()
       @parentView.prevBtn.attr('disabled',false)
-      # @getProjectId()
       @step = 2
     else if @step is 2 #2、为选择选择平台   在点击平台图片的时候 初始化 @buildPlatform
       console.log @step,@buildPlatform
@@ -541,7 +501,6 @@ class BuildProjectInfoView extends View
       if selectPath? and selectPath.length != 0
         tmp = selectPath[0].substring(selectPath[0].lastIndexOf('.'))
         if @buildPlatform is "Android" and tmp is ".keystore"
-          # console.log selectPath[0]
           @certFile.setText(selectPath[0])
         else
           if $(el).hasClass("appCert")
@@ -642,7 +601,6 @@ class BuildProjectInfoView extends View
                     @certInfo["appPassword"] = @appPassword.getText()
                     @certInfo["descFileId"] = data1["url_id"]
                   alert @passCheckTips
-                  # console.log "================",@certInfo
                 error:(msg) =>
                   console.log msg
                   alert @unPassCheckTips
@@ -693,13 +651,11 @@ class BuildProjectInfoView extends View
         }
         sendCookie:true
         success:(data) =>
-          # console.log data
           @logoImage = data["url_id"]
           keyArray = []
           getKeyList = (key,path) =>
             keyArray.push(key)
           getKeyList key,path for key,path of @imageList
-          console.log callBack
           @uploadImageFileListSync(keyArray,0,callBack)
         error:(msg) =>
           console.log msg
@@ -709,7 +665,6 @@ class BuildProjectInfoView extends View
       getKeyList = (key,path) =>
         keyArray.push(key)
       getKeyList key,path for key,path of @imageList
-      console.log callBack
       @uploadImageFileListSync(keyArray,0,callBack)
 
   # 同步上传文件
@@ -757,10 +712,6 @@ class BuildProjectInfoView extends View
       if @buildPlatform is "Android"
         platform = "ANDROID"
       data = {}
-      # certInfo =
-      #   "certSystem":platform
-      #   "appId":
-      #   "certAlias":""  #ios 与android有区别
       data["certInfo"] = @certInfo
       data["platform"] = platform
       data["appId"] = @projectId
@@ -795,14 +746,13 @@ class BuildProjectInfoView extends View
       data["mainModuleId"] = @mainModuleId
       data["engineId"] = @engineMessage["engineId"]
       data["engineVersionId"] = @engineMessage["id"]
-      # console.log data
       params =
         sendCookie:true
         body: JSON.stringify(data)
         success:(data) =>
           console.log "requestBuildApp data = #{data}"
           @buildingId = data["buildId"]
-          # TODO: 监听构建结果
+          #监听构建结果
           @sendBuildRequestView.hide()
           @waitingBuildResultView.show()
           @checkBuildStatusByBuildId(@buildingId)
@@ -864,7 +814,6 @@ class BuildProjectInfoView extends View
         @timerEvent = setTimeout =>
           @timerMethod buildingId,loopTime
         ,1000
-        window.clearTimeout(@timerEvent)
       error:(msg) =>
         console.log msg
     client.getBuildUrl(params,buildingId)
@@ -885,7 +834,7 @@ class BuildProjectInfoView extends View
   # 初始化插件
   # array 需要过滤掉的插件数据
   initSelectPluginView:(array,pageIndex,pageSize) ->
-    console.log "begin to initSelectPluginView"
+    # console.log "begin to initSelectPluginView"
     platform = "ANDROID"
     if @buildPlatform is "iOS"
       platform = "IOS"
@@ -976,7 +925,7 @@ class BuildProjectInfoView extends View
     @modulesTag.html(modulesTagArray.join(""))
   #初始化模块
   initSelectModuleView:(array,pageIndex,pageSize)->
-    console.log "begin to initSelectModuleView"
+    # console.log "begin to initSelectModuleView"
     # console.log @projectLastContent
     platform = "ANDROID"
     if @buildPlatform is "iOS"
@@ -1058,7 +1007,7 @@ class BuildProjectInfoView extends View
     params =
       sendCookie:true
       success:(data) =>
-        console.log "getLastBuildMessage #{data}"
+        # console.log "getLastBuildMessage #{data}"
         @projectLastContent = data
         @initProjectBasicMessageViewStep5_2()
       error: (msg) =>
@@ -1082,7 +1031,6 @@ class BuildProjectInfoView extends View
         # console.log data
         @projectIdFromServer = data["id"]
         @getLastBuildMessage()
-        # @projectConfigContent["id"] =
         #如果data存在则从中获取 projectId
       error:(msg) =>
         @initProjectBasicMessageViewStep5_2()
@@ -1092,7 +1040,7 @@ class BuildProjectInfoView extends View
   #初始化基本信息，也就
   initProjectBasicMessageViewStep5_1:()->
     @projectLastContent = null
-    console.log "projectBasicMessageView is show"
+    # console.log "projectBasicMessageView is show"
     @getProjectId()
 
   #显示内容
@@ -1142,13 +1090,13 @@ class BuildProjectInfoView extends View
         htmlScrossArray = []
         getScrossStr = (item2) =>
           if item2 is "iPad"
-            console.log "getIPadScrossHtml"
+            # console.log "getIPadScrossHtml"
             htmlScrossArray.push(@getIPadScrossHtml())
           else if item2 is "iPhone"
-            console.log "getIPhoneScrossHtml"
+            # console.log "getIPhoneScrossHtml"
             htmlScrossArray.push(@getIPhoneScrossHtml())
           else
-            console.log "getAndroidScrossHtml"
+            # console.log "getAndroidScrossHtml"
             htmlScrossArray.push(@getAndroidScrossHtml())
         getScrossStr item2 for item2 in supportMobileTypeArray
         @.find(".scrossModelView").show()
@@ -1173,21 +1121,21 @@ class BuildProjectInfoView extends View
     cb = (selectPath) =>
       if selectPath? and selectPath.length != 0
         tmp = selectPath[0].substring(selectPath[0].lastIndexOf('.'))
-        console.log tmp
+        # console.log tmp
         if tmp is ".png"
           $(el).attr("src",selectPath[0])
           if $(el).hasClass("img-logo")
             @logoImage = selectPath[0]
           else
             @imageList[$(el).attr("value")] = selectPath[0]
-          console.log @imageList
+          # console.log @imageList
         else
           alert desc.projectTipsStep6_selectImg
     Util.openFile options,cb
 
   # 点击上一步按钮触发事件
   prevBtnClick:() ->
-    console.log "prevBtnClick"
+    # console.log "prevBtnClick"
     if @step is 2
       # console.log "prevBtnClick"
       @platformSelectView.hide()
@@ -1247,7 +1195,7 @@ class BuildProjectInfoView extends View
   nextPageClick:(e) ->
     el = e.currentTarget
     @pageIndex = @pageIndex + 1
-    console.log @pageIndex
+    # console.log @pageIndex
     @getList(el,@pageIndex,@pageSize)
 
   # 点击上一页所触发的事件
@@ -1258,7 +1206,7 @@ class BuildProjectInfoView extends View
     else
       @pageIndex = 1
       return
-    console.log @pageIndex
+    # console.log @pageIndex
     @getList(el,@pageIndex,@pageSize)
 
   # 获取引擎列表
@@ -1397,7 +1345,7 @@ class BuildProjectInfoView extends View
     @platform.html(data["platform"])
     @engineSize.html(data["fileSize"])
     @engineVersion.html(data["version"])
-    console.log "env=",data["buildEnvironment"]["name"]
+    # console.log "env=",data["buildEnvironment"]["name"]
     @buildEnv.html(data["buildEnvironment"]["name"]+data["buildEnvironment"]["version"])
 
   # 获取左边文件
@@ -1449,19 +1397,13 @@ class BuildProjectInfoView extends View
   #获取苹果手机横屏显示类型
   getIPhoneScrossHtml:() ->
     iphoneSrc = desc.getImgPath "default_app_iphone_scross_logo.png"
-    # console.log  @projectLastContent["base"]["images"]
     if @projectLastContent
-      # console.log  @projectLastContent
       images = @projectLastContent["base"]["images"]
-      # console.log images
-      # console.log images["iphone960_640"]
       if typeof(images["iphone960_640"]) is "undefined" || images["iphone960_640"] == ""
         images["iphone960_640"] = iphoneSrc
       else
         @imageList["iphone960_640"] = images["iphone960_640"]
-        # console.log images["iphone960_640"]
         images["iphone960_640"] = @getImageUrlMethod(images["iphone960_640"])
-        # console.log images["iphone960_640"]
       if typeof(images["iphone1136_640"]) is "undefined" || images["iphone1136_640"] == ""
         images["iphone1136_640"] = iphoneSrc
       else
@@ -1535,7 +1477,6 @@ class BuildProjectInfoView extends View
   getIPhoneVerticalHtml:() ->
     iphoneSrc = desc.getImgPath "default_app_iphone_logo.png"
     if @projectLastContent
-      # console.log  @projectLastContent
       images = @projectLastContent["base"]["images"]
       if typeof(images["iphone640_960"]) is "undefined" || images["iphone640_960"] == ""
         images["iphone640_960"] = iphoneSrc
@@ -1670,7 +1611,6 @@ class BuildProjectInfoView extends View
   #获取安卓手机横屏显示类型
   getAndroidScrossHtml:() ->
     androidSrc = desc.getImgPath "default_app_android_scross_logo.png"
-    console.log @projectLastContent["base"]["images"]
     if @projectLastContent
       images = @projectLastContent["base"]["images"]
       if typeof(images["android960_640"]) is "undefined" || images["android960_640"] == ""
@@ -1761,7 +1701,6 @@ class BuildProjectInfoView extends View
 
   # 获取图片的url
   getImageUrlMethod:(fileId, pixel) ->
-    # console.log fileId,pixel
     if !fileId
       return fileId
     if !pixel
@@ -1777,19 +1716,16 @@ class BuildProjectInfoView extends View
       QINIU_URL = QINIU_HTTPS
     else
       QINIU_URL = ''
-    # console.log "QINIU_URL = #{QINIU_URL}"
     if fileId.indexOf("qdt_icon_") is 0
       return  WEB_CONTEXT + fileId
     else
       start = fileId.toLowerCase().charAt(0)
-      # console.log "start = #{start}"
       index = 0
       returnUrl = null
       methodFor = (item) =>
         if start is HEX_RADIX[index]
           returnUrl = QINIU_URL + fileId + pixel
           return returnUrl
-        # console.log "item = #{item} , index = #{index}"
         index = index + 1
       methodFor item for item in HEX_RADIX
       if returnUrl
@@ -1800,10 +1736,7 @@ class BuildProjectInfoView extends View
         return QINIU_URL + fileId.substring(QINIU_URL.length, fileId.length) + pixel
       return fileId
 
-  clearTimer:->
-    # @buildPlatform = "shdhsadgsajgdj"
-    console.log @buildPlatform
-    @buildPlatform
+
 
 module.exports =
   class BuildProjectView extends ChameleonBox
@@ -1811,4 +1744,6 @@ module.exports =
       title: desc.buildProjectMainTitle
       subview: new BuildProjectInfoView()
     closeView: ->
+      # console.log @contentView.buildPlatform
+      window.clearTimeout(@contentView.timerEvent)
       super()

@@ -45,7 +45,7 @@ module.exports = Util =
     name: options.moduleName
     identifier: options.moduleId
     # main: options.mainEntry
-    version: '0.0.1'
+    version: desc.minVersion
     build: 1
     # description: ''
     dependencies: {}
@@ -58,7 +58,7 @@ module.exports = Util =
       identifier: options.appId
       mainModule: ''
       modules: {}
-      version: '0.0.1'
+      version: desc.minVersion
       build: 1
       description: ''
       dependencies: {}

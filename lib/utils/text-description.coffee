@@ -128,7 +128,7 @@ module.exports = TextDescription =
   moduleConfig : '模块配置'
 
   defaultModuleName : 'butterfly-tiny'
-  minVersion : '0.0.1'
+  minVersion : '0.0.0'
 
   # 设置模块
   panelTitle: '设置'
