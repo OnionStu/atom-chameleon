@@ -60,6 +60,5 @@ require(['app', 'backbone', 'scripts/event-dispatcher'], function(app, Backbone,
   });
 
   new router();
-  Backbone.history.start()
-  
+  Backbone.history.start()  
 });

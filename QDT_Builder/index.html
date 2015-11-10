@@ -5,6 +5,15 @@
   <title>Document</title>
   <link rel="stylesheet" href="assets/bower_components/normalize-css/normalize.css">
   <link rel="stylesheet" href="assets/styles/app.css">
+  <script>
+    var getMessage = function(e) {
+      window.message = e;
+      console.log(window.message)
+      window.removeEventListener('message', getMessage, false);
+    }
+    window.addEventListener('message', getMessage, false);
+  </script>
+
 </head>
 <body>
   <div class="app-header">
@@ -53,14 +62,6 @@
     <p>COPYRIGHT ALL RIGHTS RESERVED <a href="#">变色龙开发团队</a></p>
   </div>  
   <div class="modal"></div>
-  <script>
-    var getMessage = function(e) {
-      window.message = e;
-      console.log(window.message)
-      window.removeEventListener('message', getMessage, false);
-    }
-    window.addEventListener('message', getMessage, false);
-  </script>
   <script data-main="assets/main.js" src="assets/bower_components/requirejs/require.js"></script>
 
 
