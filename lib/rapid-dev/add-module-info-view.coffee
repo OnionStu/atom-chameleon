@@ -60,6 +60,21 @@ class ModuleInfoView extends View
       modulePath: modulePath
       isChameleonProject:@isChameleonProject
 
+    moduleConfig = Util.formatModuleConfigToObj info
+    params =
+      projectInfo: null
+      builderConfig: [
+        {
+          name: "index.html",
+          components: []
+        }
+      ]
+      moduleConfig: moduleConfig
+      moduleInfo:
+        identifier: info.moduleId
+        moduleName: info.moduleName
+        modulePath: info.modulePath
+
   checkProjectPath: (path) ->
     result = null
     configPath = PathM.join path,Desc.projectConfigFileName
