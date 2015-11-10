@@ -19,9 +19,9 @@ class RapidDevModeView extends ScrollView
         @div class: 'code-view', =>
           @div class: 'frameworkList', =>
             @header class: 'code-panel-header', =>
-              @h2 '模块', =>
+              @h2 Desc._module, =>
                 @span class: 'icon icon-package'
-              @button '添加', class: 'btn icon icon-plus addNewCode',click: 'addNewModule',outlet: 'addBtn'
+              @button Desc.add, class: 'btn icon icon-plus addNewCode',click: 'addNewModule',outlet: 'addBtn'
             @ul outlet: 'codePackList', =>
               @li '', =>
                 @h2 Desc.noModules
@@ -118,7 +118,7 @@ class RapidDevModeView extends ScrollView
     Util.readDir modulesDir, (err,files) =>
       return console.error err if err?
       console.log files
-      for module,version of modules
+      for module in files
         modulePath = PathM.join modulesDir,module
         if Util.isFileExist PathM.join modulePath, Desc.builderConfigFileName
           moduleConfig = @readConfig modulePath, 'module'
