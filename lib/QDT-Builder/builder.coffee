@@ -1,9 +1,13 @@
 ChameleonBuilderView = null
-
+{$} = require 'atom-space-pen-views'
 ViewUri = 'atom://ChameleonBuilder'
 util = require '../utils/util'
+pathM = require 'path'
+desc = require '../utils/text-description'
+_ = require 'underscore-plus'
 
 createView = (state) ->
+  console.log state
   ChameleonBuilderView ?= require './builder-view'
   new ChameleonBuilderView(state)
 
@@ -17,28 +21,27 @@ atom.deserializers.add(deserializer)
 module.exports =
   activate: (options)->
     console.log options
-    @server = util.startServer().server
-    @appConfig = options
+
+    @server = util.startServer()
+    @appConfig = $.extend(true, options, {})
     console.log @appConfig
+
     ViewUri = "atom://#{options.moduleInfo.identifier}"
-    atom.workspace.addOpener (filePath) ->
-      @CreateView = createView({uri: ViewUri, appConfig: options}) if filePath is ViewUri
+    atom.workspace.addOpener (filePath) =>
+      console.log filePath, ViewUri
+      @CreateView = createView({uri: ViewUri, appConfig: $.extend(true, @appConfig.builderConfig, {})}) if filePath is ViewUri
 
     atom.workspace.open(ViewUri)
 
-    getBuilderConfig = (e) =>
-      console.log e
-      builderConfig = JSON.parse e.data
-      @appConfig.builderConfig = builderConfig
-      console.log @appConfig
-      if @appConfig.projectInfo?
-        @createProject @appConfig
-      else
-        @createModule @appConfig
-      window.removeEventListener 'message', getBuilderConfig, false
-
-    window.addEventListener 'message', getBuilderConfig, false
-    
+    eventEmitter = util.eventEmitter().on 'getPort', (port)=>
+      util.addEventtoList port, (e)=>
+        builderConfig = JSON.parse e.data
+        @appConfig.builderConfig = builderConfig
+        if @appConfig.projectInfo?
+          @createProject @appConfig
+        else
+          @createModule @appConfig
+        eventEmitter.dispose()
 
   serialize: ->
     deserializer: @constructor.name
@@ -48,7 +51,8 @@ module.exports =
     util.createModule options, (err) =>
       return console.error err if err?
       console.log 'success'
-      @closeBuilder()
+      console.log @server
+      # @closeBuilder()
 
   createProject: (options) ->
     info = options.projectInfo
@@ -78,4 +82,4 @@ module.exports =
           @closeBuilder()
 
   closeBuilder: () ->
-    util.stopServer(@server)
+    util.stopServer(@server.server)

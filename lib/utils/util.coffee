@@ -15,6 +15,8 @@ nodeStatic = require 'node-static'
 
 module.exports = Util =
   emitter: new Emitter()
+  # windowEmitter: new Emmitter()
+  handlerList: {}
   fsx: fs
 
   rumAtomCommand: (command) ->
@@ -423,3 +425,11 @@ module.exports = Util =
 
   eventEmitter: () ->
     @emitter
+
+  addEventtoList: (origin, handler) ->
+    @handlerList[origin] = handler
+
+  windowEventInit: () ->
+    window.addEventListener 'message', (e)=>
+      console.log @handlerList
+      @handlerList[e.origin](e)

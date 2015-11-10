@@ -45,6 +45,8 @@ module.exports = Chameleon =
     @rapidDev = RapidDev
 
     @subscriptions = new CompositeDisposable
+    
+    util.windowEventInit()
 
     @subscriptions.add atom.commands.add 'atom-workspace', 'chameleon:rapid-dev': => @openRapidDevMode()
     @subscriptions.add atom.commands.add 'atom-workspace', 'chameleon:settings': => @openSettings()

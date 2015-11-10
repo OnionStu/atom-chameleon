@@ -21,7 +21,7 @@ define([
     },
 
     initialize: function(appConfig) {
-      var PagesJSON = JSON.parse(appConfig.data).builderConfig;
+      var PagesJSON = JSON.parse(appConfig.data);
       // var PagesJSON = JSON.parse('[]');
       // var PagesJSON = JSON.parse(pagesJSON)
       console.log(PagesJSON)
