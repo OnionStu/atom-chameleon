@@ -21,6 +21,8 @@ module.exports = TextDescription =
   other: '其他'
   openFromFolder: '从文件夹打开'
   framework: '框架'
+  _module: '模块'
+  add: '添加'
 
   createProject: '创建应用'
   createAppType: '请选择要创建的应用类型'
@@ -128,7 +130,7 @@ module.exports = TextDescription =
   moduleConfig : '模块配置'
 
   defaultModuleName : 'butterfly-tiny'
-  minVersion : '0.0.1'
+  minVersion : '0.0.0'
 
   # 设置模块
   panelTitle: '设置'
@@ -156,3 +158,4 @@ module.exports = TextDescription =
   selectCorrectProject: "请选择变色龙应用"
   rapidDevTitle: '快速开发'
   noModules: '暂无相关模块'
+  projectList: '项目列表'
