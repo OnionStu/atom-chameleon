@@ -20,9 +20,11 @@ class ChameleonBuilderView extends ScrollView
     @eventEmitter = util.eventEmitter()
 
   attached: ->
+
     frames = window.frames
     eventEmitter = util.eventEmitter().on 'server_on', (e)=>
       console.log e
+      console.log @appConfig
       @.attr {'src': e}
        .on 'load', ()=>
         _.each frames, (frame)=>
@@ -30,45 +32,6 @@ class ChameleonBuilderView extends ScrollView
             frame.postMessage JSON.stringify(@appConfig), e
         eventEmitter.dispose()
 
-    getBuilderConfig = (e) =>
-      builderConfig = JSON.parse e.data
-      @appConfig.builderConfig = builderConfig
-      console.log @appConfig
-      if @appConfig.projectInfo?
-        @createProject @appConfig
-      else
-        @createModule @appConfig
-      window.removeEventListener 'message', getBuilderConfig, false
+    
 
-    window.addEventListener 'message', getBuilderConfig, false
-
-  createModule: (options) ->
-    util.createModule options, (err) =>
-      return console.error err if err?
-      console.log 'success'
-
-  createProject: (options) ->
-    info = options.projectInfo
-    util.createDir info.appPath, (err) =>
-      if err
-        console.error err
-        alert "应用创建失败#{':权限不足' if err.code is 'EACCES'}"
-      else
-        appConfigPath = pathM.join info.appPath,desc.projectConfigFileName
-        appConfig = util.formatAppConfigToObj(info)
-        util.createModule options, (err) =>
-          return console.error err if err?
-          console.log 'success'
-          moduleInfo = options.moduleInfo
-          moduleId = moduleInfo.identifier
-          appConfig.mainModule = moduleId
-          appConfig.modules[moduleId] = desc.minVersion
-          util.writeJson appConfigPath, appConfig, (err) =>
-            throw err if err
-            atom.workspace.open appConfigPath
-            aft = =>
-              util.rumAtomCommand('tree-view:reveal-active-file')
-            _.debounce(aft,300)
-          alert desc.createAppSuccess
-          atom.project.addPath(info.appPath)
-          util.rumAtomCommand 'tree-view:toggle' if $('.tree-view-resizer').length is 0
+  

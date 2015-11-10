@@ -43,6 +43,7 @@ define([
           PageCollection[index].components = pageCollection.attributes.components.toJSON();
           PageCollection[index].html = newstr;
         })
+        console.log(PageCollection)
         var pageInfo = JSON.stringify(PageCollection);
         window.parent.postMessage(pageInfo, '*');
       }.bind(this));
