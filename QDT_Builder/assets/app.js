@@ -21,7 +21,7 @@ define([
     },
 
     initialize: function(appConfig) {
-      var PagesJSON = JSON.parse(appConfig.data);
+      var PagesJSON = appConfig.builderConfig;
       // var PagesJSON = JSON.parse('[]');
       // var PagesJSON = JSON.parse(pagesJSON)
       console.log(PagesJSON)
@@ -43,8 +43,12 @@ define([
           PageCollection[index].components = pageCollection.attributes.components.toJSON();
           PageCollection[index].html = newstr;
         })
-        console.log(PageCollection)
-        var pageInfo = JSON.stringify(PageCollection);
+        
+        var message = {
+          PageCollection: PageCollection,
+          appConfig: appConfig
+        }
+        var pageInfo = JSON.stringify(message);
         window.parent.postMessage(pageInfo, '*');
       }.bind(this));
 

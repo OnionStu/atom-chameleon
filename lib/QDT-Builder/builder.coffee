@@ -5,6 +5,7 @@ util = require '../utils/util'
 pathM = require 'path'
 desc = require '../utils/text-description'
 _ = require 'underscore-plus'
+ChameleonBuilderView = require './builder-view'
 
 createView = (state) ->
   console.log state
@@ -21,23 +22,24 @@ atom.deserializers.add(deserializer)
 module.exports =
   activate: (options)->
     console.log options
-
     @server = util.startServer()
-    @appConfig = $.extend(true, options, {})
-    console.log @appConfig
 
-    ViewUri = "atom://#{options.moduleInfo.identifier}"
-    atom.workspace.addOpener (filePath) =>
-      console.log filePath, ViewUri
-      @CreateView = createView({uri: ViewUri, appConfig: $.extend(true, @appConfig.builderConfig, {})}) if filePath is ViewUri
-
-    atom.workspace.open(ViewUri)
+    # ViewUri = "atom://#{options.moduleInfo.identifier}"
+    if !atom.workspace.getPanes()[0].itemForURI(ViewUri)
+      atom.workspace.addOpener (filePath) ->
+        createView({uri: ViewUri, appConfig: options}) if filePath is ViewUri
+      atom.workspace.open(ViewUri)
+    else
+      alert '已经存在快速开发项目，请先保存'
 
     eventEmitter = util.eventEmitter().on 'getPort', (port)=>
       util.addEventtoList port, (e)=>
-        builderConfig = JSON.parse e.data
+        message = JSON.parse e.data
+        builderConfig = message.PageCollection
+        @appConfig = message.appConfig
         @appConfig.builderConfig = builderConfig
-        if @appConfig.projectInfo?
+        console.log @appConfig
+        if @appConfig.projectInfo? and @appConfig.projectInfo.appId?
           @createProject @appConfig
         else
           @createModule @appConfig
@@ -51,8 +53,10 @@ module.exports =
     util.createModule options, (err) =>
       return console.error err if err?
       console.log 'success'
-      console.log @server
-      # @closeBuilder()
+      alert desc.createModuleSuccess
+      atom.workspace.getPanes()[0].destroyActiveItem()
+      @closeBuilder()
+
 
   createProject: (options) ->
     info = options.projectInfo
@@ -79,6 +83,7 @@ module.exports =
           alert desc.createAppSuccess
           atom.project.addPath(info.appPath)
           util.rumAtomCommand 'tree-view:toggle' if $('.tree-view-resizer').length is 0
+          atom.workspace.getPanes()[0].destroyActiveItem()
           @closeBuilder()
 
   closeBuilder: () ->

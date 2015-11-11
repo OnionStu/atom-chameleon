@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="assets/styles/app.css">
   <script>
     var getMessage = function(e) {
-      window.message = e;
+      window.message = e.data;
       console.log(window.message)
       window.removeEventListener('message', getMessage, false);
     }

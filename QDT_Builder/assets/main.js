@@ -35,7 +35,8 @@ require(['app', 'backbone', 'scripts/event-dispatcher'], function(app, Backbone,
   var router = Backbone.Router.extend({
 
     initialize: function() {
-      var appConfig = window.message;
+      var appConfig = JSON.parse(window.message);
+      console.log(appConfig)
       new app(appConfig);
     },
 
