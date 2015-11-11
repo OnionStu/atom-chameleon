@@ -8,7 +8,6 @@ _ = require 'underscore-plus'
 ChameleonBuilderView = require './builder-view'
 
 createView = (state) ->
-  console.log state
   ChameleonBuilderView ?= require './builder-view'
   new ChameleonBuilderView(state)
 
@@ -26,8 +25,9 @@ module.exports =
 
     # ViewUri = "atom://#{options.moduleInfo.identifier}"
     if !atom.workspace.getPanes()[0].itemForURI(ViewUri)
-      atom.workspace.addOpener (filePath) ->
-        createView({uri: ViewUri, appConfig: options}) if filePath is ViewUri
+      @opener = atom.workspace.addOpener (filePath) ->
+        console.log options
+        @createView = createView({uri: ViewUri, appConfig: options}) if filePath is ViewUri
       atom.workspace.open(ViewUri)
     else
       alert '已经存在快速开发项目，请先保存'
@@ -54,6 +54,8 @@ module.exports =
       return console.error err if err?
       console.log 'success'
       alert desc.createModuleSuccess
+      @createView = null
+      console.log @opener.dispose()
       atom.workspace.getPanes()[0].destroyActiveItem()
       @closeBuilder()
 
@@ -83,6 +85,8 @@ module.exports =
           alert desc.createAppSuccess
           atom.project.addPath(info.appPath)
           util.rumAtomCommand 'tree-view:toggle' if $('.tree-view-resizer').length is 0
+          @createView = null
+          console.log @opener.dispose()
           atom.workspace.getPanes()[0].destroyActiveItem()
           @closeBuilder()
 

@@ -175,19 +175,18 @@ module.exports = Util =
   startServer: () ->
     a = 0
     file = new nodeStatic.Server pathM.join desc.chameleonHome, 'QDT_Builder'
-    server = http.createServer (req, res) =>
+    @server = http.createServer (req, res) =>
       req.on 'end', () =>
         file.serve req, res
       .resume()
     portscanner.findAPortNotInUse 3000, 3020, '127.0.0.1', (error, port) =>
       a = port
-      server.listen(port);
-      console.log server
+      @server.listen(port);
       @eventEmitter().emit 'server_on', 'http://localhost:' + port
 
     return {
       uri: 'http://localhost:' + a,
-      server: server
+      server: @server
     }
 
   stopServer: (server, cb) ->
@@ -196,7 +195,8 @@ module.exports = Util =
     #   server = null
     #   if typeof cb == "function" then cb()
     # )
-    server.close()
+    console.log @server
+    @server.close()
       
 
   isLogin: () ->

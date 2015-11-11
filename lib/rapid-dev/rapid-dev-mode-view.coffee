@@ -72,6 +72,7 @@ class RapidDevModeView extends ScrollView
         identifier: moduleConfig.identifier
         moduleName: moduleConfig.name
         modulePath: modulePath
+    console.log params
     Builder.activate(params);
 
   isProject: (path) ->
