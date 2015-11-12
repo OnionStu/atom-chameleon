@@ -886,8 +886,12 @@ class BuildProjectInfoView extends View
 
 
   initModuleList: ->
-    array = @projectLastContent["moduleTree"]
-    @mainModuleId = @projectLastContent["base"]["mainModuleId"]
+    if @projectLastContent
+      array = @projectLastContent["moduleTree"]
+      @mainModuleId = @projectLastContent["base"]["mainModuleId"]
+    else
+      array = []
+      @mainModuleId = null
     initModuleListMessage = (item) =>
       text = null
       getTxt = (item1) =>
