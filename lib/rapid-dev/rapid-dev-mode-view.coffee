@@ -35,7 +35,6 @@ class RapidDevModeView extends ScrollView
     console.log @uri
     @projectInfos = {}
 
-    @addProjectListItem path for path in @findProject()
     @on 'click', '.settingsItem', (e) =>
       @menuClick(e.currentTarget)
 
@@ -44,6 +43,7 @@ class RapidDevModeView extends ScrollView
 
 
   attached: ->
+    @addProjectListItem path for path in @findProject()
     console.log 'start'
     @toggleAddBtn()
 
@@ -56,7 +56,8 @@ class RapidDevModeView extends ScrollView
   onEditClick:(e) ->
     projectPath = @codePackList.attr 'data-path'
     moduleId = e.currentTarget.dataset.moduleid
-    modulePath = PathM.join projectPath,Desc.moduleLocatFileName,moduleId
+    moduleLocation = PathM.join projectPath,Desc.moduleLocatFileName
+    modulePath = PathM.join moduleLocation,moduleId
     builderConfigPath = PathM.join modulePath,Desc.builderConfigFileName
     moduleConfigPath = PathM.join modulePath,Desc.moduleConfigFileName
     builderConfig = Util.readJsonSync(builderConfigPath)
@@ -71,7 +72,7 @@ class RapidDevModeView extends ScrollView
       moduleInfo:
         identifier: moduleConfig.identifier
         moduleName: moduleConfig.name
-        modulePath: modulePath
+        modulePath: moduleLocation
     console.log params
     Builder.activate(params);
 
@@ -107,6 +108,7 @@ class RapidDevModeView extends ScrollView
     return projects
 
   addProjectListItem: (path) ->
+    return if yes is @checkProjectExistInList path
     config = @readConfig path, 'project'
     if config?
       liStr = "<li class='settingsItem' data-projectpath='#{path}' data-id='#{config.identifier}'><a class='icon icon-file-submodule'>#{config.name}</a></li>"
@@ -150,7 +152,7 @@ class RapidDevModeView extends ScrollView
         path = paths[0]
         console.log "select path:#{path}"
         if @isProject path
-          @addProjectListItem path if @checkProjectExistInList(path)  is no
+          @addProjectListItem path
         else
           alert Desc.selectCorrectProject
 
