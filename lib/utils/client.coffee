@@ -161,8 +161,12 @@ module.exports =
     params.url = "app_version/newest_info/?appId=#{projectId}&platform=#{platform}"
     @send params
 
-  getPluginList:(params,platform,type,exceptModuleIds,page,pagesize) ->
-    params.url = "app_version/plugin_tree?platform=#{platform}&plugin_type=#{type}&id_list=#{exceptModuleIds}&page=#{page}&pagesize=#{pagesize}"
+  # getPluginList:(params,platform,type,exceptModuleIds,page,pagesize) ->
+  #   params.url = "app_version/plugin_tree?platform=#{platform}&plugin_type=#{type}&id_list=#{exceptModuleIds}&page=#{page}&pagesize=#{pagesize}"
+  #   @send params
+  getPluginByModuleIds:(params,dataStr) ->
+    params.url = "app_version/get_plugin_list?#{dataStr}"
+    console.log params.url
     @send params
 
   uploadFileSync:(params,up_classify,need_file_type) ->

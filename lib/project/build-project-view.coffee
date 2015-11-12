@@ -44,7 +44,7 @@ class BuildProjectInfoView extends View
   pageIndex:1
   engineId:null
   pageTotal:1
-  projectId:null
+  # projectId:null
   httpType:"http"
   engineMessage:null
   certInfo:null
@@ -83,16 +83,18 @@ class BuildProjectInfoView extends View
           @label "共有引擎", value:"PUBLIC" ,class:"public-view click-platform platformBtn",click:"platformBtnClick"
           @label "私有引擎", value:"PRIVATE",class:"private-view platformBtn",click:"platformBtnClick"
           @div class:"div-table-view", =>
-            @table =>
+            @table outlet:"enginesView",=>
               @thead =>
                 @tr =>
-                  @th "标识",class:"th-identify"
-                  @th "平台",class:"th-platform"
-                  @th "引擎名称",class:"th-engine"
-                  @th "描述",class:"th-desc"
-                  @th "更新时间",class:"th-update-time"
-                  @th "操作"
+                  @td "标识",class:"th-identify"
+                  @td "平台",class:"th-platform"
+                  @td "引擎名称",class:"th-engine"
+                  @td "描述",class:"th-desc"
+                  @td "更新时间",class:"th-update-time"
+                  @td "操作"
               @tbody outlet:"engineItemShowView"
+            @div outlet:"tipsNoEngins",=>
+              @label "没有引擎",class:"tips_to_NoEngine"
           @div class: "",=>
             @button "上一页",class:"btn engineListClass prevPageButton"
             @button "下一页",class:"btn engineListClass nextPageButton"
@@ -104,11 +106,11 @@ class BuildProjectInfoView extends View
           @table =>
             @thead =>
               @tr =>
-                @th "版本",class:"th-engine"
-                @th "文件大小",class:"th-engine"
-                @th "发布时间",class:"th-desc"
-                @th "更新内容",class:"th-desc"
-                @th "操作"
+                @td "版本",class:"th-engine"
+                @td "文件大小",class:"th-engine"
+                @td "发布时间",class:"th-desc"
+                @td "更新内容",class:"th-desc"
+                @td "操作"
             @tbody outlet:"engineVersionItemView"
         @div class: "",=>
           @button "上一页",class:"btn engineVersionListClass prevPageButton"
@@ -178,30 +180,19 @@ class BuildProjectInfoView extends View
           @table =>
             @thead =>
               @tr =>
-                @th "名字",class:"th-desc"
-                @th "版本",class:"th-desc"
-                @th "操作"
+                @td "名字",class:"th-desc-1"
+                @td "版本",class:"th-desc"
+                @td "操作"
             @tbody outlet:"modulesShowView",class:"modulesShowView"
         @div class: "",=>
           @button "上一页",class:"btn moduleListClass prevPageButton"
           @button "下一页",class:"btn moduleListClass nextPageButton"
       @div outlet:"selectPluginView",class:"form-horizontal form_width", =>
-        @div =>
-          @label "关联插件",class:"title-2-level"
-        @div =>
-          @label "已关联的插件:"
-          @label outlet:"pluginsTag"
-        @div =>
-          @table =>
-            @thead =>
-              @tr =>
-                @th "名字"
-                @th "版本"
-                @th "操作"
-            @tbody outlet:"pluginsShowView",class:"pluginsShowView"
-        @div class: "",=>
-          @button "上一页",class:"btn pluginListClass prevPageButton"
-          @button "下一页",class:"btn pluginListClass nextPageButton"
+        @div outlet:"noPluginView",=>
+          @label "没有任何插件",class:"tips_to_NoPlugins"
+        @div outlet:"pluginView", =>
+          @div outlet:"clashPluginView"
+          @div outlet:"noClashPluginView"
       @div outlet:"certSelectView",class:"form-horizontal form_width",=>
         @div =>
           @label "证书管理（可跳过）",class:"title-2-level"
@@ -257,15 +248,15 @@ class BuildProjectInfoView extends View
               @div class:"col-xs-12",=>
                 @label "发布证书",class:"certInfo-label"
                 @div class: 'inline-view cert_file_input_click companyAppCert', =>
-                  @subview 'companyAppCert', new TextEditorView(mini: true,placeholderText: 'click...')
+                  @subview 'companyAppCert', new TextEditorView(mini: true,placeholderText: 'Click to select Certificate File...')
               @div class:"col-xs-12",=>
                 @label "证书密码",class:"certInfo-label"
                 @div class: 'inline-view', =>
-                  @subview 'companyAppPassword', new TextEditorView(mini: true,placeholderText: 'moduleName...')
+                  @subview 'companyAppPassword', new TextEditorView(mini: true,placeholderText: 'Certificate password...')
               @div class:"col-xs-12",=>
                 @label "证书解释文件",class:"certInfo-label"
                 @div class: 'inline-view cert_file_input_click companyDescFile', =>
-                  @subview 'companyDescFile', new TextEditorView(mini: true,placeholderText: 'click...')
+                  @subview 'companyDescFile', new TextEditorView(mini: true,placeholderText: 'Click to select Certificate to explain file...')
               @div class:"col-xs-12 text-right-align",=>
                 @button "提交并检验证书",class:"btn iOSCompanyCertCheck uploadAndCheckCertBtn"
       @div outlet:"buildReView",class:"buildReViewClass", =>
@@ -275,9 +266,14 @@ class BuildProjectInfoView extends View
           @label "当前版本号："
           @label outlet:"lastAppVersion"
         @div =>
-          @label "填写版本号:"
+          @label "填写版本号："
           @div class: 'inline-view', =>
-            @subview 'versionUpload', new TextEditorView(mini: true,placeholderText: 'moduleName...')
+            @subview 'versionUpload', new TextEditorView(mini: true,placeholderText: 'upload version...')
+        @div =>
+          @label "更新内容："
+        @div =>
+          @div  =>
+            @subview "releaseNote", new TextEditorView(placeholderText: 'log description...'),class:"build-log-text"
       @div outlet:"buildAppView", =>
         @div outlet:"uploadImageStepView" ,=>
           @label "正在上传图片..."
@@ -422,6 +418,8 @@ class BuildProjectInfoView extends View
       console.log @step,@buildPlatform
       @certInfo = {}
       @platformSelectView.hide()
+      @tipsNoEngins.hide()
+      @enginesView.hide()
       @engineTableView.show()
       @initEngineTableView() # 需要用到 @buildPlatform 和 @engineType ，@engineType是在点击 tag 时重新赋值的 将 engineMessage 设置为空
       # @parentView.nextBtn.text("跳过")
@@ -459,6 +457,7 @@ class BuildProjectInfoView extends View
       @pageSize = 4
       @pageIndex = 1
       # @parentView.nextBtn.text("下一步")
+      @initModuleList()
       @initSelectModuleView([],@pageIndex,@pageSize)
       @step = 7
       # @uploadFileSync(callBack)
@@ -469,6 +468,8 @@ class BuildProjectInfoView extends View
       @pageSize = 4
       @pageIndex = 1
       @selectModuleView.hide()
+      @noPluginView.hide()
+      @pluginView.hide()
       @selectPluginView.show()
       @initSelectPluginView([],@pageIndex,@pageSize)
       @step = 8
@@ -714,7 +715,7 @@ class BuildProjectInfoView extends View
       data = {}
       data["certInfo"] = @certInfo
       data["platform"] = platform
-      data["appId"] = @projectId
+      data["appId"] = @projectIdFromServer
       data["identifier"] = @projectConfigContent["identifier"]
       data["logoFileId"] = @logoImage
       data["classify"] = "appdisplay" #可不填
@@ -723,6 +724,7 @@ class BuildProjectInfoView extends View
       data["version"] = uplaoadVersion
       data["createTime"] = UtilExtend.dateFormat("YYYY-MM-DD HH:mm:ss",new Date()) #当前时间
       data["images"] = @imageList #文件id
+      data["releaseNote"] = @releaseNote.getText()
       modules = []
       formatModuleList = (key,item) =>
         tmp =
@@ -839,22 +841,32 @@ class BuildProjectInfoView extends View
     if @buildPlatform is "iOS"
       platform = "IOS"
     exceptModuleArray = array
+    moduleIds = []
+    getModuleIds = (item,value) =>
+      console.log value
+      moduleIds.push(value["moduleVersionId"])
+    getModuleIds item,value for item,value of @moduleList
+    console.log moduleIds,@moduleList,@projectIdFromServer
+    dataJson =
+      "module_version_ids":moduleIds.join(",")
+      "platform": platform
+      "app_id": @projectIdFromServer
+    dataStr = UtilExtend.convertJsonToUrlParams(dataJson)
+    if !dataStr
+      dataStr = null
     params =
       sendCookie:true
       success:(data) =>
-        # console.log data
-        if data['totalCount'] <= pageIndex*@pageSize
-          @.find(".engineListClass.nextPageButton").attr("disabled",true)
-        else
-          @.find(".engineListClass.nextPageButton").attr("disabled",false)
-        if data["totalCount"] > 0
-          # console.log data["datas"]
+        console.log data
+        if data.length > 0
+          @pluginView.show()
           @initPluginViewTableBody(data["datas"])
         else
+          @noPluginView.show()
           console.log "没有任何插件"
       error:(msg) =>
         console.log "initSelectPluginView api error = #{msg}"
-    client.getPluginList(params,platform,"PRIVATE",exceptModuleArray.join(","),pageIndex,pageSize)
+    client.getPluginByModuleIds(params,dataStr)
 
   initPluginViewTableBody:(data) ->
     htmlArray = []
@@ -886,8 +898,13 @@ class BuildProjectInfoView extends View
 
 
   initModuleList: ->
-    array = @projectLastContent["moduleTree"]
-    @mainModuleId = @projectLastContent["base"]["mainModuleId"]
+    if @projectLastContent
+      array = @projectLastContent["moduleTree"]
+      @mainModuleId = @projectLastContent["base"]["mainModuleId"]
+    else
+      array = []
+      @mainModuleId = null
+
     initModuleListMessage = (item) =>
       text = null
       getTxt = (item1) =>
@@ -907,13 +924,20 @@ class BuildProjectInfoView extends View
     initModuleListMessage item for item in array
     @printShowViewOfModule()
 
-  # 打印输出
+  getJsonObjLength:(jsonObj) ->
+    length = 0
+    printLength = (item) =>
+      length = length + 1
+    printLength item for item of jsonObj
+    length
+
+  # 打印输出模块信息
   printShowViewOfModule:->
     mainModuleStr = ""
     modulesTagArray = []
     showHtmlView = (key,item) =>
       str = """
-      <span> #{item["name"]}:#{item["moduleVersion"]} </span>
+      <span>[ #{item["name"]}:#{item["moduleVersion"]} ]  </span>
       """
       modulesTagArray.push(str)
       if item["moduleId"] is @mainModuleId
@@ -927,6 +951,7 @@ class BuildProjectInfoView extends View
   initSelectModuleView:(array,pageIndex,pageSize)->
     # console.log "begin to initSelectModuleView"
     # console.log @projectLastContent
+    # 初始化 mainModuleId  和 moduleList
     platform = "ANDROID"
     if @buildPlatform is "iOS"
       platform = "IOS"
@@ -939,38 +964,61 @@ class BuildProjectInfoView extends View
           @.find(".engineListClass.nextPageButton").attr("disabled",true)
         else
           @.find(".engineListClass.nextPageButton").attr("disabled",false)
+
         if data["totalCount"] > 0
           htmlArray = []
           getHtmlItem = (item) =>
-            itemArray = []
-            # 获取下拉框的选项
-            getChildOptions = (optionItem) =>
-              optionStr = """
-              <option value="#{optionItem["value"]}">#{optionItem["text"]}</option>
+            # if !item["show"]
+            #   return
+            # 拼接tr
+            operationItem = ""
+            if typeof(@moduleList[item["name"]]) is "undefined"
+              operationItem = """
+              <a value="#{item["id"]}" class="a-padding">选择</a>
               """
+            else if item["id"] is @mainModuleId
+              operationItem = """
+              <a value="#{item["id"]}" class="cancelMainModuleTag a-padding">取消主模块</a>
+              <a value="#{item["id"]}" class="cancelSelect a-padding">取消</a>
+              """
+              item["version"] = @moduleList[item["name"]]["moduleVersionId"]
+            else
+              operationItem = """
+              <a value="#{item["id"]}" class="mainModuleTag a-padding">设置主模块</a>
+              <a value="#{item["id"]}" class="cancelSelect a-padding">取消</a>
+              """
+              item["version"] = @moduleList[item["name"]]["moduleVersionId"]
+            # 获取下拉框的选项
+            itemArray = []
+            getChildOptions = (optionItem) =>
+              optionStr = ""
+              if optionItem["value"] is item["version"]
+                optionStr = """
+                <option value="#{optionItem["value"]}" selected="selected">#{optionItem["text"]}</option>
+                """
+              else
+                optionStr = """
+                <option value="#{optionItem["value"]}">#{optionItem["text"]}</option>
+                """
               itemArray.push(optionStr)
             getChildOptions optionItem for optionItem in item["versions"]
-            # 拼接tr
             str = """
             <tr>
-              <td><span class="#{item["id"]}">#{item["name"]}</span></td>
+              <td><span class="#{item["id"]}" value="#{item["version"]}">#{item["name"]}</span></td>
               <td>
                   <select class="#{item["id"]}">
                     #{itemArray.join("")}
                   </select>
               </td>
               <td>
-              <a value="#{item["id"]}" class="a-padding">选择</a>
-              <a value="#{item["id"]}" class="mainModuleTag a-padding">主模块</a>
-              <a value="#{item["id"]}" class="cancelSelect a-padding">取消</a>
+                #{operationItem}
               </td>
             </tr>
             """
             htmlArray.push(str)
           getHtmlItem item for item in data["datas"]
           @modulesShowView.html(htmlArray.join(""))
-          # 初始化 mainModuleId  和 moduleList
-          @initModuleList()
+          console.log "mainModuleId = #{@mainModuleId}"
           # 点击模块button按钮触发事件
           clickModuleShowViewBtn = (e) =>
             el = e.target
@@ -978,17 +1026,36 @@ class BuildProjectInfoView extends View
             moduleName = @.find("span.#{className}").html()
             moduleVersionId = @.find("td>select.#{className}").val()
             moduleVersion = @.find("td>select.#{className}>option[value=#{moduleVersionId}]").html()
-            @moduleList[moduleName] =
-              "moduleVersionId": moduleVersionId
-              "moduleId":className
-              "appVersionId":""
-              "appId":""
-              "name":moduleName
-              "moduleVersion":moduleVersion
-            if $(el).hasClass("mainModuleTag")
-              @mainModuleId = className
-            else if $(el).hasClass("cancelSelect")
-              delete @moduleList[moduleName]
+            htmlStr = """
+            <a value="#{className}" class="mainModuleTag a-padding">设置主模块</a>
+            <a value="#{className}" class="cancelSelect a-padding">取消</a>
+            """
+            if $(el).hasClass("cancelMainModuleTag")
+              @mainModuleId = null
+            else
+              @moduleList[moduleName] =
+                "moduleVersionId": moduleVersionId
+                "moduleId":className
+                "appVersionId":""
+                "appId":""
+                "name":moduleName
+                "moduleVersion":moduleVersion
+              if $(el).hasClass("mainModuleTag")
+                @mainModuleId = className
+                htmlStr = """
+                <a value="#{className}" class="cancelMainModuleTag a-padding">取消主模块</a>
+                <a value="#{className}" class="cancelSelect a-padding">取消</a>
+                """
+                @.find(".cancelMainModuleTag").html("设置主模块")
+                @.find(".cancelMainModuleTag").addClass("mainModuleTag")
+                @.find(".cancelMainModuleTag").removeClass("cancelMainModuleTag")
+              else if $(el).hasClass("cancelSelect")
+                delete @moduleList[moduleName]
+                @mainModuleId = null
+                htmlStr = """
+                <a value="#{className}" class="a-padding">选择</a>
+                """
+            $(el).parent().html(htmlStr)
             # view
             @printShowViewOfModule()
           @.find(".modulesShowView").on "click","a",(e) => clickModuleShowViewBtn(e)
@@ -1224,6 +1291,8 @@ class BuildProjectInfoView extends View
         else
           @.find(".engineListClass.nextPageButton").attr("disabled",false)
         if data['totalCount'] > 0
+          @tipsNoEngins.hide()
+          @enginesView.show()
           htmlArray = []
           jointBodyItem = (item) =>
             if item['platform'] is "android"
@@ -1245,6 +1314,8 @@ class BuildProjectInfoView extends View
           @engineItemShowView.html(htmlArray.join(""))
           @.find(".engineSelectA").on "click",(e) => @clickEngineSelectA(e)
         else
+          @enginesView.hide()
+          @tipsNoEngins.show()
           @engineItemShowView.html("没有引擎...")
       error:(msg) =>
         console.log msg

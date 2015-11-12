@@ -15,14 +15,14 @@ class PublishModuleInfoView extends View
   moduleLogoFileName: desc.moduleLogoFileName
   moduleLocatFileName: desc.moduleLocatFileName
   moduleDir:"modules"
-  moduleIdentifer:null#模块标识
-  moduleVersion:null#模块版本
   moduleConfPath:null
+  moduleConfigContent:null
   moduleId:null
   currentPage:1
   firstPage:1
   lastPage:5
   countPage:0
+  moduleConfigNoExsit:"模块配置文件不存在！"
   step:1
   pageShowItemNumber:4
   # 1 表示步骤 1。选择模块
@@ -58,26 +58,29 @@ class PublishModuleInfoView extends View
         @div class: "text-center", =>
           @progress class: 'inline-block'
       @div outlet: "moduleApplyView",class: 'form-horizontal form_width',=>
-        @div class:"text-center", =>
-          @span outlet:"getAppListTipsView","模块上传成功，检测到以下应用已关联本模块，是否应用为模块的最新版本？"
-          @br
-        @div outlet:"tableView", =>
-          @div outlet: "appListtable",=>
-            @table class:"text-center", =>
-              @thead =>
-                @tr =>
-                  @th "应用"
-                  @th "平台"
-                  @th "版本"
-                  @th "是否应用"
-              @tbody outlet:"appListMessage"
-          @div class:"listOfPageView",=>
-            @div outlet:"",=>
-              @a "上一页",outlet:"prePage",click: "prePageClick"
-              @div outlet:"pageIndex",class:"page-list"
-              @a "下一页",outlet:"nextPage",click: "nextPageClick"
-            @div =>
-              @label outlet:"pageTipsView","共70个应用，第1页"
+        @div outlet:"appListViewShow",=>
+          @div class:"text-center", =>
+            @span outlet:"getAppListTipsView","模块上传成功，检测到以下应用已关联本模块，是否应用为模块的最新版本？"
+            @br
+          @div outlet:"tableView", =>
+            @div outlet: "appListtable",=>
+              @table class:"text-center", =>
+                @thead =>
+                  @tr =>
+                    @td "应用"
+                    @td "平台"
+                    @td "版本"
+                    @td "是否应用"
+                @tbody outlet:"appListMessage"
+            @div class:"listOfPageView",=>
+              @div outlet:"",=>
+                @a "上一页",outlet:"prePage",click: "prePageClick"
+                @div outlet:"pageIndex",class:"page-list"
+                @a "下一页",outlet:"nextPage",click: "nextPageClick"
+              @div =>
+                @label outlet:"pageTipsView","共70个应用，第1页"
+        @div outlet:"noAppListShowView",=>
+          @label "模块上传成功，未检测到与该模块关联的应用。",class:"tips_to_NoApp"
 
   open :(e) ->
     atom.pickFolder (paths) =>
@@ -97,11 +100,6 @@ class PublishModuleInfoView extends View
   # 下一步
   nextStep: ->
     if @step is 1
-      @selectAppPathView.hide()
-      @fillMessageView.show()
-      @parentView.prevBtn.removeClass('hide')
-      @parentView.nextBtn.text("上传")
-      @step = 2
       @initFileMessageView()
     else if @step is 2
       console.log @moduleName.getText(),@moduleUploadVersion.getText()
@@ -118,21 +116,69 @@ class PublishModuleInfoView extends View
           alert desc.moduleVersionUnLegelError
           return
 
-  #初始化表单
+  #初始化表单  1、判断配置文件是否存在  2、读取本地配置文件信息  3、获取服务器最新版本
   initFileMessageView: ->
     console.log "selected file path ",@selectProject.val()
     @moduleConfPath = @selectProject.val()
-    moduleMessage = Util.readJsonSync @moduleConfPath
+    @moduleConfigContent = null  # 初始化模块配置对象
+    if !fs.existsSync(@moduleConfPath)  # 判断模块的配置文件是否存在
+      alert @moduleConfigNoExsit
+      return
+    # 当配置文件存在时，显示下一步
+    @step = 2
+    @selectAppPathView.hide()
+    @fillMessageView.show()
+    @parentView.prevBtn.removeClass('hide')
+    @parentView.nextBtn.text("上传")
+    # 获取配置信息
+    @moduleConfigContent = Util.readJsonSync @moduleConfPath
+    #模块logo
     logoPath = PathM.join @moduleConfPath,"..",@moduleLogoFileName
-    if moduleMessage
-      @moduleIdentifer = moduleMessage['identifier']
-      @moduleName.setText(moduleMessage['name'])
-      versionNumber = moduleMessage['version'].split(".")
-      versionNumber[2] = parseInt(versionNumber[2]) + 1
-      @moduleUploadVersion.setText(versionNumber.join("."))
-      if fs.existsSync(logoPath)
-        @logo.attr("src",logoPath)
-
+    # 模块配置读取成功时
+    if @moduleConfigContent
+      @moduleName.setText(@moduleConfigContent['name'])
+      #需要查看版本信息的模块id
+      moduleIdentiferList = []
+      moduleIdentiferList.push(@moduleConfigContent["identifier"])
+      console.log JSON.stringify(moduleIdentiferList)
+      #获取上一版本的版本信息
+      params =
+        formData:{
+          identifier:JSON.stringify(moduleIdentiferList)
+        }
+        sendCookie: true
+        success: (data) =>
+          console.log data
+          # 返回的信息中是否包含 version 字段和其值部位 ""
+          if data[0]['version']? and data[0]['version'] != ""
+            console.log "the last version in server is ",data[0]['version']
+          else
+            data[0]['version'] = "0.0.0"
+          # 返回的信息中是否包含 build 字段和其值部位 ""
+          if data[0]['build']? and data[0]['version'] != ""
+            console.log "the last version in server is ",data[0]['build']
+          else
+            data[0]['build'] = 0
+          # 设置build的值
+          @moduleConfigContent["build"] = parseInt(data[0]['build']) + 1
+          # 判断本地配置文件的版本信息与服务器最新版本那个为最新
+          result = UtilExtend.checkUploadModuleVersion(@moduleConfigContent["version"],data[0]['version'])
+          if result["error"]
+            # 服务器新
+            versionNumber = data[0]['version'].split(".")
+            versionNumber[2] = parseInt(versionNumber[2]) + 1
+            @moduleUploadVersion.setText(versionNumber.join("."))
+            # 将配置信息的版本设置为服务器最新版本，暂不写入文件中
+            @moduleConfigContent["version"] = data[0]['version']
+          else
+            @moduleUploadVersion.setText(@moduleConfigContent["version"])
+          # console.log result
+          if fs.existsSync(logoPath)
+            @logo.attr("src",logoPath)
+        error:(msg) =>
+          console.log msg
+      # 获取 该模块最新版本 和 build
+      client.getModuleLastVersion(params)
   # 判断版本是否合法，判断规则：是否由三个数和两个点组成
   checkVersionIsLegal:(version)->
     numbers = version.split('.')
@@ -151,7 +197,9 @@ class PublishModuleInfoView extends View
         sendCookie: true
         success: (data) =>
           console.log "上传模块成功"
+          console.log data
           @moduleId=data["module_id"]
+          console.log @moduleId
           @initAppListView()
         error: (msg) =>
           console.log msg
@@ -162,6 +210,8 @@ class PublishModuleInfoView extends View
   #初始化应用列表界面
   initAppListView:->
     @uploadProgressView.hide()
+    @appListViewShow.hide()
+    @noAppListShowView.hide()
     @moduleApplyView.show()
     @callGetAppListApi(1)
     #根据 模块标识获取 与他相关联的应用标识
@@ -185,7 +235,6 @@ class PublishModuleInfoView extends View
   #获取应用列表的第 page 页
   callGetAppListApi:(page) ->
     #page   页数
-    # @moduleIdentifer = "yuzhe001"
     params =
       sendCookie: true
       success: (data) =>
@@ -194,54 +243,57 @@ class PublishModuleInfoView extends View
           console.log data["message"]
           alert data["message"]
         else
-          itemStr = []
-          # 打印 table 的子节点
-          printTableView = (item) =>
-            if item["platform"] is "ANDROID"
-              item["platform"] = "Android"
+          if data["AppAndVersions"].length > 0
+            @appListViewShow.show()
+            itemStr = []
+            # 打印 table 的子节点
+            printTableView = (item) =>
+              if item["platform"] is "ANDROID"
+                item["platform"] = "Android"
+              else
+                item["platform"] = "iOS"
+              str = "<tr>
+              <td>#{item["appName"]}</td>
+              <td>#{item["platform"]}</td>
+              <td>#{item["version"]}</td>
+              <td><button class='btn appBtn' value='#{item["appVersionId"]}'>应用</button></td>
+              </tr>"
+              itemStr.push(str)
+            printTableView item for item in data["AppAndVersions"]
+            @appListMessage.html(itemStr.join(""))
+            @countPage = data["paginationMap"]["totalPage"]
+            @currentPage = page
+            @firstPage = @currentPage
+            if @countPage - @firstPage > 5
+              @lastPage = @firstPage + 5
             else
-              item["platform"] = "iOS"
-            str = "<tr>
-            <td>#{item["appName"]}</td>
-            <td>#{item["platform"]}</td>
-            <td>#{item["version"]}</td>
-            <td><button class='btn appBtn' value='#{item["appVersionId"]}'>应用</button></td>
-            </tr>"
-            itemStr.push(str)
-          printTableView item for item in data["AppAndVersions"]
-          @appListMessage.html(itemStr.join(""))
-          @countPage = data["paginationMap"]["totalPage"]
-          @currentPage = page
-          @firstPage = @currentPage
-          if @countPage - @firstPage > 5
-            @lastPage = @firstPage + 5
+              @lastPage = @countPage
+              if @lastPage - 5 >0
+                @firstPage = @lastPage - 5
+              else
+                @firstPage = 1
+              # body...
+            tmp = @firstPage
+            aItemStr = []
+            #初始化 a 标签
+            printPageView = =>
+              str = "<a>#{tmp}</a>"
+              aItemStr.push(str)
+              tmp = tmp + 1
+            printPageView() while tmp <= @lastPage
+            @pageIndex.html(aItemStr.join(""))
+            @pageTipsView.html("共#{data["paginationMap"]["totalCount"]}个应用，第#{page}页")
+            @.find(".appBtn").on "click",(e) => @appBtnClick(e)
           else
-            @lastPage = @countPage
-            if @lastPage - 5 >0
-              @firstPage = @lastPage - 5
-            else
-              @firstPage = 1
-            # body...
-          tmp = @firstPage
-          aItemStr = []
-          #初始化 a 标签
-          printPageView = =>
-            str = "<a>#{tmp}</a>"
-            aItemStr.push(str)
-            tmp = tmp + 1
-          printPageView() while tmp <= @lastPage
-          @pageIndex.html(aItemStr.join(""))
-          @pageTipsView.html("共#{data["paginationMap"]["totalCount"]}个应用，第#{page}页")
-          @.find(".appBtn").on "click",(e) => @appBtnClick(e)
+            @noAppListShowView.show()
       error: (msg) =>
         console.log msg
-    client.getAppMessage params,@moduleIdentifer,page,@pageShowItemNumber
+    client.getAppMessage params,@moduleConfigContent["identifier"],page,@pageShowItemNumber
 
   appBtnClick:(e) ->
     el = e.currentTarget
     appVersionId = el.value
     console.log appVersionId
-    moduleId = ""
     if appVersionId
       @callActInAppApi(appVersionId,el)
 
@@ -263,56 +315,27 @@ class PublishModuleInfoView extends View
 
   # 0、检测版本；1、压缩文件；2、上传压缩包；3删除压缩包
   uploadModule: ->
-    console.log "begin to upload ",@selectProject.val()
-    moduleIdentiferList = []
-    moduleIdentiferList.push(@moduleIdentifer)
-    console.log JSON.stringify(moduleIdentiferList)
-    params =
-      formData:{
-        identifier:JSON.stringify(moduleIdentiferList)
-      }
-      sendCookie: true
-      success: (data) =>
-        console.log "check the last version of",@moduleIdentifer," | return data is ",data
-        if data[0]['version']? and data[0]['version'] != ""
-          console.log "the last version in server is ",data[0]['version']
-        else
-          data[0]['version'] = "0.0.0"
-          # console.log data[0]['version']
-        result = UtilExtend.checkUploadModuleVersion(@moduleUploadVersion.getText(),data[0]['version'])
-        if result["error"]
-          alert desc.uploadModuleVersionErrorTips
-        else
-          console.log "the module will be upload ."
-          @fillMessageView.hide()
-          @uploadProgressView.show()
-          @parentView.prevBtn.addClass("hide")
-          @parentView.nextBtn.addClass('hide')
-          # 把模块name和模块版本写回文件
-          @moduleId = data['module_id']
-          obj = Util.readJsonSync @moduleConfPath
-          if obj
-            obj['name'] = @moduleName.getText()
-            obj['version'] =@moduleUploadVersion.getText()
-            fs.writeJsonSync @moduleConfPath,obj,null
-            @moduleVersion = obj['version']
-          # 压缩模块信息
-          modulePath = PathM.join @moduleConfPath,".."
-          Util.fileCompression(modulePath)
-          moduleZipPath = modulePath+".zip"
-          console.log moduleZipPath
-          @callUploadModuleApi(moduleZipPath)
-          # 调用模块上传接口  调通就todo 上传成功就跳到应用列表
-          # @uploadProgressView.hide()
-          # @moduleApplyView.show()
-          #
-
-      error:=>
-        console.log "call the last version api fail"
-    # 获取 该模块最新版本 和 build
-    client.getModuleLastVersion(params)
-
-
+    # 版本检测
+    result = UtilExtend.checkUploadModuleVersion(@moduleUploadVersion.getText(),@moduleConfigContent['version'])
+    if result["error"]
+      alert desc.uploadModuleVersionErrorTips
+    else
+      # console.log "the module will be upload ."
+      @fillMessageView.hide()
+      @uploadProgressView.show()
+      @parentView.prevBtn.addClass("hide")
+      @parentView.nextBtn.addClass('hide')
+      modulePath = PathM.join @moduleConfPath,".."
+      @moduleConfigContent['name'] = @moduleName.getText()
+      @moduleConfigContent['version'] = @moduleUploadVersion.getText()
+      fs.writeJsonSync @moduleConfPath,@moduleConfigContent,null
+      Util.fileCompression(modulePath)
+      moduleZipPath = modulePath+".zip"
+      # console.log moduleZipPath
+      @callUploadModuleApi(moduleZipPath)
+      # 调用模块上传接口  调通就todo 上传成功就跳到应用列表
+      # @uploadProgressView.hide()
+      # @moduleApplyView.show()
 
   #初始化窗口
   attached: ->
@@ -355,6 +378,7 @@ class PublishModuleInfoView extends View
   setSelectItem:(path) ->
     console.log "setSelectItem",path
     filePath = PathM.join path, @projectConfigFileName
+    console.log filePath
     if !fs.existsSync(filePath)
       return
     obj = Util.readJsonSync filePath
