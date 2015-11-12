@@ -56,7 +56,8 @@ class RapidDevModeView extends ScrollView
   onEditClick:(e) ->
     projectPath = @codePackList.attr 'data-path'
     moduleId = e.currentTarget.dataset.moduleid
-    modulePath = PathM.join projectPath,Desc.moduleLocatFileName,moduleId
+    moduleLocation = PathM.join projectPath,Desc.moduleLocatFileName
+    modulePath = PathM.join moduleLocation,moduleId
     builderConfigPath = PathM.join modulePath,Desc.builderConfigFileName
     moduleConfigPath = PathM.join modulePath,Desc.moduleConfigFileName
     builderConfig = Util.readJsonSync(builderConfigPath)
@@ -71,7 +72,7 @@ class RapidDevModeView extends ScrollView
       moduleInfo:
         identifier: moduleConfig.identifier
         moduleName: moduleConfig.name
-        modulePath: modulePath
+        modulePath: moduleLocation
     console.log params
     Builder.activate(params);
 
