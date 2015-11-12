@@ -15,6 +15,8 @@ nodeStatic = require 'node-static'
 
 module.exports = Util =
   emitter: new Emitter()
+  # windowEmitter: new Emmitter()
+  handlerList: {}
   fsx: fs
 
   rumAtomCommand: (command) ->
@@ -180,16 +182,22 @@ module.exports = Util =
     portscanner.findAPortNotInUse 3000, 3020, '127.0.0.1', (error, port) =>
       a = port
       @server.listen(port);
-      console.log('ok, http://localhost:' + port)
       @eventEmitter().emit 'server_on', 'http://localhost:' + port
 
-    return 'http://localhost:' + a
+    return {
+      uri: 'http://localhost:' + a,
+      server: @server
+    }
 
-  stopServer: (cb) ->
-    @server.close() =>
-      console.info "http stopped!"
-      @server = null
-      if typeof next == "function" then next()
+  stopServer: (server, cb) ->
+    # server.close( ()=>
+    #   console.info "http stopped!"
+    #   server = null
+    #   if typeof cb == "function" then cb()
+    # )
+    console.log @server
+    @server.close()
+      
 
   isLogin: () ->
     user = @store('chameleon').account_id
@@ -417,3 +425,11 @@ module.exports = Util =
 
   eventEmitter: () ->
     @emitter
+
+  addEventtoList: (origin, handler) ->
+    @handlerList[origin] = handler
+
+  windowEventInit: () ->
+    window.addEventListener 'message', (e)=>
+      console.log @handlerList
+      @handlerList[e.origin](e)
