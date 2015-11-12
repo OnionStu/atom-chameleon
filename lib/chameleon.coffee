@@ -45,8 +45,13 @@ module.exports = Chameleon =
     @rapidDev = RapidDev
 
     @subscriptions = new CompositeDisposable
-    
+
     util.windowEventInit()
+
+    atom.workspace.getPanes()[0].onWillDestroyItem (e)=>
+      if e.item.uri is 'atom://ChameleonBuilder'
+        console.log 'close'
+        util.stopServer()
 
     @subscriptions.add atom.commands.add 'atom-workspace', 'chameleon:rapid-dev': => @openRapidDevMode()
     @subscriptions.add atom.commands.add 'atom-workspace', 'chameleon:settings': => @openSettings()
