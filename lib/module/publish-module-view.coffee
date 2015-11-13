@@ -150,7 +150,7 @@ class PublishModuleInfoView extends View
         success: (data) =>
           console.log data
           # 返回的信息中是否包含 version 字段和其值部位 ""
-          if data[0]['version']? and data[0]['version'] != ""
+          if data[0]['version'] != ""
             console.log "the last version in server is ",data[0]['version']
           else
             data[0]['version'] = "0.0.0"
