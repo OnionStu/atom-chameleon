@@ -155,11 +155,10 @@ class PublishModuleInfoView extends View
           else
             data[0]['version'] = "0.0.0"
           # 返回的信息中是否包含 build 字段和其值部位 ""
-          if data[0]['build']? and data[0]['version'] != ""
-            console.log "the last version in server is ",data[0]['build']
-          else
+          if data[0]['build'] is ""
             data[0]['build'] = 0
           # 设置build的值
+          console.log data[0]['build']
           @moduleConfigContent["build"] = parseInt(data[0]['build']) + 1
           # 判断本地配置文件的版本信息与服务器最新版本那个为最新
           result = UtilExtend.checkUploadModuleVersion(@moduleConfigContent["version"],data[0]['version'])
