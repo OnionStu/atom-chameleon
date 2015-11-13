@@ -339,6 +339,7 @@ class PublishModuleInfoView extends View
 
   #初始化窗口
   attached: ->
+    # Util.fileCompression("E:\\atomProject\\com.cyz.pro1\\po0")
     # @selectAppPathView.hide()
     @fillMessageView.hide()
     @uploadProgressView.hide()
@@ -378,39 +379,43 @@ class PublishModuleInfoView extends View
   setSelectItem:(path) ->
     console.log "setSelectItem",path
     filePath = PathM.join path, @projectConfigFileName
-    console.log filePath
-    if !fs.existsSync(filePath)
-      return
-    obj = Util.readJsonSync filePath
-    if obj
-      str = ""
-      type = desc.appModule
-      projectName = PathM.basename path
-      modulePath = PathM.join path,@moduleDir
-      if !fs.existsSync(modulePath)
-        return
-      modulePathFiles = fs.readdirSync(modulePath)
-      console.log modulePathFiles
-      addItem = (id) =>
-        # console.log id,version
-        moduleConfigFile = PathM.join path,@moduleLocatFileName,id,@moduleConfigFileName
-        if !fs.existsSync(moduleConfigFile)
+    # console.log filePath
+    if fs.existsSync(filePath)
+      obj = Util.readJsonSync filePath
+      if obj
+        console.log path
+        str = ""
+        type = desc.appModule
+        projectName = PathM.basename path
+        modulePath = PathM.join path,@moduleDir
+        if !fs.existsSync(modulePath)
           return
-        obj2 = Util.readJsonSync moduleConfigFile
-        modulePath = PathM.join path,@moduleLocatFileName,id
-        console.log moduleConfigFile,obj2
-        if obj2
-          str = str + "<option value='#{moduleConfigFile}'>#{id} -- #{obj.name} : #{path}</option>"
-      # addItem id,version for id,version of obj['modules']
-      addItem fileName for fileName in modulePathFiles
-      console.log obj['modules']
-      # optionStr = "<option value='#{path}'>#{projectName}  -  #{path}</option>"
-      console.log str
-      if str != ""
-        @selectProject.append str
-      return
+        modulePathFiles = fs.readdirSync(modulePath)
+        # console.log modulePathFiles
+        addItem = (id) =>
+          # console.log id,version
+          moduleConfigFile = PathM.join path,@moduleLocatFileName,id,@moduleConfigFileName
+          if !fs.existsSync(moduleConfigFile)
+            return
+          obj2 = Util.readJsonSync moduleConfigFile
+          modulePath = PathM.join path,@moduleLocatFileName,id
+          console.log moduleConfigFile,obj2
+          if obj2
+            str = str + "<option value='#{moduleConfigFile}'>#{id} -- #{obj.name} : #{path}</option>"
+        # addItem id,version for id,version of obj['modules']
+        addItem fileName for fileName in modulePathFiles
+        # console.log obj['modules']
+        # optionStr = "<option value='#{path}'>#{projectName}  -  #{path}</option>"
+        # console.log str
+        if str != ""
+          @selectProject.append str
+        return
     else
+      console.log path
       filePath = PathM.join path, @moduleConfigFileName
+      console.log filePath
+      if !fs.existsSync(filePath)
+        return
       obj = Util.readJsonSync filePath
       type = desc.uAppModule
       if obj
