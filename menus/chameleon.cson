@@ -97,10 +97,10 @@
       #     }
       #   ]
       # }
-      {
-        'label':'快速开发'
-        'command':'chameleon:rapid-dev'
-      }
+      # {
+      #   'label':'快速开发'
+      #   'command':'chameleon:rapid-dev'
+      # }
       {
         'label':'设置'
         'command':'chameleon:settings'

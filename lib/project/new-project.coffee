@@ -75,6 +75,7 @@ class NewProjectView extends View
     @newType = el.dataset.type
     @name = el.dataset.name
     @parentView.enableNext()
+    @parentView.disableNext() if @newType is 'quick'
 
   onPrevPageClick: (e) ->
     @frameList.empty()
