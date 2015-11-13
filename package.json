@@ -1,11 +1,14 @@
 {
-  "name": "chameleon-qdt-atom-dev",
+  "name": "chameleon-qdt-atom",
   "main": "./lib/chameleon",
-  "version": "0.0.0",
-  "author": "OnionStu",
+  "version": "0.3.6",
   "private": true,
+  "author": "chameleon-qdt",
   "description": "Atom package for Chameleon Quick Development Tool",
-  "keywords": [],
+  "keywords": [
+    "chameleon",
+    "QDT"
+  ],
   "activationCommands": {
     "atom-workspace": [
       "chameleon:toggle",
@@ -25,7 +28,7 @@
       "chameleon:rapid-dev"
     ]
   },
-  "repository": "https://github.com/OnionStu/atom-chameleon",
+  "repository": "https://github.com/chameleon-qdt/atom-chameleon.git",
   "license": "MIT",
   "engines": {
     "atom": ">=0.174.0 <2.0.0"
@@ -36,6 +39,7 @@
     "http": "0.0.0",
     "jszip": "^2.5.0",
     "node-static": "^0.7.7",
+    "path": "^0.11.14",
     "portscanner": "^1.0.0",
     "qrcode-npm": "0.0.3",
     "request": "^2.58.0",

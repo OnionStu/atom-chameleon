@@ -82,7 +82,7 @@ module.exports = TextDescription =
   gitFolder: '.git'
   gitCloneError: 'git clone失败，请检查网络连接'
 
-  chameleonHome: atom.packages.getLoadedPackage('chameleon-qdt-atom-dev').path
+  chameleonHome: atom.packages.getLoadedPackage('chameleon-qdt-atom').path
   newProjectDefaultPath: atom.config.get('core').projectHome
 
   # 获取自带框架存储目录位置
