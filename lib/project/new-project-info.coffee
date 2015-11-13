@@ -48,8 +48,6 @@ class NewProjectView extends View
     atom.pickFolder (paths) =>
       if paths?
         console.log paths[0]
-        # path = pathM.join paths[0],@appId.getText()
-        # console.log  path
         @appPath.html paths[0]
         @checkPath()
 
@@ -59,13 +57,10 @@ class NewProjectView extends View
   getProjectInfo: ->
     appId = @appId.getText().trim()
     appPath = @appPath.html().trim()
-    path = pathM.join appPath,appId
-    dir = new Directory(path)
-    path = pathM.join desc.newProjectDefaultPath,dir.getBaseName() if dir.getParent().isRoot() is yes
     projectInfo =
       appId : @appId.getText()
       appName : @appName.getText()
-      appPath : path
+      appPath : appPath
 
     projectInfo
 
@@ -90,23 +85,21 @@ class NewProjectView extends View
     else
       @errorMsg2.removeClass('hide')
     # @appPath.setText pathM.join currPath,str if currPath isnt ""
-    @checkPath()
-    # @checkInput()
+    # @checkPath()
+    @checkInput()
 
   checkPath: ->
     appId = @appId.getText().trim()
     appPath = @appPath.html().trim()
-    path = pathM.join appPath,appId
-    if path isnt ""
-      dir = new Directory(path);
-      dir.exists()
-        .then (isExists) =>
-          console.log isExists,dir.getRealPathSync()
-          unless isExists
-            @errorMsg.addClass('hide')
-          else
-            @errorMsg.removeClass('hide') if appId isnt ""
-          @checkInput()
+    # path = pathM.join appPath,appId
+    if appPath isnt ''
+      appConfigPath = pathM.join appPath,desc.projectConfigFileName
+      isExists = Util.isFileExist(appConfigPath)
+      unless isExists
+        @errorMsg.addClass('hide')
+      else
+        @errorMsg.removeClass('hide') if appId isnt ""
+      @checkInput()
     else
       console.log 'empty'
 

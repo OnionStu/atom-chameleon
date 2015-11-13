@@ -67,9 +67,16 @@ module.exports = Util =
       releaseNote: "app #{options.appName} init"
 
   appConfigToModuleConfig: (info) ->
+    moduleIdMinLen = 6;
+    moduleIdMaxLen = 32;
+    testName = info.appId.split('.').slice(-1)[0]
+    if testName.length < moduleIdMinLen
+      testName = "#{testName}_module"
+    else if testName.length > moduleIdMaxLen
+      testName = testName.slice(0,32)
     opt =
       moduleName: info.appName
-      moduleId: info.appId.split('.').slice(-1)[0]
+      moduleId: testName
     @formatModuleConfigToObj opt
 
 
@@ -183,11 +190,7 @@ module.exports = Util =
       a = port
       @server.listen(port);
       @eventEmitter().emit 'server_on', 'http://localhost:' + port
-
-    return {
-      uri: 'http://localhost:' + a,
-      server: @server
-    }
+    return @server
 
   stopServer: (server, cb) ->
     # server.close( ()=>

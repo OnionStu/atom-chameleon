@@ -6,6 +6,8 @@ loadingMask = require '../utils/loadingMask'
 
 syncInfoView = require './sync-project-info'
 
+synPlatformView = require './sync-project-platform'
+
 module.exports =
 class SyncProjectView extends View
   LoadingMask: loadingMask
@@ -111,7 +113,7 @@ class SyncProjectView extends View
   nextStep: (box)=>
     projectId = $('.select').attr('projectId')
     box.setPrevStep @
-    box.mergeOptions {subview: syncInfoView, projectId: projectId, account_id: @account_id, projects: {list: @projects, currentIndex: @currentIndex, totalCount: @totalCount}}
+    box.mergeOptions {subview: synPlatformView, projectId: projectId, account_id: @account_id, projects: {list: @projects, currentIndex: @currentIndex, totalCount: @totalCount}}
     box.nextStep()
 
   onItemClick: (e) ->

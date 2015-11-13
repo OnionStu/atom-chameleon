@@ -22,15 +22,15 @@ module.exports =
   activate: (options)->
     console.log options
     @server = util.startServer()
-
-    # ViewUri = "atom://#{options.moduleInfo.identifier}"
-    if !atom.workspace.getPanes()[0].itemForURI(ViewUri)
-      @opener = atom.workspace.addOpener (filePath) ->
-        console.log options
-        @createView = createView({uri: ViewUri, appConfig: options}) if filePath is ViewUri
-      atom.workspace.open(ViewUri)
-    else
-      alert '已经存在快速开发项目，请先保存'
+    ViewUri = "atom://#{options.moduleInfo.identifier}"
+    # if !atom.workspace.getPanes()[0].itemForURI(ViewUri)
+    @opener = atom.workspace.addOpener (filePath) ->
+      console.log options
+      @createView = createView({uri: ViewUri, appConfig: options}) if filePath is ViewUri
+    atom.workspace.open(ViewUri)
+    @opener.dispose()
+    # else
+    #   alert '已经存在快速开发项目，请先保存'
 
     eventEmitter = util.eventEmitter().on 'getPort', (port)=>
       util.addEventtoList port, (e)=>
@@ -55,7 +55,6 @@ module.exports =
       console.log 'success'
       alert desc.createModuleSuccess
       @createView = null
-      console.log @opener.dispose()
       atom.workspace.getPanes()[0].destroyActiveItem()
       @closeBuilder()
 
@@ -86,7 +85,6 @@ module.exports =
           atom.project.addPath(info.appPath)
           util.rumAtomCommand 'tree-view:toggle' if $('.tree-view-resizer').length is 0
           @createView = null
-          console.log @opener.dispose()
           atom.workspace.getPanes()[0].destroyActiveItem()
           @closeBuilder()
 

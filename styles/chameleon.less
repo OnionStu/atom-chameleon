@@ -309,6 +309,39 @@ atom-panel.modal > .login-box {
       background: none;
     }
   }
+  .choose-type {
+    font-size: 0;
+    margin-top: 5px;
+    margin-bottom: 5px; 
+    .type {
+      font-size: 12px;
+      display: inline-block;
+      vertical-align: top;
+      margin-top: 3px;
+      width: 15%;
+      label {
+        margin-left: 5px;
+      }
+    }
+    .textEditStyle {
+      font-size: 12px;
+      display: inline-block;
+      vertical-align: top;
+      width: 84%;
+      margin-left: 1%;
+    }
+    .openFolder {
+      right: 14px;
+    }
+  }
+    .form-group {
+      &.iOS-item {
+        display: none;
+      }
+      &.android-item {
+        display: none;
+      }
+    }
 }
 .sync-project {
   .add-icon {
