@@ -67,9 +67,16 @@ module.exports = Util =
       releaseNote: "app #{options.appName} init"
 
   appConfigToModuleConfig: (info) ->
+    moduleIdMinLen = 6;
+    moduleIdMaxLen = 32;
+    testName = info.appId.split('.').slice(-1)[0]
+    if testName.length < moduleIdMinLen
+      testName = "#{testName}_module"
+    else if testName.length > moduleIdMaxLen
+      testName = testName.slice(0,32)
     opt =
       moduleName: info.appName
-      moduleId: info.appId.split('.').slice(-1)[0]
+      moduleId: testName
     @formatModuleConfigToObj opt
 
 
@@ -193,7 +200,7 @@ module.exports = Util =
     # )
     console.log @server
     @server.close()
-      
+
 
   isLogin: () ->
     user = @store('chameleon').account_id
