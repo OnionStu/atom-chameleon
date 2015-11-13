@@ -183,11 +183,7 @@ module.exports = Util =
       a = port
       @server.listen(port);
       @eventEmitter().emit 'server_on', 'http://localhost:' + port
-
-    return {
-      uri: 'http://localhost:' + a,
-      server: @server
-    }
+    return @server
 
   stopServer: (server, cb) ->
     # server.close( ()=>

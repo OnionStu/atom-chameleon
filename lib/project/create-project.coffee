@@ -290,7 +290,7 @@ module.exports = CreateProject =
             if urlList.length > 0
               urlList.forEach (item) =>
                 console.log item
-                fileDir = pathM.join filePath, "modules", "#{item.name}.zip"
+                fileDir = pathM.join filePath, "modules", item.name, "#{item.name}.zip"
                 cb = (err, httpresponse, data) =>
                   console.log httpresponse
                   abc = (datac) =>
@@ -309,7 +309,7 @@ module.exports = CreateProject =
                             Util.rumAtomCommand 'tree-view:toggle' if $('.tree-view-resizer').length is 0
                             @modalPanel.item.children(".loading-mask").remove()
                             @chameleonBox.closeView()
-                  Util.createFile pathM.join(filePath, "modules", "#{item.name}.zip"), data, abc
+                  Util.createFile pathM.join(filePath, "modules", item.name, "#{item.name}.zip"), data, abc
                 Util.getFileData item.url, cb
             else
               Util.createDir pathM.join(filePath, "modules"), (err)=>

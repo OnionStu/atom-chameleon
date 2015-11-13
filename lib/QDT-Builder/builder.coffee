@@ -22,7 +22,6 @@ module.exports =
   activate: (options)->
     console.log options
     @server = util.startServer()
-
     ViewUri = "atom://#{options.moduleInfo.identifier}"
     # if !atom.workspace.getPanes()[0].itemForURI(ViewUri)
     @opener = atom.workspace.addOpener (filePath) ->

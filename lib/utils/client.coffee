@@ -58,7 +58,15 @@ module.exports =
     params.url = 'app/list'
     @send params
 
+  # getProjectDetail: (params) ->
+  #   params.url = 'app/app_info'
+  #   @send params
+
   getProjectDetail: (params) ->
+    params.url = 'app/app_platform_info'
+    @send params
+
+  getProjectPlatformDetail: (params) ->
     params.url = 'app/app_info'
     @send params
 
