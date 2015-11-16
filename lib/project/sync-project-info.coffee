@@ -42,7 +42,7 @@ class SyncProjectView extends View
     @getProjectDetail(@parentView.options.projectId, @parentView.options.account_id, platform: @platform[0], version: @platform[1])
     @parentView.setNextBtn('finish')
     @parentView.disableNext()
-    
+
 
   getProjectDetail: (projectId, accountId, platform) ->
     params =
@@ -109,18 +109,15 @@ class SyncProjectView extends View
     # appId = @appId.getText().trim()
     appId = @appId.html().trim()
     appPath = @appPath.html().trim()
-    path = pathM.join appPath,appId
-    if path isnt ""
-      dir = new Directory(path);
-      dir.exists()
-        .then (isExists) =>
-          console.log isExists,dir.getRealPathSync()
-          unless isExists
-            @errorMsg.addClass('hide')
-
-          else
-            @errorMsg.removeClass('hide') if appId isnt ""
-          @checkInput()
+    # path = pathM.join appPath,appId
+    if appPath isnt ''
+      appConfigPath = pathM.join appPath,desc.projectConfigFileName
+      isExists = Util.isFileExist(appConfigPath)
+      unless isExists
+        @errorMsg.addClass('hide')
+      else
+        @errorMsg.removeClass('hide') if appId isnt ""
+      @checkInput()
 
   nextStep:(box) ->
     box.setPrevStep @
